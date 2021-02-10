@@ -1,12 +1,3 @@
-[h]
-
-|:--|:--|
-|**Advisor**|Andreas Pavlogiannis & Jaco van de Pol|
-|**Students**|Magdalena Kalin-Czerska & Jonathan Eilath & Mikael Bisgaard Dahlsen-Jensen|
-|**Languages**|English|
-|**Text tools**|LaTeX|
-|**Other tools**|IntelliJ / Git|
-
 Project Description
 -------------------
 
@@ -49,27 +40,27 @@ Provisional Time Plan
  
 Planning of activities, including the production of the Bachelor’s contract.
 
-#### Rest of February and first week of March (<span>\(\mathbf{4\times 15}\)</span> hours)
+#### Rest of February and first week of March (<span>4 * 15</span> hours)
 
  
 Read literature and make draft of Section 2 in Bachelor’s report.
 
-#### Rest of March (<span>\(\mathbf{2\times 15+1\times 30}\)</span> hours)
+#### Rest of March (<span>2 * 15 + 1 * 30</span> hours)
 
  
 Implement the two algorithms and make draft of Section 3 in Bachelor’s report.
 
-#### First two weeks of April (<span>\(\mathbf{2\times 30}\)</span> hours)
+#### First two weeks of April (<span>2 * 30</span> hours)
 
  
 Find inputs, experiment, compare the results and make draft of Section 4 and 5 in Bachelor’s report.
 
-#### Rest of April and first two weeks of May (<span>\(\mathbf{4\times 30}\)</span> hours)
+#### Rest of April and first two weeks of May (<span>4 * 30</span> hours)
 
  
 Conduct theoretical analysis and investigate other graph problems. Make draft of Section 6 and 7 in Bachelor’s report.
 
-#### Last two weeks of May and first half of June (<span>\(\mathbf{4\times 30}\)</span> hours)
+#### Last two weeks of May and first half of June (<span>4 * 30</span> hours)
 
  
 Write the missing parts, put drafts together, make things consistent, proof reading.
