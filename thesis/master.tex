@@ -1,0 +1,94 @@
+\documentclass[a4, english]{article}
+\usepackage{import}
+\subimport{../preamble/}{preamble_en.tex}
+
+% ---------------------------------------------------------------------------- %
+% Title
+% ---------------------------------------------------------------------------- %
+\newcommand{\titlecontent}{Symbolic Algorithms For Computing Strongly Connected Components}
+\title{\titlecontent}
+
+% ---------------------------------------------------------------------------- %
+% Page layout
+% ---------------------------------------------------------------------------- %
+\usepackage[a4paper]{geometry}
+\usepackage{lastpage, fancyhdr}
+\pagestyle{fancy}
+
+% Top: Odd pages (Main for onesided)
+\fancyhead[RO]{\thepage}
+\fancyhead[LO]{\titlecontent}
+
+% Top: even pages
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\fancyhead[LE]{\thepage}
+
+% Bottom: Nothing
+\fancyfoot[LCR]{}
+
+% ---------------------------------------------------------------------------- %
+% Bibliography
+% ---------------------------------------------------------------------------- %
+\usepackage[
+  backend=biber,
+  style=alphabetic,
+  sortlocale=en_US,
+  useprefix=false,
+  url=false,
+  doi=true,
+  eprint=false,
+  maxbibnames=99,
+]{biblatex}
+\addbibresource{references.bib}
+
+% Change the Bibliography to correctly handle Dutch names.
+\renewbibmacro*{begentry}{\midsentence}
+
+\makeatletter
+\AtBeginDocument{\toggletrue{blx@useprefix}}
+\AtBeginBibliography{\toggletrue{blx@useprefix}}
+\makeatother
+
+
+% ---------------------------------------------------------------------------- %
+% Authors
+% ---------------------------------------------------------------------------- %
+\author{Magdalena Kalin-Czerska}
+\author{Jonathan Eilath }
+\author{Mikael Bisgaard Dahlsen-Jensen}
+\affil{Aarhus University}
+
+% ---------------------------------------------------------------------------- %
+% Main content
+% ---------------------------------------------------------------------------- %
+
+\begin{document}
+
+ \pagestyle{empty}
+
+\maketitle
+
+\newpage
+
+\section{Abstract}
+
+\section{Description of Emerson-Lei and Lockstep algorithm}
+
+\section{Implementing the algorithms}
+
+\section{Inputs and experimenting}
+
+\section{Comparison of results}
+
+\section{Theoretical analysis of the results}
+
+\section{Investigation of other graph problems using symbolic algorithms}
+
+\section{Conclusion}
+
+\section{Acknowledgements}
+
+\section{References}
+
+\section{Appendix}
+\end{document}
