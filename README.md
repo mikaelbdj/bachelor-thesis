@@ -12,7 +12,7 @@ Provisional Table of Contents
 
 -   Section 1: Introduction (1-2 pages)
 
--   Section 2: Description of Emerson-Lei and Lockstep algorithm (4 pages)
+-   Section 2: Description of Xie-Beerel and Lockstep algorithm (4 pages)
 
 -   Section 3: Implementing the algorithms (4 pages)
 
