@@ -1,0 +1,33 @@
+name: Build LaTeX document
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+      - name: Find and replace relative paths
+        uses: datamonsters/replace-action@v2
+        with:
+          files: 'thesis/master/master.tex'
+          replacements: '\newcommand{\preamblepath}{../../preamble/}=\newcommand{\preamblepath}{preamble/},\newcommand{\sectionpath}{../sections/}=\newcommand{\sectionpath}{thesis/sections/}'
+      - name: Compile LaTeX document
+        uses: dante-ev/latex-action@master
+        with:
+          root_file: thesis/master/master.tex
+      - name: Copy and commit PDF to docs folder
+        run: |
+          rm docs/master.pdf
+          cp master.pdf docs/master.pdf
+          git config --global user.email "git@github.com"
+          git config --global user.name "GitHub Actions"
+          git add docs/master.pdf -f
+          git commit -m "Updated docs/master.pdf"
+          git push
