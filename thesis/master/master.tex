@@ -1,6 +1,10 @@
 \documentclass[a4, english]{article}
 \usepackage{import}
-\subimport{../preamble/}{preamble_en.tex}
+\subimport{../../preamble/}{preamble_en}
+\graphicspath{{images/}{../images/}}
+
+\usepackage{subfiles} % Best loaded last in the preamble
+
 
 % ---------------------------------------------------------------------------- %
 % Title
@@ -71,7 +75,9 @@
 \newpage
 
 \section{Abstract}
-
+\subfile{../sections/abstract}
+\section{Introduction}
+\subfile{../sections/introduction}
 \section{Description of Emerson-Lei and Lockstep algorithm}
 
 \section{Implementing the algorithms}
