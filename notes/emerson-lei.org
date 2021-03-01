@@ -1,0 +1,31 @@
+* Emerson Lei
+
+** Purpose
+- Compute set of nodes that have a path to a fair cycle (SCC)
+- Used to check Büchi emptiness 
+ 
+** Terminology
+- Büchi automata: ((V, E), V_0, F) and all (L,U) in F, L = V
+
+** Pseudo code
+#+BEGIN_SRC python
+Y = V
+prevY = Ø
+while Y != prevY
+	prevY = Y
+	result = Ø
+	for (L,U) in acc_cond
+		predecessors = U intersect Y	
+		prev = Ø
+		while predecessors != prev 
+			prev = predecessors
+			predecessors = preimg(predecessors)
+	
+		predecessors' = preimg(predecessors)
+		result = result intersect predecessors'	
+	Y = result
+return Y
+#+END_SRC
+
+*** Textual description of pseudo code
+Find a largest set Y such that the inner loop does not change it. The inner loop, for each U in acceptance sets: computes all nodes that can reach Y intersected with U and then elimates nodes not in cycles by taking preimage. These sets are intersected and stored in a result. Y is assigned to this result in the end.
