@@ -19,7 +19,7 @@ while Y != prevY
 		prev = Ø
 		while predecessors != prev 
 			prev = predecessors
-			predecessors = preimg(predecessors)
+			predecessors = predecessors union preimg(predecessors)
 	
 		predecessors' = preimg(predecessors)
 		result = result intersect predecessors'	
