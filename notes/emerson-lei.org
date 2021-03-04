@@ -13,7 +13,7 @@ Y = V
 prevY = Ø
 while Y != prevY
 	prevY = Y
-	result = Ø
+	result = V
 	for (L,U) in acc_cond
 		predecessors = U intersect Y	
 		prev = Ø
