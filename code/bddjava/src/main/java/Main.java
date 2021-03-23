@@ -14,13 +14,10 @@ public class Main {
         List<Edge> edges = new ArrayList<>();
         edges.add(new Edge(0, 2));
         edges.add(new Edge(2, 1));
-        edges.add(new Edge(1,0));
-        edges.add(new Edge(2,3));
-        graphToBDD(edges, 4).printSet();
-        System.out.println();
+        edges.add(new Edge(1, 0));
+        edges.add(new Edge(2, 3));
+        graphToBDD(edges, 4).printDot();
     }
-
-
 
 
     public static BDD graphToBDD(List<Edge> edges, long verticesCount) {
@@ -31,23 +28,20 @@ public class Main {
         bdd.setVarNum(2 * v);
         for (Edge edge : edges) {
             Binary fromBinary = intToBinary.get(edge.from);
-            BDD fromBdd = IntStream.range(0, v)
-                    .mapToObj(i -> fromBinary.getIth(i) ? bdd.ithVar(i) : bdd.nithVar(i))
-                    .reduce(bdd.one(), BDD::and);
-
             Binary toBinary = intToBinary.get(edge.to);
-            BDD toBdd = IntStream.range(0, v)
-                    .mapToObj(i -> toBinary.getIth(i) ? bdd.ithVar(i+v) : bdd.nithVar(i+v))
-                    .reduce(bdd.one(), BDD::and);
+            Binary edgeBinary = fromBinary.append(toBinary);
 
-            BDD edgeBdd = fromBdd.and(toBdd);
+            BDD edgeBdd = IntStream.range(0, 2 * v)
+                    .mapToObj(i -> edgeBinary.getIth(i) ? bdd.ithVar(i) : bdd.nithVar(i))
+                    .reduce(bdd.one(), BDD::and);
 
             edgeBdds.add(edgeBdd);
         }
 
-        return edgeBdds.stream().reduce(bdd.zero(), BDD::or);
+        return edgeBdds
+                .stream()
+                .reduce(bdd.zero(), BDD::or);
     }
-
 
 
     private static Map<Integer, Binary> initializeIntegerToBinaryMap(long verticesCount, int v) {
@@ -79,6 +73,7 @@ public class Main {
             this.from = from;
             this.to = to;
         }
+
         private int from;
         private int to;
     }
@@ -88,24 +83,36 @@ public class Main {
      * Wrapper for boolean list
      */
     private static class Binary {
-        private final List<Boolean> number;
+        private final List<Boolean> bools;
 
 
-        private Binary(List<Boolean> number) {
-            this.number = number;
+        private Binary(List<Boolean> bools) {
+            this.bools = bools;
         }
 
         public List<Boolean> getRaw() {
-            return number;
+            return bools;
         }
 
         public boolean getIth(int i) {
-            return number.get(i);
+            return bools.get(i);
+        }
+
+        /**
+         * Ugly because java likes mutating things
+         *
+         * @param other binary
+         * @return two Binaries appended into a new Binary object
+         */
+        public Binary append(Binary other) {
+            List<Boolean> copy = new ArrayList<>(List.copyOf(bools));
+            copy.addAll(other.getRaw());
+            return new Binary(copy);
         }
 
         @Override
         public String toString() {
-            return number
+            return bools
                     .stream()
                     .map(n -> n ? "1" : "0")
                     .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
