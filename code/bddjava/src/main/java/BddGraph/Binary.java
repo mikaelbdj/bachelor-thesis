@@ -4,6 +4,8 @@ package BddGraph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Wrapper for boolean list
@@ -12,8 +14,18 @@ public class Binary {
     private final List<Boolean> bools;
 
 
+    /**
+     * @param bools boolean list to wrap
+     */
     public Binary(List<Boolean> bools) {
         this.bools = bools;
+    }
+
+    /**
+     * @param v length of boolean list
+     */
+    public Binary(int v) {
+        this.bools = IntStream.range(0, v).mapToObj(i -> false).collect(Collectors.toList());
     }
 
     public List<Boolean> getRaw() {
@@ -22,6 +34,10 @@ public class Binary {
 
     public boolean getIth(int i) {
         return bools.get(i);
+    }
+
+    public void setIth(int i, boolean value) {
+        bools.set(i, value);
     }
 
     /**

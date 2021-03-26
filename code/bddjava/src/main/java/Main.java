@@ -1,5 +1,6 @@
 import BddGraph.BddGraph;
 import BddGraph.Edge;
+import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.List;
 
 public class Main {
 
-    static BDDFactory bdd;
+
 
     public static void main(String[] args) {
 
@@ -19,7 +20,10 @@ public class Main {
         edges.add(new Edge(2, 3));
         BddGraph graph = new BddGraph(edges, 4);
 
-        graph.getBdd().printSet();
+        BDD node0 = graph.getBddFactory().nithVar(0).and(graph.getBddFactory().nithVar(1));
+        BDD node1 = graph.getBddFactory().ithVar(0).and(graph.getBddFactory().nithVar(1));
 
+        BDD img = graph.img(graph.img(node1));
+        img.printSet();
     }
 }
