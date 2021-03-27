@@ -45,8 +45,9 @@
   doi=true,
   eprint=false,
   maxbibnames=99,
-]{biblatex}
+  ]{biblatex}
 \addbibresource{references.bib}
+  
 
 % Change the Bibliography to correctly handle Dutch names.
 \renewbibmacro*{begentry}{\midsentence}
@@ -61,7 +62,7 @@
 % Authors
 % ---------------------------------------------------------------------------- %
 \author{Magdalena Kalin-Czerska}
-\author{Jonathan Eilath }
+\author{Jonathan Eilath}
 \author{Mikael Bisgaard Dahlsen-Jensen}
 \affil{Aarhus University}
 
@@ -82,7 +83,7 @@
 \section{Introduction}
 \subfile{\sectionpath/introduction}
 \section{Description of Emerson-Lei and Lockstep algorithm}
-
+\subfile{\sectionpath/description}
 \section{Implementing the algorithms}
 
 \section{Inputs and experimenting}
@@ -98,6 +99,10 @@
 \section{Acknowledgements}
 
 \section{References}
-
+\printbibliography
 \section{Appendix}
 \end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
