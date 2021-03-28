@@ -29,7 +29,15 @@ public class BddGraph {
 
     public BDD img(BDD nodes) {
         //restrict to variables defined in nodes
-        BDD restricted = bdd.restrict(nodes);
+        BDD img = bdd.restrict(nodes);
+
+        while (img.var() < v) {
+            int var = img.var();
+            BDD pos = img.restrict(bddFactory.ithVar(var));
+            BDD neg = img.restrict(bddFactory.nithVar(var));
+            img = pos.or(neg);
+        }
+
 
 
         BDDPairing pairing = bddFactory.makePair();
@@ -38,19 +46,33 @@ public class BddGraph {
         }
 
         //rename variables, fx. if v = 2, rename 2->0, 3->1
-        return restricted.replace(pairing);
+        return img.replace(pairing);
     }
 
     public BDD preImg(BDD nodes) {
         //opposite of img
+
         BDDPairing pairing = bddFactory.makePair();
         for (int i = 0; i < v; i++) {
             pairing.set(i, i+v);
         }
 
+        while (nodes.allsat().size() < 1) {
+            nodes.satOne().printSet();
+        }
+
         BDD replaced = nodes.replace(pairing);
 
-        return bdd.restrict(replaced);
+        BDD preImg = bdd.restrict(replaced);
+        preImg = bdd.and(replaced);
+
+        for (int i = v; i < 2*v; i++) {
+            BDD pos = preImg.restrict(bddFactory.ithVar(i));
+            BDD neg = preImg.restrict(bddFactory.nithVar(i));
+            preImg = pos.or(neg);
+        }
+
+        return preImg;
     }
 
     //allow BddGraphs to create new BddGraphs from a bdd

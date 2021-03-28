@@ -9,7 +9,6 @@ import java.util.List;
 public class Main {
 
 
-
     public static void main(String[] args) {
 
 
@@ -18,12 +17,14 @@ public class Main {
         edges.add(new Edge(2, 1));
         edges.add(new Edge(1, 0));
         edges.add(new Edge(2, 3));
+        edges.add(new Edge(2, 0));
         BddGraph graph = new BddGraph(edges, 4);
 
         BDD node0 = graph.getBddFactory().nithVar(0).and(graph.getBddFactory().nithVar(1));
         BDD node1 = graph.getBddFactory().ithVar(0).and(graph.getBddFactory().nithVar(1));
 
-        BDD img = graph.img(graph.img(node1));
+
+        BDD img = graph.preImg(graph.preImg(node0));
         img.printSet();
     }
 }
