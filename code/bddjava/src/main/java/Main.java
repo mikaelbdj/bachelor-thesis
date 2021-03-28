@@ -27,5 +27,8 @@ public class Main {
 
         BDD img = graph.img(node1And2Set);
         img.printSet();
+
+        graph.pick().printSet();
+        BddGraph.pick(node1And2Set).printSet();
     }
 }
