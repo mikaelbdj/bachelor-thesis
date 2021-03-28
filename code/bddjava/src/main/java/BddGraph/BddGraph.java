@@ -29,12 +29,11 @@ public class BddGraph {
 
     public BDD img(BDD nodes) {
         //restrict to variables defined in nodes
-        BDD img = bdd.restrict(nodes);
+        BDD img = bdd.and(nodes);
 
-        while (img.var() < v) {
-            int var = img.var();
-            BDD pos = img.restrict(bddFactory.ithVar(var));
-            BDD neg = img.restrict(bddFactory.nithVar(var));
+        for (int i = 0; i < 2; i++) {
+            BDD pos = img.restrict(bddFactory.ithVar(i));
+            BDD neg = img.restrict(bddFactory.nithVar(i));
             img = pos.or(neg);
         }
 
@@ -55,10 +54,6 @@ public class BddGraph {
         BDDPairing pairing = bddFactory.makePair();
         for (int i = 0; i < v; i++) {
             pairing.set(i, i+v);
-        }
-
-        while (nodes.allsat().size() < 1) {
-            nodes.satOne().printSet();
         }
 
         BDD replaced = nodes.replace(pairing);
