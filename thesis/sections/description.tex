@@ -4,22 +4,31 @@
 \newcommand{\pair}[2]{\ensuremath{\langle #1, #2\rangle}}
 
 \begin{document}
+\subsection{Lockstep}
+The first algorithm we will be looking at is the Lockstep alagorithm proposed by Bloem et al. \cite{lockstep}
+The Lockstep algorithm performs forward and backward search simultaneously and recurses after removal of the SCC in each iteration.
+This algorithm takes a Streett automaton and $P\subseteq V$ as input and outputs SCCs found in the graph.
+
+
 \subsection{Linear time algorithm}
 The second algortihm we will be comparing is the linear time algorithm \cite{linear}. First, we introduce some terms that this algorithm builds upon. We will then look at the algorithm and its complexity analysis. For the following definitons, let $G=(V,E)$ be a digraph.
-
+\todo[inline]{add intuitive definition first, before in depth}
 The key elements of the algorithm are forward and backward sets. Let $U\subseteq V$. A forward set, \FW{U}, is the set of nodes that can be reached from U. Similarily, a backward set, \BW{U}, is a set if all the nodes that reach U.
 
 A skeleton of a forward set of the vertex $v$ \FW{v} is $\langle S, v \rangle$, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices
 
-The authors of this algorithm introduce the notion of a spine-set, whih is a symbolic way of ordering sets of nodes. A spine-set is a subset $\langle S, v\rangle$ of a graph $G=(V,E)$, such that $S\subseteq V$, for which G contains a cordless path for the set $S$ ending in $v$.
+The authors of this algorithm introduce the notion of a spine-set, whih is a symbolic way of ordering sets of nodes. A spine-set is a subset $\langle S, v\rangle$ of a graph $G=(V,E)$, such that $S\subseteq V$, for which G contains a chordless path for the set $S$ ending in $v$.
 
 Having defined some of the notions used in the algorithm, we can proceed to looking at the algorithm described by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$ and outputs vertex sets of SCC subgraphs.
 %In each iteration of the algorithm, the SCC of a node is found by computing \FW{v}, and determining which of the vertices in this set have a path back to $v$.
-The first thibng the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\empty$, in which case the algorithm terminates. If $S\neq\empty$, and $N={v_p}$, $v_p$ is chosen. Otherwise, an arbitrary v is assigned to N. Next, \FW{N} and a skeleton \pair{S'}{u'} on this forward-set is computed.
+The first thibng the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\empty$, in which case the algorithm terminates. If $S\neq\empty$, and $N={v_p}$, $v_p$ is chosen. Otherwise, an arbitrary v is assigned to N. Next, \FW{N} and a skeleton \pair{S'}{u'} on this forward-set is computed.The next stpe is to determine the SCC containing N.\todo{describe how this is done}. Once this SCC has been added to the SCC partition \todo{explain SCC partition?}
+Once this is done, this procedure is called recursively on two subgraphs. The first recursive call is on the subgraph V\textbackslash FW (its vertices and edges) as well as its spine-set, obtained by removing the SCC from the spine-set $\langle S, N\rangle$. We then recurse again on a second subgraph, FW\textbackslash SCC and its spine-set, which we have computed previously, namely \pair, which we found by computing the skeleton of (V, E, N).
 
-\todo[inline]{add linear pseudocode in appendix?}
-\todo[inline]{is preimage the same as pre here?]}
+\todo[inline]{is preimage the same as pre here?}
+\todo[inline]{add small example that shows difference between two algorithms}
+\todo[inline]{check def of preimage in lockstep and compare to pre in linear, also look at the forward set definition, maybe write it down some place so that there is access to it}
 
+\todo[inline]{rewrite pseudocode for the two algorithms}
 
 \end{document}
 %%% Local Variables:

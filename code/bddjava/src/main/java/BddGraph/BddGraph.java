@@ -4,10 +4,11 @@ import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 import net.sf.javabdd.BDDPairing;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * A Bdd representing a graph - should have some fancy methods like img / preImg
@@ -27,10 +28,49 @@ public class BddGraph {
         bdd = graphToBDD(edges);
     }
 
+    /**
+     * Pick a node from the given set of nodes
+     * @param noteSet some set of nodes
+     * @return a node from the set of nodes
+     */
+    public static BDD pick(BDD noteSet) {
+        return noteSet.satOne();
+    }
+
+    /** Pick a node from the graph
+     * @return a node from the graph
+     */
+    public BDD pick() {
+        BDD someEdge = bdd.fullSatOne();
+
+        return restrictAwayToVariables(someEdge);
+    }
+
+    private BDD restrictAwayToVariables(BDD nodeSet) {
+        for (int i = v; i < 2*v; i++) {
+            BDD pos = nodeSet.restrict(bddFactory.ithVar(i));
+            BDD neg = nodeSet.restrict(bddFactory.nithVar(i));
+            nodeSet = pos.or(neg);
+        }
+
+        return nodeSet;
+    }
+
+    private BDD restrictAwayFromVariables(BDD nodeSet) {
+        for (int i = 0; i < v; i++) {
+            BDD pos = nodeSet.restrict(bddFactory.ithVar(i));
+            BDD neg = nodeSet.restrict(bddFactory.nithVar(i));
+            nodeSet = pos.or(neg);
+        }
+
+        return nodeSet;
+    }
+
     public BDD img(BDD nodes) {
         //restrict to variables defined in nodes
-        BDD restricted = bdd.restrict(nodes);
+        BDD img = bdd.and(nodes);
 
+        img = restrictAwayFromVariables(img);
 
         BDDPairing pairing = bddFactory.makePair();
         for (int i = 0; i < v; i++) {
@@ -38,11 +78,12 @@ public class BddGraph {
         }
 
         //rename variables, fx. if v = 2, rename 2->0, 3->1
-        return restricted.replace(pairing);
+        return img.replace(pairing);
     }
 
     public BDD preImg(BDD nodes) {
         //opposite of img
+
         BDDPairing pairing = bddFactory.makePair();
         for (int i = 0; i < v; i++) {
             pairing.set(i, i+v);
@@ -50,7 +91,9 @@ public class BddGraph {
 
         BDD replaced = nodes.replace(pairing);
 
-        return bdd.restrict(replaced);
+        BDD preImg = bdd.and(replaced);
+
+        return restrictAwayToVariables(preImg);
     }
 
     //allow BddGraphs to create new BddGraphs from a bdd
