@@ -7,7 +7,10 @@
 \graphicspath{{images/}{../images/}}
 
 \usepackage{subfiles} % Best loaded last in the preamble
-
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithmicx}
+\usepackage{algorithmicx}
 
 % ---------------------------------------------------------------------------- %
 % Title
@@ -82,7 +85,7 @@
 \subfile{\sectionpath/abstract}
 \section{Introduction}
 \subfile{\sectionpath/introduction}
-\section{Description of Emerson-Lei and Lockstep algorithm}
+\section{Description of  Lockstep and Linear-time algorithms}
 \subfile{\sectionpath/description}
 \section{Implementing the algorithms}
 
@@ -100,7 +103,6 @@
 
 \printbibliography
 \appendix
-\section{How I became inspired}
 \end{document}
 %%% Local Variables:
 %%% mode: latex
