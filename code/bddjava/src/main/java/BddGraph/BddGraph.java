@@ -148,4 +148,19 @@ public class BddGraph {
     public BDDFactory getBddFactory() {
         return bddFactory;
     }
+
+    public BDD getNodes() {
+        BDD fromNodes = restrictAwayToVariables(bdd);
+        BDD toNodes = restrictAwayFromVariables(bdd);
+
+        BDDPairing pairing = bddFactory.makePair();
+        for (int i = 0; i < v; i++) {
+            pairing.set(i+v, i);
+        }
+
+        //rename variables, fx. if v = 2, rename 2->0, 3->1
+        toNodes = toNodes.replace(pairing);
+
+        return fromNodes.or(toNodes);
+    }
 }
