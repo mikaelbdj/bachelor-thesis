@@ -35,55 +35,56 @@ The authors of this algorithm introduce the notion of a spine-set, whih is a sym
 The first algorithm we will be looking at is the Lockstep algorithm proposed by Bloem et al. \cite{lockstep} The Lockstep algorithm performs forward and backward search simultaneously and recurses after removal of the SCC in each iteration.
 
 We have modified this algorithm a tad, as we do not look at Streett automata, and are therefore not interested in the Report function introduced in the article. We have also therefore modified the input of the algorithm to only take a graph and a set of vertices. 
-\todo{add something about no report as we don't look at street and all sccs are fair?}
 
-We start by initializing the set $P\subseteq V$ - $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v}, as well as their frontiers, which are all initially set to a singleton, which the algorithm picks from $P$.
+We start by initializing the set $P\subseteq V$, $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v}, as well as their frontiers, which are all initially set to a singleton, which the algorithm picks from $P$.
 
-The next step is simultaneously performing forward and backward searches until either \FW{v} or \BW{v} converges. This is done by extending the forward and backward frontiers by taking their image and preimage respectively, selecting only those of the nodes, which are in our current $P$ and finally removing all the nodes which already exist in \FW{v} and \BW{v} respectively. We then update the values of \FW{v} and \BW{v} to include the elements that we have found in their respective frontiers. This is done in iterations until either of the frontiers is an empty set, meaning that it will no longer be updated. The forward or backward set corresponding to the empty frontier is then set as \texttt{Converged}.
+The next step is simultaneously performing forward and backward searches until either \FW{v} or \BW{v} converges. This is done by extending the forward and backward frontiers by taking their image and preimage respectively, selecting only those of the nodes, which are in our current $P$ and finally removing all the nodes which already exist in \FW{v} and \BW{v} respectively. We then update the values of \FW{v} and \BW{v} to include the elements that we have found in their respective frontiers. This is done in iterations until either of the frontiers is an empty set, meaning that it will no longer be updated. The forward or backward set corresponding to the empty frontier is then set as \emph{Converged}. This is quite crucial to obtaining the $n$\,log\,$n$ bound we will be discussing later on.
 
-Once one of the sets has converged, we repeat updating the forward and backward frontiers and sets, just like before until either the forward frontier and backward set or backward frontier and forward set have no nodes in common. \todo{probably a good idea to add why this is}.
+Once one of the sets has converged, we repeat updating the forward and backward frontiers and sets, just like before until either the forward frontier and backward set or backward frontier and forward set have no nodes in common. \todo{probably a good idea to add why this is}
 We have now found a SCC, which is the nodes in $\FW{v}\cap\BW{v}$. \todo{again, expand}
 
-We recursively call Lockstep on the set of vertices in $P\setminus \texttt{Converged}$. Here, we don't check for strongly connected components in the \texttt{Converged} set, and therefore we also call the Lockstep procedure on this set of nodes, once we have removed the SCC from it.
+We recursively call Lockstep on the set of vertices in $P\setminus Converged$. Here, we don't check for strongly connected components in the \emph{Converged} set, and therefore we also call the Lockstep procedure on this set of nodes, once we have removed the SCC from it.
+\todo{the first line in pseudocode should probably not be there, whoops}
+  \todo{do we actually return the SCC}
+\todo{probably a good idea to move down to appendix later}
 \begin{algorithm}
   \caption{Lockstep((V, E), P)}
   \begin{algorithmic}[1]
-    \Let{P}{V}
+    \Let{$P$}{$V$}
     \Statex
-    \If{$V=\emptyset$}
-    \State \Return
+    \If{$P=\emptyset$}
+     \State \Return
     \EndIf
     \Statex
-      \Let{$v$}{pick(P)}
-      \Let{F, B, Ffront, Bfront}{$\set{v}$}
-      \Statex
-      \While{Ffront$\neq\emptyset$ and Bfront$\neq\emptyset$}
-      \Let{Ffront}{img(Ffront)$\cap$P\textbackslash F}
-      \Let{Bfront}{preimg(Bfront)$\cap$P\textbackslash B}
-      \Let{F}{F$\cup$Ffront}
-       \Let{B}{B$\cup$Bfront}
-       \EndWhile
-       \Statex
-        \If{Ffront$=\emptyset$}
-        \Let{Converged}{F}
-        \Else
-        \Let{Converged}{B}
-          \EndIf
-      \Statex
-      \While{Ffront$\cap$B$\neq\emptyset$ and Bfront$\cap$F$\neq\emptyset$}
-       \Let{Ffront}{img(Ffront)$\cap$P\textbackslash F}
-       \Let{Bfront}{preimg(Bfront)$\cap$P\textbackslash B}
-       \Let{F}{F$\cup$Ffront}
-       \Let{B}{B$\cup$Bfront}
-       \EndWhile
-       \Statex
-       \Let{C}{F$\cap$B}
-       \State{Lockstep((V, E), Converged\textbackslash C)}
-       \State{Lockstep((V, E), P\textbackslash Converged)}
+    \Let{$v$}{pick($P$)}
+    \Let{$FW, BW$, Ffront, Bfront}{$\set{v}$}
+    \Statex
+    \While{Ffront$\neq\emptyset$ \textbf{and} Bfront$\neq\emptyset$}
+     \Let{Ffront}{$\text{img(Ffront)}\cap P\setminus FW$}
+     \Let{Bfront}{$\text{preimg(Bfront)}\cap P\setminus BW$}
+     \Let{$FW$}{$FW\cup\text{Ffront}$}
+     \Let{$BW$}{$BW\cup\text{Bfront}$}
+    \EndWhile
+    \Statex
+    \If{Ffront$=\emptyset$}
+     \Let{$Converged$}{$FW$}
+    \Else
+     \Let{$Converged$}{$BW$}
+    \EndIf
+    \Statex
+    \While{Ffront$\cap BW\neq\emptyset$ \textbf{and} Bfront$\cap FW\neq\emptyset$}
+     \Let{Ffront}{$\text{img(Ffront)}\cap P\setminus FW$}
+     \Let{Bfront}{$\text{preimg(Bfront)}\cap P\setminus BW$}
+     \Let{$FW$}{$FW\cup\text{Ffront}$}
+     \Let{$BW$}{$BW\cup\text{Bfront}$}
+    \EndWhile
+    \Statex
+    \Let{$C$}{$FW\cap BW$}
+    \State{Lockstep($(V, E)$, $Converged\setminus C$)}
+    \State{Lockstep($(V, E)$, $P\setminus Converged$)}
   \end{algorithmic}
 \end{algorithm}
-\todo{doesn't look like we actually return the SCC}
-\todo{probably a good idea to move down to appendix later}
+
 \subsection{Linear time algorithm}
 The second algorithm we will be comparing is the linear time algorithm \cite{linear} introduced by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$ and outputs vertex sets of SCC subgraphs.
 \todo[inline]{add more intuitive description first, before going in depth}
@@ -95,7 +96,40 @@ Next, \FW{N} and a skeleton \pair{S'}{u'} on this forward-set is computed.The ne
 Once this is done, this procedure is called recursively on two subgraphs. The first recursive call is on the subgraph V\textbackslash FW (its vertices and edges) as well as its spine-set, obtained by removing the SCC from the spine-set \pair{S}{N}. We then recurse again on a second subgraph, FW\textbackslash SCC and its spine-set, which we have computed previously, namely \pair{newS}{newN}, which we found by computing the skeleton of (V, E, N).
 
 \todo[inline]{add small example that shows difference between two algorithms}
-\todo[inline]{add pseudocode for linear}
+
+\begin{algorithm}
+  \caption{Linear((V, E), \pair{S}{N})}
+  \begin{algorithmic}[1]
+    \If{$V=\emptyset$}
+     \State \Return
+    \EndIf
+    \Statex
+    \If{$S=\emptyset$}
+      \Let{$v$}{pick($V$)}
+    \EndIf
+    \Statex
+    \Let{$\langle FW, newS, newN\rangle$}{skelForward($V, E, N$)}
+    \Statex
+    \Let{$SCC$}{$N$}
+    \While{$\text{pre}(SCC)\cap FW)\setminus SCC)\neq\emptyset$}
+     \Let{$SCC$}{$SCC\cup (\text{pre}(SCC)\cap FW)$}
+    \EndWhile
+    \Statex
+    \Let{$SCC\text{-Partition}$}{$SCC\text{-Partition}\cup\{SCC\}$}
+    \Statex
+    \Let{$V'$}{$V\setminus FW$}
+    \Let{$E'$}{$E\upharpoonright V'$}
+    \Let{$S'$}{$S\setminus SCC$}
+    \Let{$N'$}{$\text{pre}(SCC\cap S)\cap(S\setminus SCC)$}
+    \State Linear($(V', E')$, \pair{S'}{N'})
+    \Statex
+    \Let{$V'$}{$FW\setminus SCC$}
+    \Let{$E'$}{$E\upharpoonright V'$}
+    \Let{$S'$}{$newS\setminus SCC$}
+    \Let{$N'$}{$newN\setminus SCC$}
+    \State Linear($(V', E')$, \pair{S'}{N'})
+  \end{algorithmic}
+\end{algorithm}
 
 \end{document}
 %%% Local Variables:
