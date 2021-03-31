@@ -13,18 +13,18 @@
 
 This section dsicusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
 
-In this thesis, we are dealing with symbolic algorithms, which mnipulate sets of nodes by using symbolic operators. For a directed graph G, with vertices V and edges E and $S\subseteq V$, we can derive the following operators:
+In this thesis, we are dealing with symbolic algorithms, which manipulate sets of nodes by using symbolic operators. For a directed graph G, with vertices V and edges E and $S\subseteq V$, we can derive the following operators:
 \begin{align*}
 \img S &= \set{v' \in V}{\exists v\in S:(v, v')\in E}{|}\\
 \pre S &= \set{v' \in V}{\exists v\in S:(v', v)\in E}{|}
 \end{align*}
 
 The image and preimage operations will be refered to as ``steps'', and the complexity of the algorithms will be measured in terms of these steps.
-From these operators, we can derive the notion of forward and backward sets, which will be key elements in the algorithms. A forward set, \FW{S}, is the set of nodes that can be reached from S. Similarily, a backward set, \BW{S}, is a set if all the nodes that reach S. This can be written more formally as: \todo{can be expressed as the least fixpoint lambda, and more formally mu}
-\begin{align*}
+From these operators, we can derive the notion of forward and backward sets, which will be key elements in the algorithms. A forward set, \FW{S}, is the set of nodes that can be reached from S. Similarily, a backward set, \BW{S}, is a set if all the nodes that reach S. These can be expressed formally as the least fixpoint of respectively $\lambda S.\{v\}\cup \text{img}(S)$ and $\lambda S.\{v\}\cup \text{preimg}(S)$. Using mu-calculus \cite{clarke_peled_grumberg_1999} this can exactly expressed as 
+\begin{align}\label{fw}
 \FW{S} &= \mu S.\{v\}\cup \text{img}(S)\\
-\BW{S} &= \mu S.\{v\}\cup \text{preimg}(S)
-\end{align*}
+\label{bw}\BW{S} &= \mu S.\{v\}\cup \text{preimg}(S)
+\end{align}
 
 A skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices
 
@@ -35,11 +35,12 @@ The authors of this algorithm introduce the notion of a spine-set, whih is a sym
 \subsection{Lockstep}
 The first algorithm we will be looking at is the Lockstep algorithm proposed by Bloem et al. \cite{lockstep} The Lockstep algorithm performs forward and backward search simultaneously and recurses after removal of the SCC in each iteration.
 
-We have modified this algorithm a tad, as we do not look at Streett automata, and are therefore not interested in the Report function introduced in the article. We have also therefore modified the input of the algorithm to only take a graph and a set of vertices. 
+We have modified this algorithm slightly, as we do not look at Streett automata, and are therefore not interested in the Report function introduced in the article. For the same reason, we also modified the input of the algorithm to only take a graph and a set of vertices. 
 
-We start by initializing the set $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v}, as well as their frontiers, which are all initially set to a singleton, which the algorithm picks from $P$.
+We start by initializing the set $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v}, as well as their frontiers, which are all initially set to the singleton set of a node picked from $P$.
 
-The next step is simultaneously performing forward and backward searches until either \FW{v} or \BW{v} converges. This is done by extending the forward and backward frontiers by taking their image and preimage respectively, selecting only those of the nodes, which are in our current $P$ and finally removing all the nodes which already exist in \FW{v} and \BW{v} respectively. We then update the values of \FW{v} and \BW{v} to include the elements that we have found in their respective frontiers. This is done in iterations until either of the frontiers is an empty set, meaning that it will no longer be updated. The forward or backward set with the empty frontier is then set as \emph{Converged}. This is quite crucial to obtaining the $n$\,log\,$n$ bound we will be discussing later on.
+The next step is simultaneously performing forward and backward searches until either \FW{v} or \BW{v} converges. This is done by extending the forward and backward frontiers by taking their image and preimage respectively, selecting only those of the nodes, which are in our current $P$ and finally removing all the nodes which already exist in \FW{v} and \BW{v} respectively. We then update the values of \FW{v} and \BW{v} to include the elements that we have found in their respective frontiers. This is done in iterations until either of the frontiers is an empty set, meaning that it will no longer be updated.
+In other words, by interatively computing the two functions (\ref{fw}) and (\ref{bw}) until one of them reaches its least fix point. The forward or backward set with the empty frontier is then set as \emph{Converged}. This is essential for obtaining the $n$\,log\,$n$ bound that will be examined later on.
 
 Once one of the sets has converged, we continue updating the other set, just like before until its frontier has no nodes in common with the \emph{Converged} set. \todo{probably a good idea to add why this is}
 We have now found a SCC, which is the nodes in $\FW{v}\cap\BW{v}$. \todo{again, expand}
