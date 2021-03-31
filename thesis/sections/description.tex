@@ -24,7 +24,7 @@ From these operators, we can derive the notion of forward and backward sets, whi
 \begin{align*}
 \FW{S} &= \lambda S.\{v\}\cup \text{img}(S)\\
 \BW{S} &= \lambda S.\{v\}\cup \text{preimg}(S)
-\end{align*}\todo{can this be written as $v\cup\text{img}(v)$}
+\end{align*}\todo{can this be written as $v\cup\text{img}(v)$?}
 
 A skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices
 
@@ -33,11 +33,17 @@ The authors of this algorithm introduce the notion of a spine-set, whih is a sym
 
 \subsection{Lockstep}
 The first algorithm we will be looking at is the Lockstep algorithm proposed by Bloem et al. \cite{lockstep} The Lockstep algorithm performs forward and backward search simultaneously and recurses after removal of the SCC in each iteration.
+
+We have modified this algorithm a tad, as we do not look at Streett automata, and are therefore not interested in the Report function introduced in the article. We have also therefore modified the input of the algorithm to only take a graph and a set of vertices. 
 \todo{add something about no report as we don't look at street and all sccs are fair?}
+
 We start by initializing the set $P\subseteq V$ - $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v}, as well as their frontiers, which are all initially set to a singleton, which the algorithm picks from $P$.
+
 The next step is simultaneously performing forward and backward searches until either \FW{v} or \BW{v} converges. This is done by extending the forward and backward frontiers by taking their image and preimage respectively, selecting only those of the nodes, which are in our current $P$ and finally removing all the nodes which already exist in \FW{v} and \BW{v} respectively. We then update the values of \FW{v} and \BW{v} to include the elements that we have found in their respective frontiers. This is done in iterations until either of the frontiers is an empty set, meaning that it will no longer be updated. The forward or backward set corresponding to the empty frontier is then set as \texttt{Converged}.
+
 Once one of the sets has converged, we repeat updating the forward and backward frontiers and sets, just like before until either the forward frontier and backward set or backward frontier and forward set have no nodes in common. \todo{probably a good idea to add why this is}.
 We have now found a SCC, which is the nodes in $\FW{v}\cap\BW{v}$. \todo{again, expand}
+
 We recursively call Lockstep on the set of vertices in $P\setminus \texttt{Converged}$. Here, we don't check for strongly connected components in the \texttt{Converged} set, and therefore we also call the Lockstep procedure on this set of nodes, once we have removed the SCC from it.
 \begin{algorithm}
   \caption{Lockstep((V, E), P)}
@@ -79,13 +85,17 @@ We recursively call Lockstep on the set of vertices in $P\setminus \texttt{Conve
 \todo{doesn't look like we actually return the SCC}
 \todo{probably a good idea to move down to appendix later}
 \subsection{Linear time algorithm}
-The second algortihm we will be comparing is the linear time algorithm \cite{linear} introduced by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$ and outputs vertex sets of SCC subgraphs.
+The second algorithm we will be comparing is the linear time algorithm \cite{linear} introduced by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$ and outputs vertex sets of SCC subgraphs.
+\todo[inline]{add more intuitive description first, before going in depth}
 
-The first thibng the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\empty$, in which case the algorithm terminates. If $S\neq\empty$, and $N={v_p}$, $v_p$ is chosen. Otherwise, an arbitrary v is assigned to N. Next, \FW{N} and a skeleton \pair{S'}{u'} on this forward-set is computed.The next stpe is to determine the SCC containing N.\todo{describe how this is done}. Once this SCC has been added to the SCC partition \todo{explain SCC partition?}
-Once this is done, this procedure is called recursively on two subgraphs. The first recursive call is on the subgraph V\textbackslash FW (its vertices and edges) as well as its spine-set, obtained by removing the SCC from the spine-set $\langle S, N\rangle$. We then recurse again on a second subgraph, FW\textbackslash SCC and its spine-set, which we have computed previously, namely \pair, which we found by computing the skeleton of (V, E, N).
+The first thing the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\empty$, in which case the algorithm terminates. If $S\neq\empty$ and $N={v_p}$, then $v_p$ is chosen. Otherwise, an arbitrary v is assigned to N.
+
+Next, \FW{N} and a skeleton \pair{S'}{u'} on this forward-set is computed.The next step is to determine the SCC containing N.\todo{describe how this is done}. The SCC-Partition is then extended by the SCC that the algorithm has just found. \todo{explain SCC partition?}
+
+Once this is done, this procedure is called recursively on two subgraphs. The first recursive call is on the subgraph V\textbackslash FW (its vertices and edges) as well as its spine-set, obtained by removing the SCC from the spine-set \pair{S}{N}. We then recurse again on a second subgraph, FW\textbackslash SCC and its spine-set, which we have computed previously, namely \pair{newS}{newN}, which we found by computing the skeleton of (V, E, N).
 
 \todo[inline]{add small example that shows difference between two algorithms}
-\todo[inline]{rewrite pseudocode for the two algorithms}
+\todo[inline]{add pseudocode for linear}
 
 \end{document}
 %%% Local Variables:
