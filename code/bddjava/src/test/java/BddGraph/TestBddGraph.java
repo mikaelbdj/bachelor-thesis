@@ -110,4 +110,16 @@ public class TestBddGraph {
     }
 
 
+    @Test
+    public void testPickFromAllNodesShouldPickNode00 () {
+        BDD node = bddGraph.pick(bddFactory.one());
+        assertEquals(node00, node);
+    }
+
+    @Test
+    public void testPickFromNodes11And10ShouldPickNode10 () {
+        BDD nodeSet11And10 = node10.or(node11);
+        BDD node = bddGraph.pick(nodeSet11And10);
+        assertEquals(node10, node);
+    }
 }

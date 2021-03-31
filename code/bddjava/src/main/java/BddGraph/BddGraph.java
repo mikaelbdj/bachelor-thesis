@@ -30,20 +30,27 @@ public class BddGraph {
 
     /**
      * Pick a node from the given set of nodes
+     * More specifically finds one assignment of variables (in the context of this BddGraph) that satisfies the given BDD
      * @param noteSet some set of nodes
      * @return a node from the set of nodes
      */
-    public static BDD pick(BDD noteSet) {
-        return noteSet.satOne();
-    }
+    public BDD pick(BDD noteSet) {
+        BDD result = noteSet;
+        for (int i = 0; i < v; i++) {
+            if (result.isZero()) {
+                return bddFactory.zero();
+            }
+            BDD pos = result.and(bddFactory.ithVar(i));
+            BDD neg = result.and(bddFactory.nithVar(i));
+            if (neg.isZero()) {
+                result = pos;
+            }
+            else {
+                result = neg;
+            }
+        }
 
-    /** Pick a node from the graph
-     * @return a node from the graph
-     */
-    public BDD pick() {
-        BDD someEdge = bdd.fullSatOne();
-
-        return restrictAwayToVariables(someEdge);
+        return  result;
     }
 
     private BDD restrictAwayToVariables(BDD nodeSet) {
