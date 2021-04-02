@@ -1,3 +1,5 @@
+import Algorithms.GraphSCCAlgorithm;
+import Algorithms.Lockstep;
 import BddGraph.BddGraph;
 import BddGraph.Edge;
 import net.sf.javabdd.BDD;
@@ -9,24 +11,13 @@ public class Main {
 
 
     public static void main(String[] args) {
-
-
         List<Edge> edges = new ArrayList<>();
         edges.add(new Edge(0, 2));
         edges.add(new Edge(2, 1));
         edges.add(new Edge(1, 0));
         edges.add(new Edge(2, 3));
-        edges.add(new Edge(2, 0));
         BddGraph graph = new BddGraph(edges, 4);
-
-        BDD node0 = graph.getBddFactory().nithVar(0).and(graph.getBddFactory().nithVar(1));
-        BDD node1 = graph.getBddFactory().ithVar(0).and(graph.getBddFactory().nithVar(1));
-        BDD node2 = graph.getBddFactory().nithVar(0).and(graph.getBddFactory().ithVar(1));
-
-        BDD node1And2Set = node1.or(node2);
-
-        BDD img = graph.img(node1And2Set);
-        img.printSet();
-
+        GraphSCCAlgorithm algorithm = new Lockstep();
+        System.out.println(algorithm.run(graph));
     }
 }

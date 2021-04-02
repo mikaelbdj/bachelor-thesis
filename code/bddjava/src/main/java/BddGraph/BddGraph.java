@@ -4,10 +4,7 @@ import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 import net.sf.javabdd.BDDPairing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /**
@@ -169,5 +166,27 @@ public class BddGraph {
         toNodes = toNodes.replace(pairing);
 
         return fromNodes.or(toNodes);
+    }
+
+    /**
+     * Inefficient method for converting a bdd representing a nodeset into a set of integers
+     * Don't use this for other things than converting node sets after running an algorithm..
+     * @param nodeSet the node set
+     * @return a set of integers
+     */
+    public Set<Integer> nodeSetToIntegerSet(BDD nodeSet) {
+        Set<Integer> result = new HashSet<>();
+
+        for (int j = 0; j < integerBinaryMap.size(); j++) {
+            Binary number = integerBinaryMap.get(j);
+            BDD bddNumber = IntStream.range(0,v)
+                    .mapToObj(i -> number.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
+                    .reduce(bddFactory.one(), BDD::and);
+            if (nodeSet.restrict(bddNumber).isOne()) {
+                result.add(j);
+            }
+        }
+
+        return result;
     }
 }

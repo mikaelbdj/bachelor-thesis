@@ -6,9 +6,9 @@ import net.sf.javabdd.BDD;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Lockstep {
+public class Lockstep implements GraphSCCAlgorithm{
 
-    public static Set<BDD> run(BddGraph bddGraph) {
+    public  Set<BDD> run(BddGraph bddGraph) {
         BDD allNodes = bddGraph.getNodes();
         return lockstep(bddGraph, allNodes);
     }
@@ -31,18 +31,19 @@ public class Lockstep {
             B = B.or(BFront);
         }
 
-        if(FFront.isZero()) {
+        if (FFront.isZero()) {
             converged = F;
+            while (!(BFront.and(F).isZero())) {
+                BFront = bddGraph.preImg(BFront).and(P).and(B.not());
+                B = B.or(BFront);
+            }
         }
-        else {
+        else{
             converged = B;
-        }
-
-        while (!(BFront.and(F).isZero()) && !(FFront.and(B).isZero())) {
-            FFront = bddGraph.img(FFront).and(P).and(F.not());
-            BFront = bddGraph.preImg(BFront).and(P).and(B.not());
-            F = F.or(FFront);
-            B = B.or(BFront);
+            while (!(FFront.and(B).isZero())) {
+                FFront = bddGraph.img(FFront).and(P).and(F.not());
+                F = F.or(FFront);
+            }
         }
 
         C = F.and(B);
