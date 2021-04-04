@@ -54,10 +54,10 @@ public class TestBddGraph {
         BDD expectedEdge4 = node01.and(bddFactory.nithVar(2)).and(bddFactory.nithVar(3));
         BDD expectedEdge5 = node10.and(bddFactory.ithVar(2)).and(bddFactory.ithVar(3));
 
-        assertTrue(bddGraph.getBdd().restrict(expectedEdge1).isOne());
-        assertTrue(bddGraph.getBdd().restrict(expectedEdge2).isOne());
-        assertTrue(bddGraph.getBdd().restrict(expectedEdge4).isOne());
-        assertTrue(bddGraph.getBdd().restrict(expectedEdge5).isOne());
+        assertTrue(bddGraph.getEdges().restrict(expectedEdge1).isOne());
+        assertTrue(bddGraph.getEdges().restrict(expectedEdge2).isOne());
+        assertTrue(bddGraph.getEdges().restrict(expectedEdge4).isOne());
+        assertTrue(bddGraph.getEdges().restrict(expectedEdge5).isOne());
     }
 
     @Test
