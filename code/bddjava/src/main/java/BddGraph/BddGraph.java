@@ -6,6 +6,7 @@ import net.sf.javabdd.BDDPairing;
 
 import java.util.*;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * A Bdd representing a graph - should have some fancy methods like img / preImg
@@ -23,15 +24,14 @@ public class BddGraph {
     public BddGraph(List<Edge> edges, int verticesCount) {
         v = log2(verticesCount);
         initializeIntegerToBinaryMap(verticesCount);
-        this.edges = graphToBDD(edges);
+        this.edges = edgesToBDD(edges);
         nodes = generateNodes();
     }
 
     public BddGraph(List<Queue<Integer>> adjacencyLists) {
         v = log2(adjacencyLists.size());
         initializeIntegerToBinaryMap(adjacencyLists.size());
-
-        edges = null;
+        edges = adjacencyListsToBDD(adjacencyLists);
         nodes = generateNodes();
     }
 
@@ -110,18 +110,35 @@ public class BddGraph {
         return restrictAwayToVariables(preImg);
     }
 
-    public BDD graphToBDD(List<Edge> edges) {
+    private BDD edgesToBDD(List<Edge> edges) {
         bddFactory.extVarNum(2 * v);
 
         return edges
                 .stream()
-                .map(edge -> {
-                    Binary edgeBinary = Binary.edgeToBinary(edge, integerBinaryMap);
-                    return IntStream.range(0, 2 * v)
-                            .mapToObj(i -> edgeBinary.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
-                            .reduce(bddFactory.one(), BDD::and);
+                .map(this::edgeToBDD)
+                .reduce(bddFactory.zero(), BDD::or);
+    }
+
+    private BDD adjacencyListsToBDD(List<Queue<Integer>> adjacencyLists) {
+        bddFactory.extVarNum(2 * v);
+
+        return IntStream.range(0, adjacencyLists.size())
+                .mapToObj(i -> {
+                    Queue<Integer> adjacencyList = adjacencyLists.get(i);
+                    return adjacencyList
+                            .stream()
+                            .map(j -> new Edge(i,j))
+                            .map(this::edgeToBDD)
+                            .reduce(bddFactory.zero(), BDD::or);
                 })
                 .reduce(bddFactory.zero(), BDD::or);
+    }
+
+    private BDD edgeToBDD(Edge edge) {
+        Binary edgeBinary = Binary.edgeToBinary(edge, integerBinaryMap);
+        return IntStream.range(0, 2 * v)
+                .mapToObj(i -> edgeBinary.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
+                .reduce(bddFactory.one(), BDD::and);
     }
 
 

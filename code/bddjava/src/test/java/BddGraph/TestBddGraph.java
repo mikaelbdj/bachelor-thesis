@@ -5,8 +5,7 @@ import net.sf.javabdd.BDDFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +47,45 @@ public class TestBddGraph {
     }
 
     @Test
-    public void testBddGraphGetsCreatedCorrectly() {
+    public void testBddGraphGetsCreatedCorrectlyFromEdgeList() {
+        BDD expectedEdge1 = node00.and(bddFactory.ithVar(2)).and(bddFactory.nithVar(3));
+        BDD expectedEdge2 = node10.and(bddFactory.nithVar(2)).and(bddFactory.nithVar(3));
+        BDD expectedEdge4 = node01.and(bddFactory.nithVar(2)).and(bddFactory.nithVar(3));
+        BDD expectedEdge5 = node10.and(bddFactory.ithVar(2)).and(bddFactory.ithVar(3));
+
+        assertTrue(bddGraph.getEdges().restrict(expectedEdge1).isOne());
+        assertTrue(bddGraph.getEdges().restrict(expectedEdge2).isOne());
+        assertTrue(bddGraph.getEdges().restrict(expectedEdge4).isOne());
+        assertTrue(bddGraph.getEdges().restrict(expectedEdge5).isOne());
+    }
+
+    @Test
+    public void testBddGraphGetsCreatedCorrectlyFromAdjacencyLists() {
+        List<Queue<Integer>> adjacencyLists = new ArrayList<>();
+        Queue<Integer> adjacencyList0 = new LinkedList<>();
+        adjacencyList0.add(2);
+        Queue<Integer> adjacencyList1 = new LinkedList<>();
+        adjacencyList1.add(0);
+        Queue<Integer> adjacencyList2 = new LinkedList<>();
+        adjacencyList2.add(3);
+        adjacencyList2.add(0);
+        Queue<Integer> adjacencyList3 = new LinkedList<>();
+
+        adjacencyLists.add(adjacencyList0);
+        adjacencyLists.add(adjacencyList1);
+        adjacencyLists.add(adjacencyList2);
+        adjacencyLists.add(adjacencyList3);
+
+        bddGraph = new BddGraph(adjacencyLists);
+
+        bddFactory = bddGraph.getBddFactory();
+
+        node00 = bddFactory.nithVar(0).and(bddFactory.nithVar(1));
+        node01 = bddFactory.nithVar(0).and(bddFactory.ithVar(1));
+        node10 = bddFactory.ithVar(0).and(bddFactory.nithVar(1));
+        node11 = bddFactory.ithVar(0).and(bddFactory.ithVar(1));
+
+
         BDD expectedEdge1 = node00.and(bddFactory.ithVar(2)).and(bddFactory.nithVar(3));
         BDD expectedEdge2 = node10.and(bddFactory.nithVar(2)).and(bddFactory.nithVar(3));
         BDD expectedEdge4 = node01.and(bddFactory.nithVar(2)).and(bddFactory.nithVar(3));
