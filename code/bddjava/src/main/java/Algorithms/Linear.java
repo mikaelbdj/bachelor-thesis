@@ -10,17 +10,20 @@ public class Linear implements GraphSCCAlgorithm{
     @Override
     public Set<BDD> run(BddGraph graph) {
         BDD allNodes = graph.getNodes();
-        return linear(graph, allNodes);
+        return linear(graph, N, S);
     }
 
-    private static Set<BDD> linear(BddGraph graph) { // todo: add spineset as ??
+    private static Set<BDD> linear(BddGraph graph, BDD N, BDD S) { // todo: add spineset as ??
         BDD V = graph.getNodes();
-        BDD E = graph.getEdges()
+        BDD E = graph.getEdges();
         if (graph.getNodes().isZero())
             return new HashSet<>();
         //todo: if S=\empty
         BDD v = graph.pick(V);
-        BDD N, SCC, FW, C = v;
+        N= v;
+        BDD SCC= v ;
+        BDD FW = v;
+        BDD C = v;
 
         //todo: implement skelForward() and fix FW
 
@@ -33,12 +36,8 @@ public class Linear implements GraphSCCAlgorithm{
 
 
     }
-    //A' = {x ∈ U : x ∉ A}.
-    public BDD complement(BDD U, BDD A) {
-        return U; //todo
-    }
-    //A – B = {x ∈ U : x ∈ A and  x ∉ B}= A ∩ B
-    public BDD diff(BDD U, BDD A, BDD B) {
-        return A.andWith(complement(U, B));
+
+    public static BDD diff(BDD A, BDD B) {
+        return A.and(B.not());
     }
 }
