@@ -10,6 +10,8 @@ public class Linear implements GraphSCCAlgorithm{
     @Override
     public Set<BDD> run(BddGraph graph) {
         BDD allNodes = graph.getNodes();
+        BDD N = allNodes;
+        BDD S = allNodes;
         return linear(graph, N, S);
     }
 
@@ -34,7 +36,7 @@ public class Linear implements GraphSCCAlgorithm{
 
         BDD V_ = diff(V, FW);
 
-
+        return new HashSet<>();
     }
 
     public static BDD diff(BDD A, BDD B) {
