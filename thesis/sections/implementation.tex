@@ -1,0 +1,71 @@
+\documentclass[../master/master.tex]{subfiles}
+\begin{document}
+\subsection{The BddGraph framework}
+
+
+\begin{center}
+\begin{tikzpicture}
+\umlemptypackage[x=3]{javabdd}
+\begin{umlpackage}{bddgraph}
+\umlclass[x=4, below = 1cm of javabdd.south east]{BddGraph}{
+  -- bddFactory : BDDFactory \\
+  -- integerBinaryMap : Map<Integer,Binary>\\
+  -- nodes : BDD\\
+  -- edges : BDD\\
+  -- v : int
+}{
+\hspace{1em}«Create»\\ 
++ BddGraph(edges : List<Edge>, verticesCount : int) : BddGraph \\
++ BddGraph(adjacencyLists : List<Queue<Integer>>) : BddGraph 
+\vspace{0.3em} \\ 
++ getEdges() : BDD \\
++ getNodes() : BDD \\
++ img(nodeSet : BDD) : BDD \\
++ preImg(nodeSet : BDD) : BDD \\
++ pick(nodeSet : BDD) : BDD
+}
+\umlclass[below left= 0.5cm of BddGraph.south]{Edge}{
+-- from : int\\
+-- to : int
+}
+{
+\hspace{1em}«Create»\\ 
++ Edge(from : int, to : int) : Edge \vspace{0.3em} \\ 
++ getFrom() : int\\
++ getTo() : int
+}
+\umlclass[below right= 0.5cm of BddGraph.south]{Binary}{
+-- bools : List<Boolean>
+}
+{
+\hspace{1em}«Create»\\ 
++ Binary(bools : List<Boolean>) : Binary \vspace{0.3em} \\ 
++ getIth(i : int) : Boolean
+}
+\end{umlpackage}
+\begin{umlpackage}{algorithms}
+\umlinterface[below = 1.5cm of Edge.south]{GraphSCCAlgorithm}{}{
+run(graph : BddGraph) : Set<BDD> 
+}
+\umlclass[below left= 0.5cm of GraphSCCAlgorithm.south]{Lockstep}{}{}
+\umlclass[below right= 0.5cm of GraphSCCAlgorithm.south]{Linear}{}{}
+
+\end{umlpackage}
+
+\umluniassoc[geometry=--]{BddGraph}{Edge}
+\umluniassoc[geometry=--]{BddGraph}{Binary}
+\umlHVHaggreg[arm1=-5cm, thick]{GraphSCCAlgorithm}{BddGraph}
+\umlimpl[geometry=--]{Lockstep}{GraphSCCAlgorithm}
+\umlimpl[geometry=--]{Linear}{GraphSCCAlgorithm}
+\umlimport[geometry=|-, thick, name=import2]{bddgraph}{javabdd}
+\umlimport[geometry=-|, thick, name=import1]{algorithms}{bddgraph}
+\umlnote [above right= 1cm of import1-1.base east, geometry=|-] {import1-1}{imports package}
+\umlnote [above right= 1cm of import2-1.base east, geometry=|-] {import2-1}{imports package}
+
+
+
+
+\end{tikzpicture}
+\end{center}
+
+\end{document}
