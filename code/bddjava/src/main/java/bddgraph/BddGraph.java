@@ -1,4 +1,4 @@
-package BddGraph;
+package bddgraph;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
@@ -6,7 +6,6 @@ import net.sf.javabdd.BDDPairing;
 
 import java.util.*;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * A Bdd representing a graph - should have some fancy methods like img / preImg
@@ -170,7 +169,7 @@ public class BddGraph {
         return edges;
     }
 
-    public BDDFactory getBddFactory() {
+    protected BDDFactory getBddFactory() {
         return bddFactory;
     }
 

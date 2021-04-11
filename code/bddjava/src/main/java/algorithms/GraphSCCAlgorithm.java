@@ -1,6 +1,6 @@
-package Algorithms;
+package algorithms;
 
-import BddGraph.BddGraph;
+import bddgraph.BddGraph;
 import net.sf.javabdd.BDD;
 
 import java.util.Set;

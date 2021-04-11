@@ -1,4 +1,4 @@
-package BddGraph;
+package bddgraph;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;

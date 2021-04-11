@@ -1,8 +1,7 @@
-import Algorithms.GraphSCCAlgorithm;
-import Algorithms.Lockstep;
-import BddGraph.BddGraph;
-import BddGraph.Edge;
-import net.sf.javabdd.BDD;
+import algorithms.GraphSCCAlgorithm;
+import algorithms.Lockstep;
+import bddgraph.BddGraph;
+import bddgraph.Edge;
 
 import java.util.ArrayList;
 import java.util.List;
