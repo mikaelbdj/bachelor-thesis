@@ -11,8 +11,8 @@ public class Linear implements GraphSCCAlgorithm{
     @Override
     public Set<BDD> run(BddGraph graph) {
         BDD allNodes = graph.getNodes();
-        Skeleton sn = skelForward(graph, allNodes); //todo
-        return linear(graph, sn);
+        FWSkel fwSkel = skelForward(graph, allNodes);
+        return linear(graph, fwSkel.getSkel());
     }
 
     private static Set<BDD> linear(BddGraph graph, Skeleton sn) {
@@ -27,9 +27,9 @@ public class Linear implements GraphSCCAlgorithm{
         if (S.isZero())
             N = graph.pick(V);
 
-        BDD FW = N; //todo
-
-        Skeleton newSN = skelForward(graph, FW);
+        FWSkel newFWskel = skelForward(graph, N);
+        BDD FW = newFWskel.getFW();
+        Skeleton newSN = newFWskel.getSkel();
         BDD newS = newSN.getS();
         BDD newN = newSN.getN();
 
@@ -64,11 +64,10 @@ public class Linear implements GraphSCCAlgorithm{
         return SCCset1;
     }
 
-    //todo: implement skelForward()
-    private static Skeleton skelForward(BddGraph graph, BDD bdd) {
+    private static FWSkel skelForward(BddGraph graph, BDD bdd) {
         BDD L = bdd;
         Stack<BDD> stack = new Stack<>();
-        BDD FW = bdd; //todo empty bdd
+        BDD FW = graph.getBddFactory().zero();
         // forward set
         while (!L.isZero()) {
             stack.push(L);
@@ -85,7 +84,7 @@ public class Linear implements GraphSCCAlgorithm{
             S_.orWith(graph.pick(graph.preImg(S_).and(L)));
         }
 
-        return new Skeleton(S_, N_);
+        return new FWSkel(FW, new Skeleton(S_, N_));
     }
 
     private static BDD diff(BDD A, BDD B) {

@@ -169,7 +169,7 @@ public class BddGraph {
         return edges;
     }
 
-    protected BDDFactory getBddFactory() {
+    public BDDFactory getBddFactory() {
         return bddFactory;
     }
 
