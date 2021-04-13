@@ -1,7 +1,7 @@
-package Algorithms;
+package algorithms;
 
-import BddGraph.BddGraph;
-import BddGraph.Edge;
+import bddgraph.BddGraph;
+import bddgraph.Edge;
 import net.sf.javabdd.BDD;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

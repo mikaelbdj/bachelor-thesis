@@ -1,4 +1,4 @@
-package BddGraph;
+package bddgraph;
 
 
 import java.util.ArrayList;
@@ -28,16 +28,9 @@ public class Binary {
         this.bools = IntStream.range(0, v).mapToObj(i -> false).collect(Collectors.toList());
     }
 
-    public List<Boolean> getRaw() {
-        return bools;
-    }
 
     public boolean getIth(int i) {
         return bools.get(i);
-    }
-
-    public void setIth(int i, boolean value) {
-        bools.set(i, value);
     }
 
     /**
@@ -46,9 +39,9 @@ public class Binary {
      * @param other binary
      * @return two Binaries appended into a new Binary object
      */
-    public Binary append(Binary other) {
+    private Binary append(Binary other) {
         List<Boolean> copy = new ArrayList<>(List.copyOf(bools));
-        copy.addAll(other.getRaw());
+        copy.addAll(bools);
         return new Binary(copy);
     }
 
