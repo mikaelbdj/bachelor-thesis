@@ -33,10 +33,10 @@ public class Linear implements GraphSCCAlgorithm{
         BDD newS = newSN.getS();
         BDD newN = newSN.getN();
 
-        BDD SCC = N ;
+        BDD SCC = graph.getBddFactory().zero();
 
         while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
-            SCC.orWith(graph.preImg(SCC).and(FW));
+            SCC = SCC.or(graph.preImg(SCC).and(FW));
         }
         Set<BDD> C = new HashSet<>();
         C.add(SCC);
@@ -64,24 +64,25 @@ public class Linear implements GraphSCCAlgorithm{
         return SCCset1;
     }
 
-    private static FWSkel skelForward(BddGraph graph, BDD bdd) {
-        BDD L = bdd;
+    private static FWSkel skelForward(BddGraph graph, BDD N) {
+        BDD L = N;
         Stack<BDD> stack = new Stack<>();
         BDD FW = graph.getBddFactory().zero();
         // forward set
         while (!L.isZero()) {
             stack.push(L);
-            FW.orWith(L);
+            FW = FW.or(L);
             L = diff(graph.img(L), FW);
         }
 
         //skeleton of forward set
+
         L = stack.pop();
         BDD N_ = graph.pick(L);
         BDD S_ = N_;
         while (!stack.empty()) {
             L = stack.pop();
-            S_.orWith(graph.pick(graph.preImg(S_).and(L)));
+            S_ = S_.or(graph.pick(graph.preImg(S_).and(L)));
         }
 
         return new FWSkel(FW, new Skeleton(S_, N_));

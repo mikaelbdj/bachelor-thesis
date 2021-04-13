@@ -159,4 +159,10 @@ public class TestBddGraph {
         BDD node = bddGraph.pick(nodeSet11And10);
         assertEquals(node10, node);
     }
+    @Test
+    public void testPickFromEmptyShouldPickZeroNode () {
+        BDD zero = bddFactory.zero();
+        BDD node = bddGraph.pick(zero);
+        assertEquals(zero, node);
+    }
 }
