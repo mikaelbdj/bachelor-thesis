@@ -5,21 +5,21 @@ import net.sf.javabdd.BDD;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 public class Linear implements GraphSCCAlgorithm{
     @Override
     public Set<BDD> run(BddGraph graph) {
         BDD allNodes = graph.getNodes();
-        BDD N = allNodes;
-        BDD S = allNodes;
-        return linear(graph, N, S);
+        Skeleton sn = skelForward(graph, allNodes); //todo
+        return linear(graph, sn);
     }
 
-    // todo: make a skeleton object?? to pass to linear and return in skeleton?
-
-    private static Set<BDD> linear(BddGraph graph, BDD N, BDD S) { // todo: add spineset as ??
+    private static Set<BDD> linear(BddGraph graph, Skeleton sn) {
         BDD V = graph.getNodes();
         BDD E = graph.getEdges();
+        BDD S = sn.getS();
+        BDD N = sn.getN();
 
         if (V.isZero())
             return new HashSet<>();
@@ -27,42 +27,65 @@ public class Linear implements GraphSCCAlgorithm{
         if (S.isZero())
             N = graph.pick(V);
 
-        BDD FW = forward(N);
-        BDD newS = skeleton(FW);
-        BDD newN = skeleton(FW);
+        BDD FW = N; //todo
 
-        BDD SCC = N ; //??
+        Skeleton newSN = skelForward(graph, FW);
+        BDD newS = newSN.getS();
+        BDD newN = newSN.getN();
+
+        BDD SCC = N ;
 
         while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
             SCC.orWith(graph.preImg(SCC).and(FW));
         }
-        BDD C = N; //??
-        C.orWith(SCC);
+        Set<BDD> C = new HashSet<>();
+        C.add(SCC);
 
         BDD V_ = diff(V, FW);
-        BDD E_ = E;
+        BDD E_ = E; //todo
         BDD S_ = diff(S, SCC);
         BDD N_ = graph.preImg(SCC.and(S)).and(diff(S, SCC));
         BddGraph graph_ = graph; // todo: placeholder
-        Set<BDD> SCCset1 = linear(graph_, S_, N_);
+
+        Skeleton sn_ = new Skeleton(S_, N_);
+        Set<BDD> SCCset1 = linear(graph_, sn_);
 
         V_ = diff(FW, SCC);
-        E_ = E;
+        E_ = E; //todo
         S_ = diff(newS, SCC);
         N_ = diff(newN, SCC);
         graph_ = graph; // todo: placeholder
-        Set<BDD> SCCset2 = linear(graph_, S_, N_);
+
+        sn_ = new Skeleton(S_, N_);
+        Set<BDD> SCCset2 = linear(graph_, sn_);
 
         SCCset1.addAll(SCCset2);
-        SCCset1.add(C);
+        SCCset1.addAll(C);
         return SCCset1;
     }
+
     //todo: implement skelForward()
-    private static BDD skeleton(BDD bdd) {
-        return bdd;
-    }
-    private static BDD forward(BDD bdd) {
-        return bdd;
+    private static Skeleton skelForward(BddGraph graph, BDD bdd) {
+        BDD L = bdd;
+        Stack<BDD> stack = new Stack<>();
+        BDD FW = bdd; //todo empty bdd
+        // forward set
+        while (!L.isZero()) {
+            stack.push(L);
+            FW.orWith(L);
+            L = diff(graph.img(L), FW);
+        }
+
+        //skeleton of forward set
+        L = stack.pop();
+        BDD N_ = graph.pick(L);
+        BDD S_ = N_;
+        while (!stack.empty()) {
+            L = stack.pop();
+            S_.orWith(graph.pick(graph.preImg(S_).and(L)));
+        }
+
+        return new Skeleton(S_, N_);
     }
 
     private static BDD diff(BDD A, BDD B) {
