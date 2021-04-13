@@ -34,6 +34,18 @@ public class BddGraph {
         nodes = generateNodes();
     }
 
+    private BddGraph(int v, BDD nodes, BDD edges, Map<Integer, Binary> integerBinaryMap) {
+        this.v = v;
+        this.nodes = nodes;
+        this.edges = edges;
+        this.integerBinaryMap = integerBinaryMap;
+
+    }
+
+    public BddGraph newBddGraph(BDD nodes, BDD edges) {
+        return new BddGraph(v, nodes, edges, integerBinaryMap);
+    }
+
     /**
      * Pick a node from the given set of nodes
      * More specifically finds one assignment of variables (in the context of this BddGraph) that satisfies the given BDD

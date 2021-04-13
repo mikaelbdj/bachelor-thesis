@@ -45,7 +45,7 @@ public class Linear implements GraphSCCAlgorithm{
         BDD E_ = E; //todo
         BDD S_ = diff(S, SCC);
         BDD N_ = graph.preImg(SCC.and(S)).and(diff(S, SCC));
-        BddGraph graph_ = graph; // todo: placeholder
+        BddGraph graph_ = graph.newBddGraph(V_, E_);
 
         Skeleton sn_ = new Skeleton(S_, N_);
         Set<BDD> SCCset1 = linear(graph_, sn_);
@@ -54,7 +54,7 @@ public class Linear implements GraphSCCAlgorithm{
         E_ = E; //todo
         S_ = diff(newS, SCC);
         N_ = diff(newN, SCC);
-        graph_ = graph; // todo: placeholder
+        graph_ = graph.newBddGraph(V_, E_);
 
         sn_ = new Skeleton(S_, N_);
         Set<BDD> SCCset2 = linear(graph_, sn_);
