@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class BddGraph {
 
 
-    private final BDDFactory bddFactory = BDDFactory.init(1000, 1000);
+    private BDDFactory bddFactory = BDDFactory.init(1000000, 1000000);
 
     private Map<Integer, Binary> integerBinaryMap; // TODO: make singleton ?
     private final BDD edges;
@@ -34,16 +34,17 @@ public class BddGraph {
         nodes = generateNodes();
     }
 
-    private BddGraph(int v, BDD nodes, BDD edges, Map<Integer, Binary> integerBinaryMap) {
+    private BddGraph(int v, BDD nodes, BDD edges, Map<Integer, Binary> integerBinaryMap, BDDFactory bddFactory) {
         this.v = v;
         this.nodes = nodes;
         this.edges = edges;
         this.integerBinaryMap = integerBinaryMap;
+        this.bddFactory = bddFactory;
 
     }
 
     public BddGraph newBddGraph(BDD nodes, BDD edges) {
-        return new BddGraph(v, nodes, edges, integerBinaryMap);
+        return new BddGraph(v, nodes, edges, integerBinaryMap, bddFactory);
     }
 
     /**

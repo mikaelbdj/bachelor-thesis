@@ -33,7 +33,7 @@ public class Linear implements GraphSCCAlgorithm{
         BDD newS = newSN.getS();
         BDD newN = newSN.getN();
 
-        BDD SCC = graph.getBddFactory().zero();
+        BDD SCC = N;
 
         while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
             SCC = SCC.or(graph.preImg(SCC).and(FW));
