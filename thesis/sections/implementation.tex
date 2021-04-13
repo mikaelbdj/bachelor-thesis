@@ -1,8 +1,13 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
-\subsection{The BddGraph framework}
+\subsection{The JavaBDD library}
+An early decision was made to use the JavaBDD library when implementing the algorithms. \cite{whaley}
+
+\subsection{The bddgraph framework}
+Before going into the implementation of the algorithms themselves, it is necessary to establish a code foundation that allows us to do the following:
 
 
+\begin{figure}[h!]
 \begin{center}
 \begin{tikzpicture}
 \umlemptypackage[x=3]{javabdd}
@@ -47,8 +52,10 @@
 \umlinterface[below = 1.5cm of Edge.south]{GraphSCCAlgorithm}{}{
 run(graph : BddGraph) : Set<BDD> 
 }
-\umlclass[below left= 0.5cm of GraphSCCAlgorithm.south]{Lockstep}{}{}
-\umlclass[below right= 0.5cm of GraphSCCAlgorithm.south]{Linear}{}{}
+
+\umlclass[below left= 0.8cm of GraphSCCAlgorithm.south]{Lockstep}{}{}
+\umlclass[below right= 0.8cm of GraphSCCAlgorithm.south]{Linear}{}{}
+
 
 \end{umlpackage}
 
@@ -62,10 +69,9 @@ run(graph : BddGraph) : Set<BDD>
 \umlnote [above right= 1cm of import1-1.base east, geometry=|-] {import1-1}{imports package}
 \umlnote [above right= 1cm of import2-1.base east, geometry=|-] {import2-1}{imports package}
 
-
-
-
 \end{tikzpicture}
 \end{center}
+\caption{UML-diagram describing the implementation of the bddgraph package and how the algorithms use it}
+\end{figure}
 
 \end{document}
