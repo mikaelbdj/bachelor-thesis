@@ -41,7 +41,7 @@ public class Binary {
      */
     private Binary append(Binary other) {
         List<Boolean> copy = new ArrayList<>(List.copyOf(bools));
-        copy.addAll(bools);
+        copy.addAll(other.bools);
         return new Binary(copy);
     }
 
