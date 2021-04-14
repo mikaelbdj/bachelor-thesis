@@ -1,4 +1,4 @@
-package BddGraph;
+package bddgraph;
 
 /**
  * Simple data structure for edges

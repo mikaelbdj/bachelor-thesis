@@ -1,13 +1,10 @@
-package BddGraph;
+package bddgraph;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 import net.sf.javabdd.BDDPairing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /**
@@ -16,16 +13,38 @@ import java.util.stream.IntStream;
 public class BddGraph {
 
 
-    private final BDDFactory bddFactory = BDDFactory.init(1000, 1000);
+    private BDDFactory bddFactory = BDDFactory.init(1000000, 1000000);
 
     private Map<Integer, Binary> integerBinaryMap; // TODO: make singleton ?
-    private final BDD bdd;
-    private int v;
+    private final BDD edges;
+    private final BDD nodes;
+    private final int v;
 
     public BddGraph(List<Edge> edges, int verticesCount) {
         v = log2(verticesCount);
         initializeIntegerToBinaryMap(verticesCount);
-        bdd = graphToBDD(edges);
+        this.edges = edgesToBDD(edges);
+        nodes = generateNodes();
+    }
+
+    public BddGraph(List<Queue<Integer>> adjacencyLists) {
+        v = log2(adjacencyLists.size());
+        initializeIntegerToBinaryMap(adjacencyLists.size());
+        edges = adjacencyListsToBDD(adjacencyLists);
+        nodes = generateNodes();
+    }
+
+    private BddGraph(int v, BDD nodes, BDD edges, Map<Integer, Binary> integerBinaryMap, BDDFactory bddFactory) {
+        this.v = v;
+        this.nodes = nodes;
+        this.edges = edges;
+        this.integerBinaryMap = integerBinaryMap;
+        this.bddFactory = bddFactory;
+
+    }
+
+    public BddGraph newBddGraph(BDD nodes, BDD edges) {
+        return new BddGraph(v, nodes, edges, integerBinaryMap, bddFactory);
     }
 
     /**
@@ -75,7 +94,7 @@ public class BddGraph {
 
     public BDD img(BDD nodes) {
         //restrict to variables defined in nodes
-        BDD img = bdd.and(nodes);
+        BDD img = edges.and(nodes);
 
         img = restrictAwayFromVariables(img);
 
@@ -98,29 +117,40 @@ public class BddGraph {
 
         BDD replaced = nodes.replace(pairing);
 
-        BDD preImg = bdd.and(replaced);
+        BDD preImg = edges.and(replaced);
 
         return restrictAwayToVariables(preImg);
     }
 
-    //allow BddGraphs to create new BddGraphs from a bdd
-    private BddGraph(BDD bdd) {
-        this.bdd = bdd;
-    }
-
-
-    public BDD graphToBDD(List<Edge> edges) {
+    private BDD edgesToBDD(List<Edge> edges) {
         bddFactory.extVarNum(2 * v);
 
         return edges
                 .stream()
-                .map(edge -> {
-                    Binary edgeBinary = Binary.edgeToBinary(edge, integerBinaryMap);
-                    return IntStream.range(0, 2 * v)
-                            .mapToObj(i -> edgeBinary.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
-                            .reduce(bddFactory.one(), BDD::and);
+                .map(this::edgeToBDD)
+                .reduce(bddFactory.zero(), BDD::or);
+    }
+
+    private BDD adjacencyListsToBDD(List<Queue<Integer>> adjacencyLists) {
+        bddFactory.extVarNum(2 * v);
+
+        return IntStream.range(0, adjacencyLists.size())
+                .mapToObj(i -> {
+                    Queue<Integer> adjacencyList = adjacencyLists.get(i);
+                    return adjacencyList
+                            .stream()
+                            .map(j -> new Edge(i,j))
+                            .map(this::edgeToBDD)
+                            .reduce(bddFactory.zero(), BDD::or);
                 })
                 .reduce(bddFactory.zero(), BDD::or);
+    }
+
+    private BDD edgeToBDD(Edge edge) {
+        Binary edgeBinary = Binary.edgeToBinary(edge, integerBinaryMap);
+        return IntStream.range(0, 2 * v)
+                .mapToObj(i -> edgeBinary.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
+                .reduce(bddFactory.one(), BDD::and);
     }
 
 
@@ -148,26 +178,49 @@ public class BddGraph {
         return (int) Math.ceil(Math.log(N) / Math.log(2));
     }
 
-    public BDD getBdd() {
-        return bdd;
+    public BDD getEdges() {
+        return edges;
     }
 
     public BDDFactory getBddFactory() {
         return bddFactory;
     }
 
-    public BDD getNodes() {
-        BDD fromNodes = restrictAwayToVariables(bdd);
-        BDD toNodes = restrictAwayFromVariables(bdd);
+    private BDD generateNodes() {
+        BDD nodes = bddFactory.zero();
+        for (int j = 0; j < integerBinaryMap.size(); j++) {
+            Binary number = integerBinaryMap.get(j);
+            BDD node = IntStream.range(0,v)
+                    .mapToObj(i -> number.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
+                    .reduce(bddFactory.one(), BDD::and);
+            nodes = nodes.or(node);
+        }
+        return nodes;
+    }
 
-        BDDPairing pairing = bddFactory.makePair();
-        for (int i = 0; i < v; i++) {
-            pairing.set(i+v, i);
+    public BDD getNodes() {
+        return nodes;
+    }
+
+    /**
+     * Inefficient method for converting a bdd representing a nodeset into a set of integers
+     * Don't use this for other things than converting node sets after running an algorithm..
+     * @param nodeSet the node set
+     * @return a set of integers
+     */
+    public Set<Integer> nodeSetToIntegerSet(BDD nodeSet) {
+        Set<Integer> result = new HashSet<>();
+
+        for (int j = 0; j < integerBinaryMap.size(); j++) {
+            Binary number = integerBinaryMap.get(j);
+            BDD bddNumber = IntStream.range(0,v)
+                    .mapToObj(i -> number.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
+                    .reduce(bddFactory.one(), BDD::and);
+            if (nodeSet.restrict(bddNumber).isOne()) {
+                result.add(j);
+            }
         }
 
-        //rename variables, fx. if v = 2, rename 2->0, 3->1
-        toNodes = toNodes.replace(pairing);
-
-        return fromNodes.or(toNodes);
+        return result;
     }
 }
