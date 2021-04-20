@@ -46,7 +46,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLockstepShouldFindCorrectSCCs(){
-        algorithm = new Lockstep();
+        algorithm = new Lockstep(new VerboseLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());
