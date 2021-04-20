@@ -8,14 +8,24 @@ import java.util.Set;
 import java.util.Stack;
 
 public class Linear implements GraphSCCAlgorithm{
-    @Override
-    public Set<BDD> run(BddGraph graph) {
-        BDD allNodes = graph.getNodes();
-        FWSkel fwSkel = skelForward(graph, allNodes);
-        return linear(graph, fwSkel.getSkel());
+
+    private final LoggingStrategy loggingStrategy;
+    public Linear(LoggingStrategy loggingStrategy) {
+        this.loggingStrategy = loggingStrategy;
     }
 
-    private static Set<BDD> linear(BddGraph graph, Skeleton sn) {
+    @Override
+    public Set<BDD> run(BddGraph graph) {
+        loggingStrategy.logStarted("Linear");
+        BDD allNodes = graph.getNodes();
+        FWSkel fwSkel = skelForward(graph, allNodes);
+        Set<BDD> out = linear(graph, fwSkel.getSkel());
+        loggingStrategy.logFinished("Linear");
+
+        return out;
+    }
+
+    private Set<BDD> linear(BddGraph graph, Skeleton sn) {
         BDD V = graph.getNodes();
         BDD E = graph.getEdges();
         BDD S = sn.getS();

@@ -8,12 +8,21 @@ import java.util.Set;
 
 public class LockstepWithTrimming implements GraphSCCAlgorithm {
 
-    public Set<BDD> run(BddGraph bddGraph) {
-        BDD allNodes = bddGraph.getNodes();
-        return lockstep(bddGraph, allNodes);
+    private final LoggingStrategy loggingStrategy;
+    public LockstepWithTrimming(LoggingStrategy loggingStrategy) {
+        this.loggingStrategy = loggingStrategy;
     }
 
-    private static Set<BDD> lockstep(BddGraph bddGraph, BDD P) {
+
+    public Set<BDD> run(BddGraph bddGraph) {
+        loggingStrategy.logStarted("Lockstep with trimming");
+        BDD allNodes = bddGraph.getNodes();
+        Set<BDD> out = lockstep(bddGraph, allNodes);
+        loggingStrategy.logFinished("Lockstep with trimming");
+        return out;
+    }
+
+    private Set<BDD> lockstep(BddGraph bddGraph, BDD P) {
         if (P.isZero()) return new HashSet<>();
 
         BDD F, B, FFront, BFront, C, converged;
@@ -49,6 +58,8 @@ public class LockstepWithTrimming implements GraphSCCAlgorithm {
         }
 
         C = F.and(B);
+        loggingStrategy.logSccFound(C);
+
         Set<BDD> SCCs1 = lockstep(bddGraph, converged.and(C.not()));
         Set<BDD> SCCs2 = lockstep(bddGraph, P.and(converged.not()));
 

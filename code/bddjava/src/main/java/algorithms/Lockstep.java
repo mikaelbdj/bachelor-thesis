@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class Lockstep implements GraphSCCAlgorithm{
 
-    private LoggingStrategy loggingStrategy;
+    private final LoggingStrategy loggingStrategy;
     public Lockstep(LoggingStrategy loggingStrategy) {
         this.loggingStrategy = loggingStrategy;
     }
