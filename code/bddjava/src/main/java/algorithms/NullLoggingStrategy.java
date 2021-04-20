@@ -1,8 +1,10 @@
 package algorithms;
 
+import net.sf.javabdd.BDD;
+
 public class NullLoggingStrategy implements LoggingStrategy {
     @Override
-    public void logSccFound() {
+    public void logSccFound(BDD scc) {
 
     }
 
