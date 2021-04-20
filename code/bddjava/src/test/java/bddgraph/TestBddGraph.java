@@ -165,4 +165,28 @@ public class TestBddGraph {
         BDD node = bddGraph.pick(zero);
         assertEquals(zero, node);
     }
+
+    @Test
+    public void testRestrictOnOneShouldReturnAllEdges () {
+        BDD edges = bddGraph.getEdges();
+        BDD restrictedEdges = bddGraph.restrictEdgesTo(bddFactory.one());
+        assertEquals(edges, restrictedEdges);
+    }
+
+    @Test
+    public void testRestrictOnZeroShouldReturnEmpty () {
+        BDD zero = bddFactory.zero();
+        BDD restrictedEdges = bddGraph.restrictEdgesTo(bddFactory.zero());
+        assertEquals(zero, restrictedEdges);
+    }
+
+    @Test
+    public void testRestrictOn000110ShouldReturnAllEdgesExcept11 () {
+        BDD n000110 = node00.or(node01).or(node10);
+        BDD restrictedEdges = bddGraph.restrictEdgesTo(n000110);
+        BDD expectedEdges = node00.and(bddFactory.ithVar(2)).and(bddFactory.nithVar(3))
+                .or(node10.and(bddFactory.nithVar(2)).and(bddFactory.nithVar(3)))
+                .or(node01.and(bddFactory.nithVar(2)).and(bddFactory.nithVar(3)));
+        assertEquals(expectedEdges, restrictedEdges);
+    }
 }

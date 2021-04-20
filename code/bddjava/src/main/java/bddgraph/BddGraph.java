@@ -223,4 +223,17 @@ public class BddGraph {
 
         return result;
     }
+
+
+    public BDD restrictEdgesTo(BDD nodeSet) {
+        BDDPairing pairing = bddFactory.makePair();
+        for (int i = 0; i < v; i++) {
+            pairing.set(i, i+v);
+        }
+        BDD renamedNodeSet  = nodeSet.replace(pairing);
+
+        BDD restriction = edges.and(nodeSet).and(renamedNodeSet);
+
+        return restriction;
+    }
 }
