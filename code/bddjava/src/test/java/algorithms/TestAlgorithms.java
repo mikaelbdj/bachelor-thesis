@@ -46,7 +46,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLockstepShouldFindCorrectSCCs(){
-        algorithm = new Lockstep(new VerboseLoggingStrategy());
+        algorithm = new Lockstep(new NullLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLockstepWithTrimmingShouldFindCorrectSCCs(){
-        algorithm = new LockstepWithTrimming();
+        algorithm = new LockstepWithTrimming(new NullLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());
@@ -106,7 +106,6 @@ public class TestAlgorithms {
         expectedScc7.add(6);
         expectedScc7.add(10);
 
-        System.out.println(intSccs);
         assertEquals(7, intSccs.size());
         assertTrue(intSccs.contains(expectedScc1));
         assertTrue(intSccs.contains(expectedScc2));
@@ -119,7 +118,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLinearShouldFindCorrectSCCs(){
-        algorithm = new Linear();
+        algorithm = new Linear(new NullLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());
