@@ -1,8 +1,6 @@
-package experiements;
+package experiments;
 
 import algorithms.GraphSCCAlgorithm;
-import algorithms.Lockstep;
-import algorithms.VerboseLoggingStrategy;
 import bddgraph.BddGraph;
 import bddgraph.Edge;
 import net.sf.javabdd.BDD;
