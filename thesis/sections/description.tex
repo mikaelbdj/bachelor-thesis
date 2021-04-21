@@ -13,7 +13,7 @@
 
 This section dsicusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
 
-In this thesis, we are dealing with symbolic algorithms, which manipulate sets of nodes by using symbolic operators. For a directed graph G, with vertices V and edges E and $S\subseteq V$, we can derive the following operators:
+In this thesis, we are dealing with symbolic algorithms for strongly connected component analysis. A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such that $\forall v,w\in C$, there is a path from v to w. Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G, with vertices V and edges E and $S\subseteq V$, we can derive the following operators: 
 \begin{align*}
 \img S &= \set{v' \in V}{\exists v\in S:(v, v')\in E}{|}\\
 \pre S &= \set{v' \in V}{\exists v\in S:(v', v)\in E}{|}
@@ -26,11 +26,11 @@ From these operators, we can derive the notion of forward and backward sets, whi
 \label{bw}\BW{S} &= \mu S.\{v\}\cup \text{preimg}(S)
 \end{align}
 
-A skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices
+The authors \cite{linear} introduce a notion of a skeleton and a spine-set. A skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices
 
-The authors of this algorithm introduce the notion of a spine-set, whih is a symbolic way of ordering sets of nodes. A spine-set is a subset \pair{S}{v} of G, for which it contains a chordless path for the set $S$ ending in $v$.
-\todo{add chordless path definition}
-\todo{add more mathematical definition of spine-sets and skeletons}
+A spine-set in turn is a symbolic way of ordering sets of nodes. A spine-set is a subset \pair{S}{v} of G, for which it contains a chordless path for the set $S$ ending in $v$.
+
+If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the Lockstep algorithm when computing the spine-set, which is a parameter passed to the spine-set. 
 
 \subsection{Lockstep}
 The first algorithm we will be looking at is the Lockstep algorithm proposed by Bloem et al. \cite{lockstep} The Lockstep algorithm performs forward and backward search simultaneously and recurses after removal of the SCC in each iteration.
@@ -135,8 +135,30 @@ Once this is done, this procedure is called recursively on two subgraphs. The fi
     \State \Return SCCs
   \end{algorithmic}
 \end{algorithm}
-\todo{skelForward algorithm}
 
+\begin{algorithm}[H]
+  \caption{SkelForward((V, E), N)}
+  \begin{algorithmic}[1]
+    \Let{$L$}{$N$}
+    \Statex
+    \While{$L\neq \emptyset$}
+    \State push(stack, $L$)
+    \Let{$FW$}{$FW\cup L$}
+    \Let{$L$}{post($L$)$\setminus FW$}
+    \EndWhile
+    \Statex
+    \Let{$L$}{pop(stack)}
+    \State $S' \gets N' \gets pick(L)$
+    \While{stack $\neq\emptyset$}
+    \Let{$L$}{pop(stack)}
+    \Let{$S'$}{$S'\cup\text{pick(pre(}S')\cap L$}
+    \EndWhile
+    \Statex
+    \State \Return $\langle FW, S', N' \rangle$
+  \end{algorithmic}
+\end{algorithm}
+
+\todo{make sure that the variable names are consistent}
 \end{document}
 %%% Local Variables:
 %%% mode: latex
