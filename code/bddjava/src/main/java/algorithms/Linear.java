@@ -45,6 +45,7 @@ public class Linear implements GraphSCCAlgorithm{
 
         BDD SCC = N;
 
+        loggingStrategy.logSccFound(SCC);
         while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
             SCC = SCC.or(graph.preImg(SCC).and(FW));
         }
