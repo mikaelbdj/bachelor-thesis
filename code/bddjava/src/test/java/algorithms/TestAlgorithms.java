@@ -41,7 +41,7 @@ public class TestAlgorithms {
         edges.add(new Edge(11,6));
         edges.add(new Edge(11,3));
 
-        bddGraph = new BddGraph(edges, 12);
+        bddGraph = new BddGraph(edges, 13);
     }
 
     @Test
@@ -69,8 +69,10 @@ public class TestAlgorithms {
         expectedScc7.add(5);
         expectedScc7.add(6);
         expectedScc7.add(10);
+        Set<Integer> expectedScc8 = new HashSet<>();
+        expectedScc8.add(12);
 
-        assertEquals(7, intSccs.size());
+        assertEquals(8, intSccs.size());
         assertTrue(intSccs.contains(expectedScc1));
         assertTrue(intSccs.contains(expectedScc2));
         assertTrue(intSccs.contains(expectedScc3));
@@ -78,6 +80,7 @@ public class TestAlgorithms {
         assertTrue(intSccs.contains(expectedScc5));
         assertTrue(intSccs.contains(expectedScc6));
         assertTrue(intSccs.contains(expectedScc7));
+        assertTrue(intSccs.contains(expectedScc8));
     }
 
     @Test
@@ -105,8 +108,10 @@ public class TestAlgorithms {
         expectedScc7.add(5);
         expectedScc7.add(6);
         expectedScc7.add(10);
+        Set<Integer> expectedScc8 = new HashSet<>();
+        expectedScc8.add(12);
 
-        assertEquals(7, intSccs.size());
+        assertEquals(8, intSccs.size());
         assertTrue(intSccs.contains(expectedScc1));
         assertTrue(intSccs.contains(expectedScc2));
         assertTrue(intSccs.contains(expectedScc3));
@@ -114,6 +119,7 @@ public class TestAlgorithms {
         assertTrue(intSccs.contains(expectedScc5));
         assertTrue(intSccs.contains(expectedScc6));
         assertTrue(intSccs.contains(expectedScc7));
+        assertTrue(intSccs.contains(expectedScc8));
     }
 
     @Test
@@ -141,8 +147,10 @@ public class TestAlgorithms {
         expectedScc7.add(5);
         expectedScc7.add(6);
         expectedScc7.add(10);
+        Set<Integer> expectedScc8 = new HashSet<>();
+        expectedScc8.add(12);
 
-        assertEquals(7, intSccs.size());
+        assertEquals(8, intSccs.size());
         assertTrue(intSccs.contains(expectedScc1));
         assertTrue(intSccs.contains(expectedScc2));
         assertTrue(intSccs.contains(expectedScc3));
@@ -150,6 +158,7 @@ public class TestAlgorithms {
         assertTrue(intSccs.contains(expectedScc5));
         assertTrue(intSccs.contains(expectedScc6));
         assertTrue(intSccs.contains(expectedScc7));
+        assertTrue(intSccs.contains(expectedScc8));
     }
 
 }
