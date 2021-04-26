@@ -33,24 +33,27 @@ public class Lockstep implements GraphSCCAlgorithm{
         BFront = v;
 
         while (!FFront.isZero() && !BFront.isZero()) {
-            FFront = bddGraph.img(FFront).and(P).and(F.not());
-            BFront = bddGraph.preImg(BFront).and(P).and(B.not());
+            FFront = extendFFrontier(bddGraph, P, FFront, F);
+            BFront = extendBFrontier(bddGraph, P, BFront, B);
             F = F.or(FFront);
             B = B.or(BFront);
+            System.out.println(bddGraph.getBddFactory().getNodeNum());
         }
 
         if (FFront.isZero()) {
             converged = F;
             while (!(BFront.and(F).isZero())) {
-                BFront = bddGraph.preImg(BFront).and(P).and(B.not());
+                BFront = extendBFrontier(bddGraph, P, BFront, B);
                 B = B.or(BFront);
+                System.out.println(bddGraph.getBddFactory().getNodeNum());
             }
         }
         else{
             converged = B;
             while (!(FFront.and(B).isZero())) {
-                FFront = bddGraph.img(FFront).and(P).and(F.not());
+                FFront = extendFFrontier(bddGraph, P, FFront, F);
                 F = F.or(FFront);
+                System.out.println(bddGraph.getBddFactory().getNodeNum());
             }
         }
 
@@ -63,5 +66,23 @@ public class Lockstep implements GraphSCCAlgorithm{
         SCCs1.addAll(SCCs2);
         SCCs1.add(C);
         return SCCs1;
+    }
+
+    private static BDD extendFFrontier(BddGraph bddGraph, BDD P, BDD frontier, BDD current) {
+        BDD frontierImg = bddGraph.img(frontier);
+        BDD frontierImgAndP = frontierImg.and(P);
+        BDD newFrontier = frontierImgAndP.and(current.not());
+        frontierImg.free();
+        frontierImgAndP.free();
+        return newFrontier;
+    }
+
+    private static BDD extendBFrontier(BddGraph bddGraph, BDD P, BDD frontier, BDD current) {
+        BDD frontierImg = bddGraph.preImg(frontier);
+        BDD frontierImgAndP = frontierImg.and(P);
+        BDD newFrontier = frontierImgAndP.and(current.not());
+        frontierImg.free();
+        frontierImgAndP.free();
+        return newFrontier;
     }
 }
