@@ -21,9 +21,9 @@ public class BddGraph {
     private final int v;
 
     public BddGraph(List<Edge> edges, int verticesCount) {
-        bddFactory = BDDFactory.init(20000000, 1000000);
+        bddFactory = BDDFactory.init(20000000, 10000000);
         bddFactory.autoReorder(BDDFactory.REORDER_WIN2);
-        bddFactory.reorderVerbose(2);
+        bddFactory.reorderVerbose(0);
         v = log2(verticesCount);
         initializeIntegerToBinaryMap(verticesCount);
         this.edges = edgesToBDD(edges);
@@ -31,8 +31,9 @@ public class BddGraph {
     }
 
     public BddGraph(List<Queue<Integer>> adjacencyLists) {
-        bddFactory = BDDFactory.init(10000000, 1000000);
+        bddFactory = BDDFactory.init(20000000, 10000000);
         bddFactory.autoReorder(BDDFactory.REORDER_WIN2);
+        bddFactory.reorderVerbose(0);
         v = log2(adjacencyLists.size());
         initializeIntegerToBinaryMap(adjacencyLists.size());
         edges = adjacencyListsToBDD(adjacencyLists);
@@ -109,7 +110,6 @@ public class BddGraph {
         }
 
         //rename variables, fx. if v = 2, rename 2->0, 3->1
-        bddFactory.reorder(BDDFactory.REORDER_WIN2);
         return img.replace(pairing);
     }
 
@@ -124,7 +124,6 @@ public class BddGraph {
         BDD replaced = nodes.replace(pairing);
 
         BDD preImg = edges.and(replaced);
-        bddFactory.reorder(BDDFactory.REORDER_WIN2);
         return restrictAwayToVariables(preImg);
     }
 
