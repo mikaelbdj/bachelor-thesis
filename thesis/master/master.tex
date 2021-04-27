@@ -67,12 +67,18 @@
 \AtBeginBibliography{\toggletrue{blx@useprefix}}
 \makeatother
 
+% Custom commands
+\newcommand{\FW}[2][G]{\ensuremath{FW_{#1}(#2)}}
+\newcommand{\BW}[2][G]{\ensuremath{BW_{#1}(#2)}}
+\newcommand{\pair}[2]{\ensuremath{\langle #1, #2\rangle}}
+\newcommand{\img}[2][G]{\ensuremath{\text{img}_{#1}(#2)}}
+\newcommand{\pre}[2][G]{\ensuremath{\text{preimg}_{#1}(#2)}}
+\newcommand*\Let[2]{\State #1 $\gets$ #2}
 
 % ---------------------------------------------------------------------------- %
 % Authors
 % ---------------------------------------------------------------------------- %
 \author{Magdalena Kalin-Czerska}
-\author{Jonathan Eilath}
 \author{Mikael Bisgaard Dahlsen-Jensen}
 \affil{Aarhus University}
 
@@ -92,6 +98,8 @@
 \subfile{\sectionpath/abstract}
 \section{Introduction}
 \subfile{\sectionpath/introduction}
+\section{Preliminaries}
+\subfile{\sectionpath/preliminaries}
 \section{Description of  Lockstep and Linear-time algorithms}
 \subfile{\sectionpath/description}
 \section{Implementing the algorithms}

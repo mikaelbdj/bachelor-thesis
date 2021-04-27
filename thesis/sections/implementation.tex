@@ -87,14 +87,16 @@ run(graph : BddGraph) : Set<BDD>
 \end{figure}
 
 \subsection{Lockstep}
-With the framework described above in place, implementation of the lockstep algorithm was fairly simple and without much hassle. The code itself can be seen in \todo{(refer to appendix)}
+With the framework described above in place, implementation of the lockstep algorithm was fairly simple and without much hassle. The code itself can be seen in \todo{(refer to appendix or github repo?)}
 
-Slight optimizations has been made from the version described in the pseudocode in \cite{lockstep}. In their pseudocode (page 45) lines 29-34, they only really extend one frontier while the other one is empty. Instead of calling img/preimg on empty sets, we simply just check which set has converged and only extend the other frontier. Other than this small change, everything is done according to the pseudocode provided. 
+Slight optimizations have been made from the version described in the pseudocode in \cite{lockstep}. In their pseudocode (page 45) lines 29-34, they only really extend one frontier while the other one is empty. Instead of calling img/preimg on empty sets, we simply just check which set has converged and only extend the other frontier. Other than this small change, everything is done according to the pseudocode provided. 
 
 \subsubsection*{Trimming}
-One thing mentioned in \cite{lockstep} is that the algorithm can be slightly optimized even more by trimming the set $P$. Trimming refers to removing singleton SCCs; this is done in every call to lockstep. These are of course added to the set of SCCs before being removed. We have also implemented this variant as we believe it would be interesting to compare it to the original while testing. 
+When describing the lockstep algorithm\cite{lockstep}, the authors mention that the algorithm can be slightly optimized by trimming the set $P$. Trimming refers to removing singleton SCCs, which is done in every call to lockstep. These are of course added to the set of SCCs before being removed. We have also implemented this variant as we believe it would be interesting to compare it to the original while testing. 
 
 \subsection{Linear}
+Just as with implementing the Lockstep algorithm, it was quite straightforward to implement the linear-time algorithm given the framework described. Most of the code was implemented from the pseudocode. \todo{ref pseudocode figure?} However, we also needed to implement a set difference method, which was not part of out BBDD package. It was then used both in the algorithm, as well as the skelForward helper method. 
+
 
 \end{document}
 %%% Local Variables:

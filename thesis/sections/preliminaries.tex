@@ -1,0 +1,32 @@
+\documentclass[../master/master.tex]{subfiles}
+\begin{document}
+\todo[inline]{include symbolic operators here?}
+
+This section dsicusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
+
+In this thesis, we are dealing with symbolic algorithms for strongly connected component analysis. A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such that $\forall v,w\in C$, there is a path from $v$ to $w$. Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G and $S\subseteq V$, we can derive the following operators: 
+\begin{align*}
+\img S &= \set{v' \in V}{\exists v\in S:(v, v')\in E}{|}\\
+\pre S &= \set{v' \in V}{\exists v\in S:(v', v)\in E}{|}
+\end{align*}
+
+The image and preimage operations will be refered to as ``steps'', and the complexity of the algorithms will be measured in terms of these steps.
+From these operators, we can derive the notion of forward and backward sets, which will be key elements in the algorithms.
+
+A forward set, \FW{S}, is the set of nodes that can be reached from $S$. Similarily, a backward set, \BW{S}, is a set if all the nodes that reach $S$. These can be expressed formally as the least fixpoint of respectively $\lambda S.\{v\}\cup \text{img}(S)$ and $\lambda S.\{v\}\cup \text{preimg}(S)$. Using mu-calculus \cite{clarke_peled_grumberg_1999} this can be expressed as 
+\begin{align}\label{fw}
+\FW{S} &= \mu S.\{v\}\cup \text{img}(S)\\
+\label{bw}\BW{S} &= \mu S.\{v\}\cup \text{preimg}(S)
+\end{align}
+
+The authors \cite{linear} introduce a notion of a skeleton and a spine-set. A skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
+
+A spine-set in turn is a symbolic way of ordering sets of nodes. A spine-set is a subset \pair{S}{v} of G, for which it contains a chordless path for the set $S$ ending in $v$.
+
+If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set, which is part of the input. 
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../master/master"
+%%% End:
