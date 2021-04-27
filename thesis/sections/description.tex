@@ -55,17 +55,14 @@ We recursively call Lockstep on the set of vertices in $P\setminus Converged$. H
   \end{algorithmic}
 \end{algorithm}
 
-\subsection{Linear time algorithm}
-The second algorithm we will be comparing is the linear-time algorithm \cite{linear} introduced by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$ and outputs vertex sets of SCC subgraphs.
-\todo[inline]{add more intuitive description first, before going in depth}
+\subsection{Linear-time algorithm}
+The second algorithm we will be comparing is the linear-time algorithm \cite{linear} introduced by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$. In the paper, the algorithm outputs vertex sets of SCC subgraphs, however here we change this to return a set of SCCs, similarly to the Lockstep algorithm.
 
-The first thing the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\emptyset$, in which case the algorithm terminates. If $S\neq\emptyset$ and $N={v_p}$, then $v_p$ is chosen. Otherwise, an arbitrary v is assigned to N.
+The first thing the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\emptyset$, in which case the algorithm terminates. If $S\neq\emptyset$ and $N={v_p}$, then $v_p$ is chosen. Otherwise, an arbitrary $v$ is assigned to N.
 
-Next, \FW{N} and a skeleton \pair{S'}{u'} on this forward-set is computed.The next step is to determine the SCC containing N.\todo{describe how this is done} The SCC-Partition is then extended by the SCC that the algorithm has just found. \todo{explain SCC partition?}
+Next, \FW{N} and a skeleton \pair{S'}{N'} on this forward-set is computed. The next step is to determine the SCC containing N.\todo{describe how this is done} The SCCs, which is our set of SCCs, is then extended by the SCC that the algorithm has just found.
 
-Once this is done, this procedure is called recursively on two subgraphs. The first recursive call is on the subgraph V\textbackslash FW (its vertices and edges) as well as its spine-set, obtained by removing the SCC from the spine-set \pair{S}{N}. We then recurse again on a second subgraph, FW\textbackslash SCC and its spine-set, which we have computed previously, namely \pair{newS}{newN}, which we found by computing the skeleton of (V, E, N).
-
-\todo{add small example that shows difference between two algorithms}
+Once this is done, this procedure is called recursively on two subgraphs. The first recursive call is on the subgraph $V\setminus FW$ (its vertices and edges) as well as its spine-set, obtained by removing the SCC from the spine-set \pair{S}{N}. We then recurse again on a second subgraph, $FW\setminus SCC$ and its spine-set, \pair{newS}{newN}, which we found by computing the skeleton of $(V, E, N)$.
 
 \begin{algorithm}[h!]
   \caption{Linear((V, E), \pair{S}{N})}
@@ -104,6 +101,8 @@ Once this is done, this procedure is called recursively on two subgraphs. The fi
   \end{algorithmic}
 \end{algorithm}
 
+The skelForward algorithm is a helper method, which computes the forward set of the given graph and the skeleton of this set. This equivalently gives us the spine-set of the given graph.
+
 \begin{algorithm}[H]
   \caption{SkelForward((V, E), N)}
   \begin{algorithmic}[1]
@@ -126,6 +125,8 @@ Once this is done, this procedure is called recursively on two subgraphs. The fi
   \end{algorithmic}
 \end{algorithm}
 
+
+\todo{add small example that shows difference between two algorithms}
 \todo{make sure that the variable names are consistent}
 \end{document}
 %%% Local Variables:
