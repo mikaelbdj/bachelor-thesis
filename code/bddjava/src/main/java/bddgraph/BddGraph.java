@@ -20,8 +20,10 @@ public class BddGraph {
     private final BDD nodes;
     private final int v;
 
-    public BddGraph(List<Edge> edges, int verticesCount) {
-        bddFactory = BDDFactory.init(20000000, 10000000);
+
+
+    public BddGraph(List<Edge> edges, int verticesCount, int nodeNum, int cacheSize) {
+        bddFactory = BDDFactory.init(nodeNum, cacheSize);
         bddFactory.autoReorder(BDDFactory.REORDER_WIN2);
         bddFactory.reorderVerbose(0);
         v = log2(verticesCount);
@@ -30,8 +32,8 @@ public class BddGraph {
         nodes = generateNodes();
     }
 
-    public BddGraph(List<Queue<Integer>> adjacencyLists) {
-        bddFactory = BDDFactory.init(20000000, 10000000);
+    public BddGraph(List<Queue<Integer>> adjacencyLists, int nodeNum, int cacheSize) {
+        bddFactory = BDDFactory.init(nodeNum, cacheSize);
         bddFactory.autoReorder(BDDFactory.REORDER_WIN2);
         bddFactory.reorderVerbose(0);
         v = log2(adjacencyLists.size());
@@ -82,7 +84,9 @@ public class BddGraph {
         for (int i = v; i < 2*v; i++) {
             BDD pos = nodeSet.restrict(bddFactory.ithVar(i));
             BDD neg = nodeSet.restrict(bddFactory.nithVar(i));
-            nodeSet = union(pos, neg);
+            BDD newNodeSet = union(pos, neg);
+            nodeSet.free();
+            nodeSet = newNodeSet;
         }
 
         return nodeSet;
@@ -92,7 +96,9 @@ public class BddGraph {
         for (int i = 0; i < v; i++) {
             BDD pos = nodeSet.restrict(bddFactory.ithVar(i));
             BDD neg = nodeSet.restrict(bddFactory.nithVar(i));
-            nodeSet = union(pos, neg);
+            BDD newNodeSet = union(pos, neg);
+            nodeSet.free();
+            nodeSet = newNodeSet;
         }
 
         return nodeSet;
@@ -101,8 +107,7 @@ public class BddGraph {
     public BDD img(BDD nodes) {
         //restrict to variables defined in nodes
         BDD img = edges.and(nodes);
-
-        img = restrictAwayFromVariables(img);
+        BDD restrictedImg = restrictAwayFromVariables(img);
 
         BDDPairing pairing = bddFactory.makePair();
         for (int i = 0; i < v; i++) {
@@ -110,7 +115,9 @@ public class BddGraph {
         }
 
         //rename variables, fx. if v = 2, rename 2->0, 3->1
-        return img.replace(pairing);
+        BDD result =  restrictedImg.replace(pairing);
+        restrictedImg.free();
+        return result;
     }
 
     public BDD preImg(BDD nodes) {
@@ -124,7 +131,9 @@ public class BddGraph {
         BDD replaced = nodes.replace(pairing);
 
         BDD preImg = edges.and(replaced);
-        return restrictAwayToVariables(preImg);
+        BDD restrictedPreImg = restrictAwayToVariables(preImg);
+        replaced.free();
+        return restrictedPreImg;
     }
 
     private BDD edgesToBDD(List<Edge> edges) {
