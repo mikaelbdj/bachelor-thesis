@@ -8,6 +8,7 @@ public class NonVerboseLoggingStrategy implements LoggingStrategy {
 
 
     private long startTime;
+    private int symbolicSteps;
 
     @Override
     public void logSccFound(BDD scc) {
@@ -21,13 +22,19 @@ public class NonVerboseLoggingStrategy implements LoggingStrategy {
     }
 
     @Override
-    public void logFinished(String algName, Set<BDD> out, int symbolicSteps) {
+    public void logFinished(String algName, Set<BDD> out) {
         System.out.println("Finished algorithm: " + algName);
         System.out.println("It took " + (System.currentTimeMillis() - startTime) + " ms");
+        System.out.println(symbolicSteps + " symbolic steps used.");
+        System.out.println(out.size() + " SCCs found.");
     }
 
     @Override
     public void logStackSize(int stackSize) {
+    }
 
+    @Override
+    public void logSymbolicStep(int step) {
+        symbolicSteps += step;
     }
 }

@@ -18,7 +18,7 @@ public class LockstepWithTrimming implements GraphSCCAlgorithm {
         loggingStrategy.logStarted("Lockstep with trimming");
         BDD allNodes = bddGraph.getNodes();
         Set<BDD> out = lockstep(bddGraph, allNodes);
-        loggingStrategy.logFinished("Lockstep with trimming", out, 0);
+        loggingStrategy.logFinished("Lockstep with trimming", out);
         return out;
     }
 

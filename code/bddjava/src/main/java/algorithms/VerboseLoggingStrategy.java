@@ -25,12 +25,17 @@ public class VerboseLoggingStrategy implements LoggingStrategy {
     }
 
     @Override
-    public void logFinished(String algName, Set<BDD> sccs, int symbolicSteps) {
-        nonVerboseLoggingStrategy.logFinished(algName, sccs, symbolicSteps);
+    public void logFinished(String algName, Set<BDD> sccs) {
+        nonVerboseLoggingStrategy.logFinished(algName, sccs);
     }
 
     @Override
     public void logStackSize(int stackSize) {
         System.out.println("Current stack size: "  + stackSize);
+    }
+
+    @Override
+    public void logSymbolicStep(int step) {
+        nonVerboseLoggingStrategy.logSymbolicStep(step);
     }
 }

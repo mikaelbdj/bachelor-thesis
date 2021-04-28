@@ -17,7 +17,7 @@ public class Lockstep implements GraphSCCAlgorithm{
         loggingStrategy.logStarted("Lockstep");
         BDD allNodes = bddGraph.getNodes();
         Set<BDD> out = lockstep(bddGraph, allNodes);
-        loggingStrategy.logFinished("Lockstep", out, 0);
+        loggingStrategy.logFinished("Lockstep", out);
         return out;
     }
 

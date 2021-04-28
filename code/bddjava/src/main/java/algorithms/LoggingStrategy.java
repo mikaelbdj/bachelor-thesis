@@ -8,6 +8,7 @@ public interface LoggingStrategy {
 
     void logSccFound(BDD scc);
     void logStarted(String algName);
-    void logFinished(String algName, Set<BDD> sccs, int symbolicSteps);
+    void logFinished(String algName, Set<BDD> sccs);
     void logStackSize(int stackSize);
+    void logSymbolicStep(int step);
 }

@@ -16,12 +16,17 @@ public class NullLoggingStrategy implements LoggingStrategy {
     }
 
     @Override
-    public void logFinished(String algName, Set<BDD> sccs, int symbolicSteps) {
+    public void logFinished(String algName, Set<BDD> sccs) {
 
     }
 
     @Override
     public void logStackSize(int stackSize) {
+
+    }
+
+    @Override
+    public void logSymbolicStep(int step) {
 
     }
 }

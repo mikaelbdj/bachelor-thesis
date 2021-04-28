@@ -22,7 +22,7 @@ public class LockstepIterative implements GraphSCCAlgorithm{
         BDD allNodes = bddGraph.getNodes();
         bddStack.clear();
         Set<BDD> out = lockstep(bddGraph, allNodes);
-        loggingStrategy.logFinished("Lockstep iterative", out, 0);
+        loggingStrategy.logFinished("Lockstep iterative", out);
         return out;
     }
 
@@ -48,7 +48,9 @@ public class LockstepIterative implements GraphSCCAlgorithm{
 
             while (!FFront.isZero() && !BFront.isZero()) {
                 FFront = extendFFrontier(bddGraph, currentP, FFront, F);
+                loggingStrategy.logSymbolicStep(1);
                 BFront = extendBFrontier(bddGraph, currentP, BFront, B);
+                loggingStrategy.logSymbolicStep(1);
                 BDD newF = F.or(FFront);
                 F.free();
                 F = newF;
@@ -61,6 +63,7 @@ public class LockstepIterative implements GraphSCCAlgorithm{
                 converged = F;
                 while (!(BFront.and(F).isZero())) {
                     BFront = extendBFrontier(bddGraph, currentP, BFront, B);
+                    loggingStrategy.logSymbolicStep(1);
                     BDD newB = B.or(BFront);
                     B.free();
                     B = newB;
@@ -70,6 +73,7 @@ public class LockstepIterative implements GraphSCCAlgorithm{
                 converged = B;
                 while (!(FFront.and(B).isZero())) {
                     FFront = extendFFrontier(bddGraph, currentP, FFront, F);
+                    loggingStrategy.logSymbolicStep(1);
                     BDD newF = F.or(FFront);
                     F.free();
                     F = newF;
