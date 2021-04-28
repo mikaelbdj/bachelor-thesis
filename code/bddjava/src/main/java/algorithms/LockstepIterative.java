@@ -5,76 +5,96 @@ import net.sf.javabdd.BDD;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
-public class Lockstep implements GraphSCCAlgorithm{
+public class LockstepIterative implements GraphSCCAlgorithm{
 
     private final LoggingStrategy loggingStrategy;
-    public Lockstep(LoggingStrategy loggingStrategy) {
+    private Stack<BDD> bddStack;
+
+    public LockstepIterative(LoggingStrategy loggingStrategy) {
         this.loggingStrategy = loggingStrategy;
+        bddStack = new Stack<>();
     }
 
     public  Set<BDD> run(BddGraph bddGraph) {
-        loggingStrategy.logStarted("Lockstep");
+        loggingStrategy.logStarted("Lockstep iterative");
         BDD allNodes = bddGraph.getNodes();
+        bddStack.clear();
         Set<BDD> out = lockstep(bddGraph, allNodes);
-        loggingStrategy.logFinished("Lockstep");
+        loggingStrategy.logFinished("Lockstep iterative");
         return out;
     }
 
+
+
     private Set<BDD> lockstep(BddGraph bddGraph, BDD P) {
-        if (P.isZero()) return new HashSet<>();
+        bddStack.push(P.not().not());
+        Set<BDD> SCCs = new HashSet<>();
+        while(!bddStack.empty()) {
+            BDD currentP = bddStack.pop();
 
-        BDD F, B, FFront, BFront, C, converged;
+            if (currentP.isZero()) {
+                continue;
+            }
 
-        BDD v = bddGraph.pick(P);
-        F = v.not().not();
-        B = v.not().not();
-        FFront = v.not().not();
-        BFront = v.not().not();
+            BDD F, B, FFront, BFront, C, converged;
 
-        while (!FFront.isZero() && !BFront.isZero()) {
-            FFront = extendFFrontier(bddGraph, P, FFront, F);
-            BFront = extendBFrontier(bddGraph, P, BFront, B);
-            BDD newF = F.or(FFront);
+            BDD v = bddGraph.pick(currentP);
+            F = v.not().not();
+            B = v.not().not();
+            FFront = v.not().not();
+            BFront = v.not().not();
+
+            while (!FFront.isZero() && !BFront.isZero()) {
+                FFront = extendFFrontier(bddGraph, currentP, FFront, F);
+                BFront = extendBFrontier(bddGraph, currentP, BFront, B);
+                BDD newF = F.or(FFront);
+                F.free();
+                F = newF;
+                BDD newB = B.or(BFront);
+                B.free();
+                B = newB;
+            }
+
+            if (FFront.isZero()) {
+                converged = F;
+                while (!(BFront.and(F).isZero())) {
+                    BFront = extendBFrontier(bddGraph, currentP, BFront, B);
+                    BDD newB = B.or(BFront);
+                    B.free();
+                    B = newB;
+                }
+            }
+            else{
+                converged = B;
+                while (!(FFront.and(B).isZero())) {
+                    FFront = extendFFrontier(bddGraph, currentP, FFront, F);
+                    BDD newF = F.or(FFront);
+                    F.free();
+                    F = newF;
+                }
+            }
+            C = F.and(B);
+            SCCs.add(C);
+            loggingStrategy.logSccFound(C);
+
+            BDD rest1 = converged.and(C.not());
+            BDD rest2 = currentP.and(converged.not());
             F.free();
-            F = newF;
-            BDD newB = B.or(BFront);
             B.free();
-            B = newB;
-        }
+            FFront.free();
+            BFront.free();
+            v.free();
+            currentP.free();
 
-        if (FFront.isZero()) {
-            converged = F;
-            while (!(BFront.and(F).isZero())) {
-                BFront = extendBFrontier(bddGraph, P, BFront, B);
-                B = B.or(BFront);
-            }
-        }
-        else{
-            converged = B;
-            while (!(FFront.and(B).isZero())) {
-                FFront = extendFFrontier(bddGraph, P, FFront, F);
-                F = F.or(FFront);
-            }
-        }
-        C = F.and(B);
-        loggingStrategy.logSccFound(C);
+            bddStack.push(rest1);
+            bddStack.push(rest2);
 
-        BDD rest1 = converged.and(C.not());
-        BDD rest2 = P.and(converged.not());
-        F.free();
-        B.free();
-        FFront.free();
-        BFront.free();
+            System.out.println(bddGraph.getBddFactory().getNodeNum());
+        }
         P.free();
-        v.free();
-
-        Set<BDD> SCCs1 = lockstep(bddGraph, rest1);
-        Set<BDD> SCCs2 = lockstep(bddGraph, rest2);
-
-        SCCs1.addAll(SCCs2);
-        SCCs1.add(C);
-        return SCCs1;
+        return SCCs;
     }
 
     private static BDD extendFFrontier(BddGraph bddGraph, BDD P, BDD frontier, BDD current) {
@@ -83,6 +103,7 @@ public class Lockstep implements GraphSCCAlgorithm{
         BDD newFrontier = frontierImgAndP.and(current.not());
         frontierImg.free();
         frontierImgAndP.free();
+        frontier.free();
         return newFrontier;
     }
 
@@ -92,6 +113,7 @@ public class Lockstep implements GraphSCCAlgorithm{
         BDD newFrontier = frontierImgAndP.and(current.not());
         frontierImg.free();
         frontierImgAndP.free();
+        frontier.free();
         return newFrontier;
     }
 }
