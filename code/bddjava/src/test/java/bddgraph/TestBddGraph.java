@@ -37,7 +37,7 @@ public class TestBddGraph {
         edges.add(new Edge(1, 0));
         edges.add(new Edge(2, 3));
         edges.add(new Edge(2, 0));
-        bddGraph = new BddGraph(edges, 4);
+        bddGraph = new BddGraph(edges, 4, 10000, 1000);
         bddFactory = bddGraph.getBddFactory();
 
         node00 = bddFactory.nithVar(0).and(bddFactory.nithVar(1));
@@ -76,7 +76,7 @@ public class TestBddGraph {
         adjacencyLists.add(adjacencyList2);
         adjacencyLists.add(adjacencyList3);
 
-        bddGraph = new BddGraph(adjacencyLists);
+        bddGraph = new BddGraph(adjacencyLists, 10000, 1000);
 
         bddFactory = bddGraph.getBddFactory();
 
