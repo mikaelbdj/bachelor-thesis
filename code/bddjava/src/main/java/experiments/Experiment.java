@@ -17,12 +17,16 @@ public class Experiment {
     private final int nodeAmount;
     private final GraphSCCAlgorithm algorithm;
     private final boolean nodesAreOneIndexed;
+    private final int bddNodeNum;
+    private final int bddCacheSize;
 
-    private Experiment(String filePath, int nodeAmount, GraphSCCAlgorithm algorithm, boolean nodesAreOneIndexed) {
+    private Experiment(String filePath, int nodeAmount, GraphSCCAlgorithm algorithm, boolean nodesAreOneIndexed, int nodeNum, int cacheSize) {
         this.filePath = filePath;
         this.nodeAmount = nodeAmount;
         this.algorithm = algorithm;
         this.nodesAreOneIndexed = nodesAreOneIndexed;
+        this.bddNodeNum = nodeNum;
+        this.bddCacheSize = cacheSize;
     }
 
     public void run() {
@@ -30,12 +34,12 @@ public class Experiment {
         try (Stream<Edge> stream = ReadFile.read(filePath, nodesAreOneIndexed)) {
             long startCreatingGraph = System.currentTimeMillis();
             System.out.println("Finished reading file: " + (startCreatingGraph - startReading) + " ms");
-            BddGraph faceBookCircles = new BddGraph(stream.collect(Collectors.toList()), nodeAmount);
+            BddGraph graph = new BddGraph(stream.collect(Collectors.toList()), nodeAmount, bddNodeNum, bddCacheSize);
 
             long startFindingSCC = System.currentTimeMillis();
             System.out.println("Finished creating graph object: " + (startFindingSCC - startCreatingGraph) + " ms");
 
-            Set<BDD> SCC = algorithm.run(faceBookCircles);
+            Set<BDD> SCC = algorithm.run(graph);
 
             long finishFindingSCC = System.currentTimeMillis();
             System.out.println("Finished finding SCCs: " + (finishFindingSCC - startFindingSCC) + " ms");
@@ -45,11 +49,13 @@ public class Experiment {
         }
     }
 
-    public static class ExperimentBuilder{
+    public static class ExperimentBuilder {
         private String filePath;
         private Integer nodeAmount;
         private GraphSCCAlgorithm algorithm;
         private boolean nodesAreOneIndexed;
+        private int bddNodeNum = 1000000;
+        private int bddCacheSize = 10000;
 
         public ExperimentBuilder setAlgorithm(GraphSCCAlgorithm algorithm) {
             this.algorithm = algorithm;
@@ -71,11 +77,21 @@ public class Experiment {
             return this;
         }
 
+        public ExperimentBuilder setBddNodeNum(int bddNodeNum) {
+            this.bddNodeNum = bddNodeNum;
+            return this;
+        }
+
+        public ExperimentBuilder setBddCacheSize(int bddCacheSize) {
+            this.bddCacheSize = bddCacheSize;
+            return this;
+        }
+
         public Experiment build() {
             if (filePath == null) throw new RuntimeException("Please provide a file path for an experiment");
             if (algorithm == null) throw new RuntimeException("Please provide a algorithm for an experiment");
             if (nodeAmount == null) throw new RuntimeException("Please provide a node amount for an experiment");
-            return new Experiment(filePath, nodeAmount, algorithm, nodesAreOneIndexed);
+            return new Experiment(filePath, nodeAmount, algorithm, nodesAreOneIndexed, bddNodeNum, bddCacheSize);
         }
     }
 }
