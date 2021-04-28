@@ -32,7 +32,7 @@ public class Experiments {
 
     public static Experiment buildGnutellap2p04(GraphSCCAlgorithm algorithm) {
         String path = Constants.DATASETS_PATH + "p2p-Gnutella04.txt";
-        int nodeAmount = 10877;
+        int nodeAmount = 10879;
         return new Experiment.ExperimentBuilder()
                 .setAlgorithm(algorithm)
                 .setFilePath(path)

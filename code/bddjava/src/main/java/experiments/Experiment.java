@@ -41,9 +41,6 @@ public class Experiment {
 
             Set<BDD> SCC = algorithm.run(graph);
 
-            long finishFindingSCC = System.currentTimeMillis();
-            System.out.println("Finished finding SCCs: " + (finishFindingSCC - startFindingSCC) + " ms");
-
         } catch (IOException e) {
             e.printStackTrace();
         }

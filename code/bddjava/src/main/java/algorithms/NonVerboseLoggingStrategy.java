@@ -2,6 +2,8 @@ package algorithms;
 
 import net.sf.javabdd.BDD;
 
+import java.util.Set;
+
 public class NonVerboseLoggingStrategy implements LoggingStrategy {
 
 
@@ -19,8 +21,13 @@ public class NonVerboseLoggingStrategy implements LoggingStrategy {
     }
 
     @Override
-    public void logFinished(String algName) {
+    public void logFinished(String algName, Set<BDD> out, int symbolicSteps) {
         System.out.println("Finished algorithm: " + algName);
         System.out.println("It took " + (System.currentTimeMillis() - startTime) + " ms");
+    }
+
+    @Override
+    public void logStackSize(int stackSize) {
+
     }
 }

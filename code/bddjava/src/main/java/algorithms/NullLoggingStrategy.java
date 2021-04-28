@@ -2,6 +2,8 @@ package algorithms;
 
 import net.sf.javabdd.BDD;
 
+import java.util.Set;
+
 public class NullLoggingStrategy implements LoggingStrategy {
     @Override
     public void logSccFound(BDD scc) {
@@ -14,7 +16,12 @@ public class NullLoggingStrategy implements LoggingStrategy {
     }
 
     @Override
-    public void logFinished(String algName) {
+    public void logFinished(String algName, Set<BDD> sccs, int symbolicSteps) {
+
+    }
+
+    @Override
+    public void logStackSize(int stackSize) {
 
     }
 }

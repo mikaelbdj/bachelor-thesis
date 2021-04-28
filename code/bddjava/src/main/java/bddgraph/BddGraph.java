@@ -62,17 +62,20 @@ public class BddGraph {
      * @return a node from the set of nodes
      */
     public BDD pick(BDD noteSet) {
-        BDD result = noteSet;
+        BDD result = noteSet.id();
         for (int i = 0; i < v; i++) {
             if (result.isZero()) {
                 return bddFactory.zero();
             }
             BDD pos = result.and(bddFactory.ithVar(i));
             BDD neg = result.and(bddFactory.nithVar(i));
+            result.free();
             if (neg.isZero()) {
+                neg.free();
                 result = pos;
             }
             else {
+                pos.free();
                 result = neg;
             }
         }

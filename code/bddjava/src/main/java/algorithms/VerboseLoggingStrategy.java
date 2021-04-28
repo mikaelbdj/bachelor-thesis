@@ -2,6 +2,8 @@ package algorithms;
 
 import net.sf.javabdd.BDD;
 
+import java.util.Set;
+
 public class VerboseLoggingStrategy implements LoggingStrategy {
 
     private int sccCount;
@@ -14,7 +16,7 @@ public class VerboseLoggingStrategy implements LoggingStrategy {
 
     @Override
     public void logSccFound(BDD scc) {
-        System.out.println("SCC Found: " + scc + ", Total: " + sccCount++);
+        System.out.println("SCC Found: " + scc + ", Total: " + ++sccCount);
     }
 
     @Override
@@ -23,7 +25,12 @@ public class VerboseLoggingStrategy implements LoggingStrategy {
     }
 
     @Override
-    public void logFinished(String algName) {
-        nonVerboseLoggingStrategy.logFinished(algName);
+    public void logFinished(String algName, Set<BDD> sccs, int symbolicSteps) {
+        nonVerboseLoggingStrategy.logFinished(algName, sccs, symbolicSteps);
+    }
+
+    @Override
+    public void logStackSize(int stackSize) {
+        System.out.println("Current stack size: "  + stackSize);
     }
 }

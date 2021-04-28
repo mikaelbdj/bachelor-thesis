@@ -10,7 +10,7 @@ import java.util.Stack;
 public class LockstepIterative implements GraphSCCAlgorithm{
 
     private final LoggingStrategy loggingStrategy;
-    private Stack<BDD> bddStack;
+    private final Stack<BDD> bddStack;
 
     public LockstepIterative(LoggingStrategy loggingStrategy) {
         this.loggingStrategy = loggingStrategy;
@@ -22,7 +22,7 @@ public class LockstepIterative implements GraphSCCAlgorithm{
         BDD allNodes = bddGraph.getNodes();
         bddStack.clear();
         Set<BDD> out = lockstep(bddGraph, allNodes);
-        loggingStrategy.logFinished("Lockstep iterative");
+        loggingStrategy.logFinished("Lockstep iterative", out, 0);
         return out;
     }
 
@@ -41,10 +41,10 @@ public class LockstepIterative implements GraphSCCAlgorithm{
             BDD F, B, FFront, BFront, C, converged;
 
             BDD v = bddGraph.pick(currentP);
-            F = v.not().not();
-            B = v.not().not();
-            FFront = v.not().not();
-            BFront = v.not().not();
+            F = v.id();
+            B = v.id();
+            FFront = v.id();
+            BFront = v.id();
 
             while (!FFront.isZero() && !BFront.isZero()) {
                 FFront = extendFFrontier(bddGraph, currentP, FFront, F);
@@ -91,7 +91,7 @@ public class LockstepIterative implements GraphSCCAlgorithm{
             bddStack.push(rest1);
             bddStack.push(rest2);
 
-            System.out.println(bddGraph.getBddFactory().getNodeNum());
+            loggingStrategy.logStackSize(bddStack.size());
         }
         P.free();
         return SCCs;

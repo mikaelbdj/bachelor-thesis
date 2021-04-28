@@ -20,7 +20,7 @@ public class Linear implements GraphSCCAlgorithm{
         BDD allNodes = graph.getNodes();
         FWSkel fwSkel = skelForward(graph, allNodes);
         Set<BDD> out = linear(graph, fwSkel.getSkel());
-        loggingStrategy.logFinished("Linear");
+        loggingStrategy.logFinished("Linear", out, 0);
 
         return out;
     }
