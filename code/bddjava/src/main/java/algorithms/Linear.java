@@ -53,7 +53,7 @@ public class Linear implements GraphSCCAlgorithm{
         C.add(SCC);
 
         BDD V_ = diff(V, FW);
-        BDD E_ = E; //todo
+        BDD E_ = graph.restrictEdgesTo(V_);
         BDD S_ = diff(S, SCC);
         BDD N_ = graph.preImg(SCC.and(S)).and(diff(S, SCC));
         BddGraph graph_ = graph.newBddGraph(V_, E_);
@@ -62,7 +62,7 @@ public class Linear implements GraphSCCAlgorithm{
         Set<BDD> SCCset1 = linear(graph_, sn_);
 
         V_ = diff(FW, SCC);
-        E_ = E; //todo
+        E_ = graph.restrictEdgesTo(V_);
         S_ = diff(newS, SCC);
         N_ = diff(newN, SCC);
         graph_ = graph.newBddGraph(V_, E_);
