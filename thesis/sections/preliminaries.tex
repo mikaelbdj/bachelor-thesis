@@ -4,8 +4,13 @@
 
 This section dsicusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
 
-In this thesis, our primary data structure will be a Binary Decision Diagram (BDD). Binary Decision Diagrams represent boolean functions as directed graphs. Each non-terminal vertex $v$ has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $v$ is assigned to 0 and 1 respectively. A path from the root to a vertex gives us the value returned by the function given a certain assignment to the variables. \todo{add ref to first paper}
+\subsection{Binary decision diagrams}
+In this thesis, our primary data structure will be a Binary Decision Diagram (BDD). Binary Decision Diagrams represent boolean functions as directed graphs. Each non-terminal vertex $v$ asks about the value of some variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all paths ends in one of these. Note that this is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
+Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a binary decision diagram representing it. To compute an output $y\in \{0,1\}$ given an assignment  $x\in\{0,1\}^n$, we start in the root and until we hit a terminal vertex do: for each vertex $v$ we encounter (including the root) with variable $x_i$, we branch to $lo(v)$ and $hi(v)$ depending on the value assigned to $x_i$. \\[5mm]
+A BDD can be used to represent many things - in our paper we use it to represent a graph. The common way to represent a graph $G = (V, E)$ by a BDD is to assign each $v\in V$ to be a unique boolean assignment $x\in\{0,1\}^n$. To name all nodes we would trivially need an $n \geq \ceil{\log_2{|V|}}$. A BDD representing all the nodes is simply a BDD that satisfies each boolean assignment $x\in\{0,1\}^n$ that corresponds to a $v\in V$. Similarly, an edge can be represented by a boolean assignment $x\in\{0,1\}^{2n}$, which is simply the boolean assignment of two nodes concatenated. Thus, a BDD representing all edges is one that satisfies every $x\in\{0,1\}^{2n}$ that corresponds to a $(v_i, v_j)\in E$. This representation makes it easy to compute useful properties. For example assume we have a set $S\subset V$ of nodes represented by a BDD $N$ and a BDD $M$ representing all edges $E$. We can compute the image of $S$ by simply restricting the first $n$ variables of $M$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $N$.
+ \todo{add ref to first paper}
 
+\subsection{Symbolic Algorithms}
 We will be dealing with symbolic algorithms for strongly connected component analysis on these BDDs. A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such that $\forall v,w\in C$, there is a path from $v$ to $w$. Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G and $S\subseteq V$, we can derive the following operators: 
 \begin{align*}
 \img S &= \set{v' \in V}{\exists v\in S:(v, v')\in E}{|}\\
@@ -20,6 +25,12 @@ A forward set, \FW{S}, is the set of nodes that can be reached from $S$. Similar
 \FW{S} &= \mu S.\{v\}\cup \text{img}(S)\\
 \label{bw}\BW{S} &= \mu S.\{v\}\cup \text{preimg}(S)
 \end{align}
+
+\noindent Examining the definitions of forward and backward sets, the following is trivial:
+\begin{align}
+SCC_G(S) = \FW{S} \cap \BW{S} \label{scc}
+\end{align}
+where $SCC_G(S)$ is the SCC in $G$ containing the set $S$. Usually this property will be used only when $S$ is a singleton set $S=\{s\}$ - otherwise $SCC_G(S)$ might be empty.
 
 The authors \cite{linear} introduce a notion of a skeleton and a spine-set. A skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
 
