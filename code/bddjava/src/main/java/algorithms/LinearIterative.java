@@ -86,6 +86,7 @@ public class LinearIterative implements GraphSCCAlgorithm{
             currentS.free();
             currentN.free();
             currentV.free();
+            loggingStrategy.logStackSize(bddStack.size());
         }
         N.free();
         S.free();
