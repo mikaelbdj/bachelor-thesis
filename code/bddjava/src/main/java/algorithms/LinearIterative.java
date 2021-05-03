@@ -30,52 +30,54 @@ public class LinearIterative implements GraphSCCAlgorithm{
 
     private Set<BDD> linear(BddGraph graph, Skeleton sn) {
         BDD V = graph.getNodes();
-        BDD E = graph.getEdges();
         BDD S = sn.getS();
         BDD N = sn.getN();
 
-        if (V.isZero())
-            return new HashSet<>();
+        bddStack.push(V.id());
+        bddStack.push(S.id());
+        bddStack.push(N.id());
+        Set<BDD> SCCs = new HashSet<>();
 
-        if (S.isZero())
-            N = graph.pick(V);
+        while(!bddStack.empty()) {
+            BDD currentN = bddStack.pop();
+            BDD currentS = bddStack.pop();
+            BDD currentV = bddStack.pop();
 
-        FWSkel newFWskel = skelForward(graph, N);
-        BDD FW = newFWskel.getFW();
-        Skeleton newSN = newFWskel.getSkel();
-        BDD newS = newSN.getS();
-        BDD newN = newSN.getN();
+            if (currentV.isZero())
+                continue;
 
-        BDD SCC = N;
+            if (currentS.isZero())
+                currentN = graph.pick(currentV);
 
-        loggingStrategy.logSccFound(SCC);
-        while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
-            SCC = SCC.or(graph.preImg(SCC).and(FW));
+            FWSkel newFWskel = skelForward(graph, currentN);
+            BDD FW = newFWskel.getFW();
+            Skeleton newSN = newFWskel.getSkel();
+            BDD newS = newSN.getS();
+            BDD newN = newSN.getN();
+
+            BDD SCC = currentN.id();
+
+            loggingStrategy.logSccFound(SCC);
+            while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
+                SCC = SCC.or(graph.preImg(SCC).and(FW));
+            }
+            SCCs.add(SCC);
+
+            BDD V_ = diff(V, FW);
+            BDD S_ = diff(S, SCC);
+            BDD N_ = graph.preImg(SCC.and(S)).and(diff(S, SCC));
+            bddStack.push(V_);
+            bddStack.push(S_);
+            bddStack.push(N_);
+
+            V_ = diff(FW, SCC);
+            S_ = diff(newS, SCC);
+            N_ = diff(newN, SCC);
+            bddStack.push(V_);
+            bddStack.push(S_);
+            bddStack.push(N_);
         }
-        Set<BDD> C = new HashSet<>();
-        C.add(SCC);
-
-        BDD V_ = diff(V, FW);
-        BDD E_ = graph.restrictEdgesTo(V_);
-        BDD S_ = diff(S, SCC);
-        BDD N_ = graph.preImg(SCC.and(S)).and(diff(S, SCC));
-        BddGraph graph_ = graph.newBddGraph(V_, E_);
-
-        Skeleton sn_ = new Skeleton(S_, N_);
-        Set<BDD> SCCset1 = linear(graph_, sn_);
-
-        V_ = diff(FW, SCC);
-        E_ = graph.restrictEdgesTo(V_);
-        S_ = diff(newS, SCC);
-        N_ = diff(newN, SCC);
-        graph_ = graph.newBddGraph(V_, E_);
-
-        sn_ = new Skeleton(S_, N_);
-        Set<BDD> SCCset2 = linear(graph_, sn_);
-
-        SCCset1.addAll(SCCset2);
-        SCCset1.addAll(C);
-        return SCCset1;
+        return SCCs;
     }
 
     private static FWSkel skelForward(BddGraph graph, BDD N) {
