@@ -29,7 +29,7 @@ public class LockstepIterative implements GraphSCCAlgorithm{
 
 
     private Set<BDD> lockstep(BddGraph bddGraph, BDD P) {
-        bddStack.push(P.not().not());
+        bddStack.push(P.id());
         Set<BDD> SCCs = new HashSet<>();
         while(!bddStack.empty()) {
             BDD currentP = bddStack.pop();
