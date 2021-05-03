@@ -36,6 +36,7 @@ public class LinearIterative implements GraphSCCAlgorithm{
         bddStack.push(V.id());
         bddStack.push(S.id());
         bddStack.push(N.id());
+
         Set<BDD> SCCs = new HashSet<>();
 
         while(!bddStack.empty()) {
@@ -59,13 +60,15 @@ public class LinearIterative implements GraphSCCAlgorithm{
 
             loggingStrategy.logSccFound(SCC);
             while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
-                SCC = SCC.or(graph.preImg(SCC).and(FW));
+                BDD newSCC = SCC.or(graph.preImg(SCC).and(FW));
+                SCC.free();
+                SCC = newSCC;
             }
             SCCs.add(SCC);
 
-            BDD V_ = diff(V, FW);
-            BDD S_ = diff(S, SCC);
-            BDD N_ = graph.preImg(SCC.and(S)).and(diff(S, SCC));
+            BDD V_ = diff(currentV, FW);
+            BDD S_ = diff(currentS, SCC);
+            BDD N_ = graph.preImg(SCC.and(currentS)).and(diff(currentS, SCC));
             bddStack.push(V_);
             bddStack.push(S_);
             bddStack.push(N_);
@@ -76,7 +79,10 @@ public class LinearIterative implements GraphSCCAlgorithm{
             bddStack.push(V_);
             bddStack.push(S_);
             bddStack.push(N_);
+
+
         }
+
         return SCCs;
     }
 
