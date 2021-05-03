@@ -80,31 +80,46 @@ public class LinearIterative implements GraphSCCAlgorithm{
             bddStack.push(S_);
             bddStack.push(N_);
 
-
+            FW.free();
+            newS.free();
+            newN.free();
+            currentS.free();
+            currentN.free();
+            currentV.free();
         }
-
+        N.free();
+        S.free();
+        V.free();
         return SCCs;
     }
 
     private static FWSkel skelForward(BddGraph graph, BDD N) {
-        BDD L = N;
+        BDD L = N.id();
         Stack<BDD> stack = new Stack<>();
         BDD FW = graph.getBddFactory().zero();
         // forward set
         while (!L.isZero()) {
             stack.push(L);
-            FW = FW.or(L);
-            L = diff(graph.img(L), FW);
+            BDD newFW = FW.or(L);
+            FW.free();
+            FW = newFW;
+            BDD imgL = graph.img(L);
+            L = diff(imgL, FW);
+            imgL.free();
         }
 
         //skeleton of forward set
 
         L = stack.pop();
         BDD N_ = graph.pick(L);
-        BDD S_ = N_;
+        BDD S_ = N_.id();
         while (!stack.empty()) {
             L = stack.pop();
-            S_ = S_.or(graph.pick(graph.preImg(S_).and(L)));
+            BDD preimgS = graph.preImg(S_);
+            BDD newS_ = S_.or(graph.pick(preimgS.and(L)));
+            S_.free();
+            S_ = newS_;
+            preimgS.free();
         }
 
         return new FWSkel(FW, new Skeleton(S_, N_));
