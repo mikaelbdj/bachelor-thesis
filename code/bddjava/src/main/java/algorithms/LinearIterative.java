@@ -60,37 +60,36 @@ public class LinearIterative implements GraphSCCAlgorithm{
 
             loggingStrategy.logSccFound(SCC);
             while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
-                BDD newSCC = SCC.or(graph.preImg(SCC).and(FW));
-                SCC.free();
-                SCC = newSCC;
+                SCC = SCC.or(graph.preImg(SCC).and(FW));
+                //SCC.free();
+                //SCC = newSCC;
             }
             SCCs.add(SCC);
 
-            BDD V_ = diff(currentV, FW);
-            BDD S_ = diff(currentS, SCC);
-            BDD N_ = graph.preImg(SCC.and(currentS)).and(diff(currentS, SCC));
+            BDD V_ = diff(FW, SCC);
+            BDD S_ = diff(newS, SCC);
+            BDD N_ = diff(newN, SCC);
             bddStack.push(V_);
             bddStack.push(S_);
             bddStack.push(N_);
 
-            V_ = diff(FW, SCC);
-            S_ = diff(newS, SCC);
-            N_ = diff(newN, SCC);
+
+            V_ = diff(currentV, FW);
+            S_ = diff(currentS, SCC);
+            N_ = graph.preImg(SCC.and(currentS)).and(diff(currentS, SCC));
             bddStack.push(V_);
             bddStack.push(S_);
             bddStack.push(N_);
 
-            FW.free();
+        /*    FW.free();
             newS.free();
             newN.free();
             currentS.free();
             currentN.free();
-            currentV.free();
+            currentV.free();*/
             loggingStrategy.logStackSize(bddStack.size());
         }
-        N.free();
-        S.free();
-        V.free();
+
         return SCCs;
     }
 
@@ -101,12 +100,10 @@ public class LinearIterative implements GraphSCCAlgorithm{
         // forward set
         while (!L.isZero()) {
             stack.push(L);
-            BDD newFW = FW.or(L);
-            FW.free();
-            FW = newFW;
+            FW = FW.or(L);
+
             BDD imgL = graph.img(L);
             L = diff(imgL, FW);
-            imgL.free();
         }
 
         //skeleton of forward set
@@ -117,10 +114,10 @@ public class LinearIterative implements GraphSCCAlgorithm{
         while (!stack.empty()) {
             L = stack.pop();
             BDD preimgS = graph.preImg(S_);
-            BDD newS_ = S_.or(graph.pick(preimgS.and(L)));
-            S_.free();
-            S_ = newS_;
-            preimgS.free();
+            S_ = S_.or(graph.pick(preimgS.and(L)));
+            //S_.free();
+            //S_ = newS_;
+            //preimgS.free();
         }
 
         return new FWSkel(FW, new Skeleton(S_, N_));

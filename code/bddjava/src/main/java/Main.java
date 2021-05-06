@@ -10,6 +10,6 @@ public class Main {
 
 
     public static void main(String[] args) {
-        Experiments.GNUTELLA_04_LOCKSTEP.run();
+        Experiments.CALLS_LINEAR.run();
     }
 }
