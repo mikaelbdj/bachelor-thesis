@@ -23,7 +23,6 @@ public class LinearIterative implements GraphSCCAlgorithm{
         loggingStrategy.logStarted("Linear iterative");
         BDD allNodes = graph.getNodes();
         bddStack.clear();
-        FWSkel fwSkel = skelForward(graph, allNodes);
         Set<BDD> out = linear(graph, new Skeleton(graph.getBddFactory().zero(), graph.getBddFactory().zero()));
         loggingStrategy.logFinished("Linear iterative", out);
         return out;
@@ -31,27 +30,32 @@ public class LinearIterative implements GraphSCCAlgorithm{
 
     private Set<BDD> linear(BddGraph graph, Skeleton sn) {
         BDD V = graph.getNodes();
+        BDD E = graph.getEdges();
         BDD S = sn.getS();
         BDD N = sn.getN();
 
         bddStack.push(V.id());
         bddStack.push(S.id());
         bddStack.push(N.id());
+        bddStack.push(E.id());
 
         Set<BDD> SCCs = new HashSet<>();
 
         while(!bddStack.empty()) {
+            BDD currentE = bddStack.pop();
             BDD currentN = bddStack.pop();
             BDD currentS = bddStack.pop();
             BDD currentV = bddStack.pop();
+
+            BddGraph currentGraph = graph.newBddGraph(currentV, currentE);
 
             if (currentV.isZero())
                 continue;
 
             if (currentS.isZero())
-                currentN = graph.pick(currentV);
+                currentN = currentGraph.pick(currentV);
 
-            FWSkel newFWskel = skelForward(graph, currentN);
+            FWSkel newFWskel = skelForward(currentGraph, currentN);
             BDD FW = newFWskel.getFW();
             Skeleton newSN = newFWskel.getSkel();
             BDD newS = newSN.getS();
@@ -59,8 +63,13 @@ public class LinearIterative implements GraphSCCAlgorithm{
 
             BDD SCC = currentN.id();
 
-            while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
-                SCC = SCC.or(graph.preImg(SCC).and(FW));
+            while (true) {
+                BDD preAndFW = currentGraph.preImg(SCC).and(FW);
+                loggingStrategy.logSymbolicStep(1);
+                if ((diff(preAndFW, SCC)).isZero()) {
+                    break;
+                }
+                SCC = SCC.or(preAndFW);
                 //SCC.free();
                 //SCC = newSCC;
             }
@@ -70,17 +79,22 @@ public class LinearIterative implements GraphSCCAlgorithm{
             BDD V_ = diff(FW, SCC);
             BDD S_ = diff(newS, SCC);
             BDD N_ = diff(newN, SCC);
+            BDD E_ = currentGraph.restrictEdgesTo(V_);
             bddStack.push(V_);
             bddStack.push(S_);
             bddStack.push(N_);
+            bddStack.push(E_);
 
 
             V_ = diff(currentV, FW);
             S_ = diff(currentS, SCC);
-            N_ = graph.preImg(SCC.and(currentS)).and(diff(currentS, SCC));
+            N_ = currentGraph.preImg(SCC.and(currentS)).and(diff(currentS, SCC));
+            loggingStrategy.logSymbolicStep(1);
+            E_ = currentGraph.restrictEdgesTo(V_);
             bddStack.push(V_);
             bddStack.push(S_);
             bddStack.push(N_);
+            bddStack.push(E_);
 
         /*    FW.free();
             newS.free();
@@ -94,7 +108,7 @@ public class LinearIterative implements GraphSCCAlgorithm{
         return SCCs;
     }
 
-    private static FWSkel skelForward(BddGraph graph, BDD N) {
+    private FWSkel skelForward(BddGraph graph, BDD N) {
         BDD L = N.id();
         Stack<BDD> stack = new Stack<>();
         BDD FW = graph.getBddFactory().zero();
@@ -104,6 +118,7 @@ public class LinearIterative implements GraphSCCAlgorithm{
             FW = FW.or(L);
 
             BDD imgL = graph.img(L);
+            loggingStrategy.logSymbolicStep(1);
             L = diff(imgL, FW);
         }
 
@@ -116,6 +131,7 @@ public class LinearIterative implements GraphSCCAlgorithm{
             L = stack.pop();
             BDD preimgS = graph.preImg(S_);
             S_ = S_.or(graph.pick(preimgS.and(L)));
+            loggingStrategy.logSymbolicStep(1);
             //S_.free();
             //S_ = newS_;
             //preimgS.free();
