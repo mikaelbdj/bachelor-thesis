@@ -6,9 +6,9 @@ The first algorithm we will be looking at is the Lockstep algorithm proposed by 
 
 We have modified this algorithm slightly, as we do not look at Streett automata, and are therefore not interested in the Report function introduced in the article. For the same reason, we also modified the input of the algorithm to only take a graph and a set of vertices. 
 
-We start by initializing the set $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v}, as well as their frontiers, which are all initially set to the singleton set of a node picked from $P$.
+We start by initializing the set $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v} of some node, as well as their frontiers, which are all initially set to $v\in G$ - the singleton set of a node picked from $P$.
 
-The next step is simultaneously performing forward and backward searches until either \FW{v} or \BW{v} converges. This is done by extending the forward and backward frontiers by taking their image and preimage respectively, selecting only those of the nodes, which are in our current $P$ and finally removing all the nodes which already exist in \FW{v} and \BW{v} respectively. We then update the values of \FW{v} and \BW{v} to include the elements that we have found in their respective frontiers. This is done in iterations until either of the frontiers is an empty set, meaning that it will no longer be updated.
+The next step is simultaneously performing forward and backward set computations until either \FW{v} or \BW{v} converges. This is done by extending the forward and backward frontiers by taking their image and preimage respectively, selecting only those of the nodes, which are in our current $P$ and finally removing all the nodes which already exist in \FW{v} and \BW{v} respectively. We then update the values of \FW{v} and \BW{v} to include the elements that we have found in their respective frontiers. This is done in iterations until either of the frontiers is an empty set, meaning that it will no longer be updated.
 In other words, by iteratively computing the two functions (\ref{fw}) and (\ref{bw}) until one of them reaches its least fixpoint. The forward or backward set with the empty frontier is then set as \emph{Converged}. This is essential for obtaining the $n$\,log\,$n$ bound that will be examined later on.
 
 Once one of the sets has converged, we continue updating the other set, just like before until its frontier has no nodes in common with the \emph{Converged} set. \todo{probably a good idea to add why this is}
@@ -40,7 +40,7 @@ We recursively call Lockstep on the set of vertices in $P\setminus Converged$. H
      \Let{$Converged$}{$BW$}
     \EndIf
     \Statex
-    \While{$\text{Ffront}\cap BW\neq\emptyset$ \textbf{and} $\text{Bfront}\cap FW\neq\emptyset$}
+    \While{$\text{Ffront}\cap BW\neq\emptyset$ \textbf{or} $\text{Bfront}\cap FW\neq\emptyset$}
      \Let{Ffront}{$\text{img(Ffront)}\cap P\setminus FW$}
      \Let{Bfront}{$\text{preimg(Bfront)}\cap P\setminus BW$}
      \Let{$FW$}{$FW\cup\text{Ffront}$}
@@ -78,16 +78,14 @@ Once this is done, this procedure is called recursively on two subgraphs. The fi
     \Let{$\langle FW, newS, newN\rangle$}{skelForward($V, E, N$)}
     \Statex
     \Let{$SCC$}{$N$}
-    \While{$\text{pre}(SCC)\cap FW)\setminus SCC)\neq\emptyset$}
-     \Let{$SCC$}{$SCC\cup (\text{pre}(SCC)\cap FW)$}
+    \While{$\text{preimg}(SCC)\cap FW)\setminus SCC)\neq\emptyset$}
+     \Let{$SCC$}{$SCC\cup (\text{preimg}(SCC)\cap FW)$}
     \EndWhile
-    \Statex
-    \Let{$C$}{$C\cup\{SCC\}$}
     \Statex
     \Let{$V'$}{$V\setminus FW$}
     \Let{$E'$}{$E\upharpoonright V'$}
     \Let{$S'$}{$S\setminus SCC$}
-    \Let{$N'$}{$\text{pre}(SCC\cap S)\cap(S\setminus SCC)$}
+    \Let{$N'$}{$\text{preimg}(SCC\cap S)\cap(S\setminus SCC)$}
     \Let{SCCset1}{Linear($(V', E')$, \pair{S'}{N'})}
     \Statex
     \Let{$V'$}{$FW\setminus SCC$}
@@ -96,12 +94,12 @@ Once this is done, this procedure is called recursively on two subgraphs. The fi
     \Let{$N'$}{$newN\setminus SCC$}
     \Let{SCCset2}{Linear($(V', E')$, \pair{S'}{N'})}
     \Statex
-    \Let{SCCs}{$\set{C}\cup \text{SCCset1} \cup \text{SCCset2}$}
+    \Let{SCCs}{$\set{SCC}\cup \text{SCCset1} \cup \text{SCCset2}$}
     \State \Return SCCs
   \end{algorithmic}
 \end{algorithm}
 
-The skelForward algorithm is a helper method introduced by Gentilini et al., which computes the forward set of the given graph and the skeleton of this set. This equivalently gives us the spine-set of the given graph.
+The skelForward algorithm is a helper method introduced by Gentilini et al., which computes the forward set of the given graph and the skeleton of this set. This results in the spine-set of the given graph.
 
 \begin{algorithm}[H]
   \caption{SkelForward((V, E), N)}
