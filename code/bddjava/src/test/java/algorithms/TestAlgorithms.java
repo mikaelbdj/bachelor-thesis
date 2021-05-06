@@ -124,7 +124,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLinearShouldFindCorrectSCCs(){
-        algorithm = new Linear(new NullLoggingStrategy());
+        algorithm = new Linear(new ExplicitVerboseLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());
@@ -202,7 +202,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLinearIterativeShouldFindCorrectSCCs(){
-        algorithm = new LinearIterative(new NullLoggingStrategy());
+        algorithm = new LinearIterative(new ExplicitVerboseLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());

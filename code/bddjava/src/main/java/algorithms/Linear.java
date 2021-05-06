@@ -16,12 +16,11 @@ public class Linear implements GraphSCCAlgorithm{
 
     @Override
     public Set<BDD> run(BddGraph graph) {
+        loggingStrategy.setBddGraph(graph);
         loggingStrategy.logStarted("Linear");
         BDD allNodes = graph.getNodes();
-        FWSkel fwSkel = skelForward(graph, allNodes);
-        Set<BDD> out = linear(graph, fwSkel.getSkel());
+        Set<BDD> out = linear(graph, new Skeleton(graph.getBddFactory().zero(), graph.getBddFactory().zero()));
         loggingStrategy.logFinished("Linear", out);
-
         return out;
     }
 
@@ -45,12 +44,13 @@ public class Linear implements GraphSCCAlgorithm{
 
         BDD SCC = N;
 
-        loggingStrategy.logSccFound(SCC);
+
         while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
             SCC = SCC.or(graph.preImg(SCC).and(FW));
         }
         Set<BDD> C = new HashSet<>();
         C.add(SCC);
+        loggingStrategy.logSccFound(SCC);
 
         BDD V_ = diff(V, FW);
         BDD E_ = graph.restrictEdgesTo(V_);

@@ -13,7 +13,7 @@ public class ReadFile {
         Stream<String> stream = Files.lines(Paths.get(filePath));
         int offset = oneIndexed ? -1 : 0;
         return stream
-                .filter(line -> line.matches("[0-9]+[ \t][0-9]+"))
+                .filter(line -> line.matches("[0-9]+[- \t][0-9]+"))
                 .map(line -> line.split("[- \t]"))
                 .map(lines -> new Edge(Integer.parseInt(lines[0]) + offset, Integer.parseInt(lines[1]) + offset));
     }

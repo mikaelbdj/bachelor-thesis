@@ -1,5 +1,6 @@
 package algorithms;
 
+import bddgraph.BddGraph;
 import net.sf.javabdd.BDD;
 
 import java.util.Set;
@@ -9,6 +10,7 @@ public class NonVerboseLoggingStrategy implements LoggingStrategy {
 
     private long startTime;
     private int symbolicSteps;
+    private int sccCount;
 
     @Override
     public void logSccFound(BDD scc) {
@@ -36,5 +38,10 @@ public class NonVerboseLoggingStrategy implements LoggingStrategy {
     @Override
     public void logSymbolicStep(int step) {
         symbolicSteps += step;
+    }
+
+    @Override
+    public void setBddGraph(BddGraph bddGraph) {
+
     }
 }

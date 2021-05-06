@@ -1,5 +1,6 @@
 package algorithms;
 
+import bddgraph.BddGraph;
 import net.sf.javabdd.BDD;
 
 import java.util.Set;
@@ -37,5 +38,10 @@ public class VerboseLoggingStrategy implements LoggingStrategy {
     @Override
     public void logSymbolicStep(int step) {
         nonVerboseLoggingStrategy.logSymbolicStep(step);
+    }
+
+    @Override
+    public void setBddGraph(BddGraph bddGraph) {
+
     }
 }

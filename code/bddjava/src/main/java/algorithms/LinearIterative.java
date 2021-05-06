@@ -19,11 +19,12 @@ public class LinearIterative implements GraphSCCAlgorithm{
 
     @Override
     public Set<BDD> run(BddGraph graph) {
+        loggingStrategy.setBddGraph(graph);
         loggingStrategy.logStarted("Linear iterative");
         BDD allNodes = graph.getNodes();
         bddStack.clear();
         FWSkel fwSkel = skelForward(graph, allNodes);
-        Set<BDD> out = linear(graph, fwSkel.getSkel());
+        Set<BDD> out = linear(graph, new Skeleton(graph.getBddFactory().zero(), graph.getBddFactory().zero()));
         loggingStrategy.logFinished("Linear iterative", out);
         return out;
     }
@@ -58,13 +59,13 @@ public class LinearIterative implements GraphSCCAlgorithm{
 
             BDD SCC = currentN.id();
 
-            loggingStrategy.logSccFound(SCC);
             while (!(diff(graph.preImg(SCC).and(FW), SCC)).isZero()) {
                 SCC = SCC.or(graph.preImg(SCC).and(FW));
                 //SCC.free();
                 //SCC = newSCC;
             }
             SCCs.add(SCC);
+            loggingStrategy.logSccFound(SCC);
 
             BDD V_ = diff(FW, SCC);
             BDD S_ = diff(newS, SCC);

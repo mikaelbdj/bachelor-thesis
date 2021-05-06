@@ -5,8 +5,8 @@ import experiments.util.Constants;
 
 public class Experiments {
 
-    private static final GraphSCCAlgorithm VERBOSE_LOCKSTEP = new LockstepIterative(new VerboseLoggingStrategy());
-    private static final GraphSCCAlgorithm VERBOSE_LINEAR = new LinearIterative(new VerboseLoggingStrategy());
+    private static final GraphSCCAlgorithm VERBOSE_LOCKSTEP = new LockstepIterative(new ExplicitVerboseLoggingStrategy());
+    private static final GraphSCCAlgorithm VERBOSE_LINEAR = new LinearIterative(new ExplicitVerboseLoggingStrategy());
     private static final GraphSCCAlgorithm NON_VERBOSE_LOCKSTEP = new LockstepIterative(new NonVerboseLoggingStrategy());
     private static final GraphSCCAlgorithm NON_VERBOSE_LINEAR = new LinearIterative(new NonVerboseLoggingStrategy());
 
@@ -47,7 +47,7 @@ public class Experiments {
 
     public static Experiment buildCalls(GraphSCCAlgorithm algorithm) {
         String path = Constants.DATASETS_PATH + "calls.txt";
-        int nodeAmount =399;
+        int nodeAmount = 400;
         return new Experiment.ExperimentBuilder()
                 .setAlgorithm(algorithm)
                 .setFilePath(path)

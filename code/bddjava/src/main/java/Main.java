@@ -7,8 +7,6 @@ import experiments.Experiments;
 
 public class Main {
 
-
-
     public static void main(String[] args) {
         Experiments.CALLS_LINEAR.run();
     }

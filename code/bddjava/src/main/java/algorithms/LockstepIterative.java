@@ -18,6 +18,7 @@ public class LockstepIterative implements GraphSCCAlgorithm{
     }
 
     public  Set<BDD> run(BddGraph bddGraph) {
+        loggingStrategy.setBddGraph(bddGraph);
         loggingStrategy.logStarted("Lockstep iterative");
         BDD allNodes = bddGraph.getNodes();
         bddStack.clear();
