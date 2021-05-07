@@ -53,6 +53,7 @@ public class LinearIterative implements GraphSCCAlgorithm{
                 continue;
 
             if (currentS.isZero())
+                currentN.free();
                 currentN = currentGraph.pick(currentV);
 
             FWSkel newFWskel = skelForward(currentGraph, currentN);
@@ -66,19 +67,26 @@ public class LinearIterative implements GraphSCCAlgorithm{
             while (true) {
                 BDD preAndFW = currentGraph.preImg(SCC).and(FW);
                 loggingStrategy.logSymbolicStep(1);
-                if ((diff(preAndFW, SCC)).isZero()) {
+                BDD notSCC = SCC.not();
+                BDD preAndFWAndNotSCC = preAndFW.and(notSCC);
+                if (preAndFWAndNotSCC.isZero()) {
                     break;
                 }
-                SCC = SCC.or(preAndFW);
-                //SCC.free();
-                //SCC = newSCC;
+                BDD newSCC = SCC.or(preAndFW);
+                SCC.free();
+                preAndFW.free();
+                notSCC.free();
+                preAndFWAndNotSCC.free();
+                SCC = newSCC;
             }
             SCCs.add(SCC);
             loggingStrategy.logSccFound(SCC);
 
-            BDD V_ = diff(FW, SCC);
-            BDD S_ = diff(newS, SCC);
-            BDD N_ = diff(newN, SCC);
+            BDD notSCC = SCC.not();
+
+            BDD V_ = FW.and(notSCC);
+            BDD S_ = newS.and(notSCC);
+            BDD N_ = newN.and(notSCC);
             BDD E_ = currentGraph.restrictEdgesTo(V_);
             bddStack.push(V_);
             bddStack.push(S_);
@@ -86,9 +94,13 @@ public class LinearIterative implements GraphSCCAlgorithm{
             bddStack.push(E_);
 
 
-            V_ = diff(currentV, FW);
-            S_ = diff(currentS, SCC);
-            N_ = currentGraph.preImg(SCC.and(currentS)).and(diff(currentS, SCC));
+            BDD notFW = FW.not();
+
+            V_ = currentV.and(notFW);
+            S_ = currentS.and(notSCC);
+            BDD sccAndCurrentS = SCC.and(currentS);
+            BDD sccAndCurrentSAndNewS = sccAndCurrentS.and(S_);
+            N_ = currentGraph.preImg(sccAndCurrentSAndNewS);
             loggingStrategy.logSymbolicStep(1);
             E_ = currentGraph.restrictEdgesTo(V_);
             bddStack.push(V_);
@@ -96,12 +108,17 @@ public class LinearIterative implements GraphSCCAlgorithm{
             bddStack.push(N_);
             bddStack.push(E_);
 
-        /*    FW.free();
+            FW.free();
             newS.free();
             newN.free();
             currentS.free();
             currentN.free();
-            currentV.free();*/
+            currentV.free();
+            notSCC.free();
+            notFW.free();
+            sccAndCurrentS.free();
+            sccAndCurrentSAndNewS.free();
+
             loggingStrategy.logStackSize(bddStack.size());
         }
 
@@ -115,11 +132,16 @@ public class LinearIterative implements GraphSCCAlgorithm{
         // forward set
         while (!L.isZero()) {
             stack.push(L);
-            FW = FW.or(L);
+            BDD newFW = FW.or(L);
+            FW.free();
+            FW = newFW;
 
             BDD imgL = graph.img(L);
             loggingStrategy.logSymbolicStep(1);
-            L = diff(imgL, FW);
+            BDD notFW = FW.not();
+            L = imgL.and(notFW);
+            notFW.free();
+            imgL.free();
         }
 
         //skeleton of forward set
@@ -127,20 +149,21 @@ public class LinearIterative implements GraphSCCAlgorithm{
         L = stack.pop();
         BDD N_ = graph.pick(L);
         BDD S_ = N_.id();
+        L.free();
         while (!stack.empty()) {
             L = stack.pop();
-            BDD preimgS = graph.preImg(S_);
-            S_ = S_.or(graph.pick(preimgS.and(L)));
+            BDD preImgS = graph.preImg(S_);
+            BDD preImgSAndL = preImgS.and(L);
+            BDD picked = graph.pick(preImgSAndL);
+            BDD newS_ = S_.or(picked);
+            S_.free();
+            S_ = newS_;
+            preImgS.free();
+            preImgSAndL.free();
+            picked.free();
             loggingStrategy.logSymbolicStep(1);
-            //S_.free();
-            //S_ = newS_;
-            //preimgS.free();
         }
 
         return new FWSkel(FW, new Skeleton(S_, N_));
-    }
-
-    private static BDD diff(BDD A, BDD B) {
-        return A.and(B.not());
     }
 }
