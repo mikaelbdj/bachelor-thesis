@@ -26,9 +26,11 @@ public class NonVerboseLoggingStrategy implements LoggingStrategy {
     @Override
     public void logFinished(String algName, Set<BDD> out) {
         System.out.println("Finished algorithm: " + algName);
-        System.out.println("It took " + (System.currentTimeMillis() - startTime) + " ms");
+        long time = System.currentTimeMillis() - startTime;
+        System.out.println("It took " + time + " ms");
         System.out.println(symbolicSteps + " symbolic steps used.");
         System.out.println(out.size() + " SCCs found.");
+        System.out.println("Average ms per symbolic step: " + (double)time/symbolicSteps);
     }
 
     @Override

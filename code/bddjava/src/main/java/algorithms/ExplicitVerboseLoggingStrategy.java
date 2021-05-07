@@ -5,6 +5,10 @@ import net.sf.javabdd.BDD;
 
 import java.util.Set;
 
+/**
+ * Prints the explicit nodes of the found SCCs instead of the BDD representation
+ * Only for debugging - slows run time down a lot
+ */
 public class ExplicitVerboseLoggingStrategy implements LoggingStrategy {
 
     private final LoggingStrategy verboseLoggingStrategy = new VerboseLoggingStrategy();
