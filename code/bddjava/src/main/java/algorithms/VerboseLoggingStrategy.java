@@ -10,6 +10,7 @@ public class VerboseLoggingStrategy implements LoggingStrategy {
     private int sccCount;
     private int nodesCovered;
     private int totalNodes;
+    private BddGraph bddGraph;
     private LoggingStrategy nonVerboseLoggingStrategy;
 
     public VerboseLoggingStrategy(){
@@ -19,11 +20,12 @@ public class VerboseLoggingStrategy implements LoggingStrategy {
 
     @Override
     public void logSccFound(BDD scc) {
-        nodesCovered += scc.satCount();
-        System.out.println("SCC Found: " + scc + "\nTotal: " + ++sccCount);
-        System.out.println("The found SCC contains " + scc.satCount() + " nodes.");
-        System.out.println("It accounts for " + ((scc.satCount()/totalNodes) * 100) + "% of all (" + totalNodes + ") nodes.");
-        System.out.println("So far " + nodesCovered + "/" + totalNodes  + " have been covered (" + ((nodesCovered/totalNodes) * 100) + "%).");
+        int sccNodeCount = (int)(scc.satCount()/Math.pow(2, bddGraph.getV()));
+        nodesCovered += sccNodeCount;
+        System.out.println("Found an SCC! Total: " + ++sccCount);
+        System.out.println("The found SCC contains " + sccNodeCount + " node(s).");
+        System.out.println("It accounts for " + (((double)sccNodeCount/totalNodes) * 100) + "% of all (" + totalNodes + ") node(s).");
+        System.out.println("So far " + nodesCovered + "/" + totalNodes  + " have been covered (" + (((double)nodesCovered/totalNodes) * 100) + "%).\n");
     }
 
     @Override
@@ -38,7 +40,7 @@ public class VerboseLoggingStrategy implements LoggingStrategy {
 
     @Override
     public void logStackSize(int stackSize) {
-        System.out.println("Current stack size: "  + stackSize);
+        System.out.println("Current stack size: "  + stackSize + "\n");
     }
 
     @Override
@@ -48,11 +50,7 @@ public class VerboseLoggingStrategy implements LoggingStrategy {
 
     @Override
     public void setBddGraph(BddGraph bddGraph) {
-
-    }
-
-    @Override
-    public void setTotalNodes(int nodeCount) {
-        this.totalNodes = nodeCount;
+        this.bddGraph = bddGraph;
+        totalNodes = (int)(bddGraph.getNodes().satCount()/Math.pow(2, bddGraph.getV()));
     }
 }

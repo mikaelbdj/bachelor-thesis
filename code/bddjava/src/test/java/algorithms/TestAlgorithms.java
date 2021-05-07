@@ -163,7 +163,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLockstepIterativeShouldFindCorrectSCCs(){
-        algorithm = new LockstepIterative(new NullLoggingStrategy());
+        algorithm = new LockstepIterative(new ExplicitVerboseLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());

@@ -20,7 +20,6 @@ public class LinearIterative implements GraphSCCAlgorithm{
     @Override
     public Set<BDD> run(BddGraph graph) {
         loggingStrategy.setBddGraph(graph);
-        loggingStrategy.setTotalNodes(((int) graph.getNodes().satCount()));
         loggingStrategy.logStarted("Linear iterative");
         BDD allNodes = graph.getNodes();
         bddStack.clear();

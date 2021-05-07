@@ -35,9 +35,4 @@ public class NullLoggingStrategy implements LoggingStrategy {
     public void setBddGraph(BddGraph bddGraph) {
 
     }
-
-    @Override
-    public void setTotalNodes(int nodeCount) {
-
-    }
 }
