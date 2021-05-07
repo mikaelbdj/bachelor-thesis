@@ -46,4 +46,9 @@ public class NonVerboseLoggingStrategy implements LoggingStrategy {
     public void setBddGraph(BddGraph bddGraph) {
 
     }
+
+    @Override
+    public void setTotalNodes(int nodeCount) {
+
+    }
 }

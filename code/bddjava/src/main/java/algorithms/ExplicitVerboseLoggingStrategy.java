@@ -14,9 +14,17 @@ public class ExplicitVerboseLoggingStrategy implements LoggingStrategy {
     private final LoggingStrategy verboseLoggingStrategy = new VerboseLoggingStrategy();
     private BddGraph bddGraph;
     private int sccCount;
+    private int totalNodes;
+    private int nodesCovered;
+
     @Override
     public void logSccFound(BDD scc) {
+        nodesCovered += scc.satCount();
         System.out.println("SCC Found: " + bddGraph.nodeSetToIntegerSet(scc) + ", Total: " + ++sccCount);
+        System.out.println("The found SCC contains " + scc.satCount() + " nodes.");
+        System.out.println("It accounts for " + (scc.satCount()/totalNodes) * 100 + "% of all (" + totalNodes + ") nodes.");
+        System.out.println("It accounts for " + (scc.satCount()/totalNodes) * 100 + "% of all (" + totalNodes + ") nodes.");
+        System.out.println("So far " + nodesCovered + "/" + totalNodes  + " have been covered (" + ((nodesCovered/totalNodes) * 100) + "%).");
     }
 
     @Override
@@ -42,5 +50,10 @@ public class ExplicitVerboseLoggingStrategy implements LoggingStrategy {
     @Override
     public void setBddGraph(BddGraph bddGraph) {
         this.bddGraph = bddGraph;
+    }
+
+    @Override
+    public void setTotalNodes(int nodeCount) {
+        this.totalNodes = nodeCount;
     }
 }

@@ -13,4 +13,5 @@ public interface LoggingStrategy {
     void logStackSize(int stackSize);
     void logSymbolicStep(int step);
     void setBddGraph(BddGraph bddGraph);
+    void setTotalNodes(int nodeCount);
 }
