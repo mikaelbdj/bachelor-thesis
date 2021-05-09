@@ -29,7 +29,7 @@ public class Experiment {
         this.bddCacheSize = cacheSize;
     }
 
-    public void run() {
+    public Set<BDD> run() {
         long startReading = System.currentTimeMillis();
         try (Stream<Edge> stream = ReadFile.read(filePath, nodesAreOneIndexed)) {
             long startCreatingGraph = System.currentTimeMillis();
@@ -39,11 +39,12 @@ public class Experiment {
             long startFindingSCC = System.currentTimeMillis();
             System.out.println("Finished creating graph object: " + (startFindingSCC - startCreatingGraph) + " ms");
 
-            Set<BDD> SCC = algorithm.run(graph);
+            return algorithm.run(graph);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public static class ExperimentBuilder {
