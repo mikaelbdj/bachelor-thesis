@@ -86,7 +86,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLockstepIterativeShouldFindCorrectSCCs(){
-        algorithm = new LockstepIterative(new NullLoggingStrategy());
+        algorithm = new Lockstep(new NullLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());
@@ -125,7 +125,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLinearIterativeShouldFindCorrectSCCs(){
-        algorithm = new LinearIterative(new NullLoggingStrategy());
+        algorithm = new Linear(new NullLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());
@@ -164,7 +164,7 @@ public class TestAlgorithms {
 
     @Test
     public void testLockstepIterativeWithEdgeRestrictionShouldFindCorrectSCCs(){
-        algorithm = new LockstepIterativeWithEdgeRestriction(new NullLoggingStrategy());
+        algorithm = new LockstepWithEdgeRestriction(new NullLoggingStrategy());
         Set<BDD> sccs = algorithm.run(bddGraph);
 
         List<Set<Integer>> intSccs = sccs.stream().map(scc -> bddGraph.nodeSetToIntegerSet(scc)).collect(Collectors.toList());

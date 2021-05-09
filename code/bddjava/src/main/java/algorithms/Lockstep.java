@@ -7,12 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-public class LockstepIterativeWithEdgeRestriction implements GraphSCCAlgorithm{
+public class Lockstep implements GraphSCCAlgorithm{
 
     private final LoggingStrategy loggingStrategy;
     private final Stack<BDD> bddStack;
 
-    public LockstepIterativeWithEdgeRestriction(LoggingStrategy loggingStrategy) {
+    public Lockstep(LoggingStrategy loggingStrategy) {
         this.loggingStrategy = loggingStrategy;
         bddStack = new Stack<>();
     }
@@ -30,14 +30,10 @@ public class LockstepIterativeWithEdgeRestriction implements GraphSCCAlgorithm{
 
 
     private Set<BDD> lockstep(BddGraph bddGraph, BDD P) {
-        bddStack.push(bddGraph.getEdges().id());
         bddStack.push(P.id());
         Set<BDD> SCCs = new HashSet<>();
         while(!bddStack.empty()) {
             BDD currentP = bddStack.pop();
-            BDD currentE = bddStack.pop();
-
-            BddGraph currentGraph = bddGraph.newBddGraph(currentP, currentE);
 
             if (currentP.isZero()) {
                 continue;
@@ -45,16 +41,16 @@ public class LockstepIterativeWithEdgeRestriction implements GraphSCCAlgorithm{
 
             BDD F, B, FFront, BFront, C, converged;
 
-            BDD v = currentGraph.pick(currentP);
+            BDD v = bddGraph.pick(currentP);
             F = v.id();
             B = v.id();
             FFront = v.id();
             BFront = v.id();
 
             while (!FFront.isZero() && !BFront.isZero()) {
-                FFront = extendFFrontier(currentGraph, currentP, FFront, F);
+                FFront = extendFFrontier(bddGraph, currentP, FFront, F);
                 loggingStrategy.logSymbolicStep(1);
-                BFront = extendBFrontier(currentGraph, currentP, BFront, B);
+                BFront = extendBFrontier(bddGraph, currentP, BFront, B);
                 loggingStrategy.logSymbolicStep(1);
                 BDD newF = F.or(FFront);
                 F.free();
@@ -67,7 +63,7 @@ public class LockstepIterativeWithEdgeRestriction implements GraphSCCAlgorithm{
             if (FFront.isZero()) {
                 converged = F;
                 while (!(BFront.and(F).isZero())) {
-                    BFront = extendBFrontier(currentGraph, currentP, BFront, B);
+                    BFront = extendBFrontier(bddGraph, currentP, BFront, B);
                     loggingStrategy.logSymbolicStep(1);
                     BDD newB = B.or(BFront);
                     B.free();
@@ -77,7 +73,7 @@ public class LockstepIterativeWithEdgeRestriction implements GraphSCCAlgorithm{
             else{
                 converged = B;
                 while (!(FFront.and(B).isZero())) {
-                    FFront = extendFFrontier(currentGraph, currentP, FFront, F);
+                    FFront = extendFFrontier(bddGraph, currentP, FFront, F);
                     loggingStrategy.logSymbolicStep(1);
                     BDD newF = F.or(FFront);
                     F.free();
@@ -88,24 +84,17 @@ public class LockstepIterativeWithEdgeRestriction implements GraphSCCAlgorithm{
             SCCs.add(C);
             loggingStrategy.logSccFound(C);
 
-            BDD remainingNodes1 = converged.and(C.not());
-            BDD remainingNodes2 = currentP.and(converged.not());
-            BDD remainingEdges1 = bddGraph.restrictEdgesTo(remainingNodes1);
-            BDD remainingEdges2 = bddGraph.restrictEdgesTo(remainingNodes2);
-
+            BDD rest1 = converged.and(C.not());
+            BDD rest2 = currentP.and(converged.not());
             F.free();
             B.free();
             FFront.free();
             BFront.free();
             v.free();
             currentP.free();
-            currentE.free();
 
-            bddStack.push(remainingEdges1);
-            bddStack.push(remainingNodes1);
-
-            bddStack.push(remainingEdges2);
-            bddStack.push(remainingNodes2);
+            bddStack.push(rest1);
+            bddStack.push(rest2);
 
             loggingStrategy.logStackSize(bddStack.size());
         }
@@ -115,16 +104,20 @@ public class LockstepIterativeWithEdgeRestriction implements GraphSCCAlgorithm{
 
     private static BDD extendFFrontier(BddGraph bddGraph, BDD P, BDD frontier, BDD current) {
         BDD frontierImg = bddGraph.img(frontier);
-        BDD newFrontier = frontierImg.and(current.not());
+        BDD frontierImgAndP = frontierImg.and(P);
+        BDD newFrontier = frontierImgAndP.and(current.not());
         frontierImg.free();
+        frontierImgAndP.free();
         frontier.free();
         return newFrontier;
     }
 
     private static BDD extendBFrontier(BddGraph bddGraph, BDD P, BDD frontier, BDD current) {
         BDD frontierImg = bddGraph.preImg(frontier);
-        BDD newFrontier = frontierImg.and(current.not());
+        BDD frontierImgAndP = frontierImg.and(P);
+        BDD newFrontier = frontierImgAndP.and(current.not());
         frontierImg.free();
+        frontierImgAndP.free();
         frontier.free();
         return newFrontier;
     }

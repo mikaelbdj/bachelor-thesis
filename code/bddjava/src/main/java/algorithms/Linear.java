@@ -7,12 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-public class LinearIterative implements GraphSCCAlgorithm{
+public class Linear implements GraphSCCAlgorithm{
 
     private final LoggingStrategy loggingStrategy;
     private final Stack<BDD> bddStack;
 
-    public LinearIterative(LoggingStrategy loggingStrategy) {
+    public Linear(LoggingStrategy loggingStrategy) {
         this.loggingStrategy = loggingStrategy;
         bddStack = new Stack<>();
     }

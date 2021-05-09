@@ -5,10 +5,10 @@ import experiments.util.Constants;
 
 public class Experiments {
 
-    private static final GraphSCCAlgorithm VERBOSE_LOCKSTEP = new LockstepIterative(new VerboseLoggingStrategy());
-    private static final GraphSCCAlgorithm VERBOSE_LINEAR = new LinearIterative(new VerboseLoggingStrategy());
-    private static final GraphSCCAlgorithm NON_VERBOSE_LOCKSTEP = new LockstepIterative(new NonVerboseLoggingStrategy());
-    private static final GraphSCCAlgorithm NON_VERBOSE_LINEAR = new LinearIterative(new NonVerboseLoggingStrategy());
+    private static final GraphSCCAlgorithm VERBOSE_LOCKSTEP = new Lockstep(new VerboseLoggingStrategy());
+    private static final GraphSCCAlgorithm VERBOSE_LINEAR = new Linear(new VerboseLoggingStrategy());
+    private static final GraphSCCAlgorithm NON_VERBOSE_LOCKSTEP = new Lockstep(new NonVerboseLoggingStrategy());
+    private static final GraphSCCAlgorithm NON_VERBOSE_LINEAR = new Linear(new NonVerboseLoggingStrategy());
 
     public final static Experiment STANFORD_LOCKSTEP = buildStanford(VERBOSE_LOCKSTEP);
     public final static Experiment STANFORD_LINEAR = buildStanford(VERBOSE_LINEAR);
