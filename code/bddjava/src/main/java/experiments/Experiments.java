@@ -14,6 +14,8 @@ public class Experiments {
     public final static Experiment STANFORD_LINEAR = buildStanford(VERBOSE_LINEAR);
     public final static Experiment GNUTELLA_04_LOCKSTEP = buildGnutellap2p04(VERBOSE_LOCKSTEP);
     public final static Experiment GNUTELLA_04_LINEAR = buildGnutellap2p04(VERBOSE_LINEAR);
+    public final static Experiment WIKIPEDIA_VOTES_LOCKSTEP = buildWikipediaVotes(VERBOSE_LOCKSTEP);
+    public final static Experiment WIKIPEDIA_VOTES_LINEAR = buildWikipediaVotes(VERBOSE_LINEAR);
 
     public final static Experiment CALLS_LINEAR = buildCalls(VERBOSE_LINEAR);
     public final static Experiment CALLS_LOCKSTEP = buildCalls(VERBOSE_LOCKSTEP);
@@ -53,6 +55,19 @@ public class Experiments {
                 .setFilePath(path)
                 .setNodeAmount(nodeAmount)
                 .setNodesAreOneIndexed(false)
+                .setBddNodeNum(5000000)
+                .setBddCacheSize(100000)
+                .build();
+    }
+
+    public static Experiment buildWikipediaVotes(GraphSCCAlgorithm algorithm) {
+        String path = Constants.DATASETS_PATH + "wikipedia-votes.txt";
+        int nodeAmount = 8298;
+        return new Experiment.ExperimentBuilder()
+                .setAlgorithm(algorithm)
+                .setFilePath(path)
+                .setNodeAmount(nodeAmount)
+                .setNodesAreOneIndexed(true)
                 .setBddNodeNum(5000000)
                 .setBddCacheSize(100000)
                 .build();
