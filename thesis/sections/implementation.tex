@@ -18,7 +18,7 @@ With these requirements in mind the code base that can be seen on Figure \ref{ma
 
 The symbollic algorithms for computing SCC all implement the interface \texttt{GraphSCCAlgorithm}. The sole method in this interface is a method run, that takes a \texttt{BddGraph} object and returns a Set of BDDs. Each BDD represents a set of nodes, so this returned value is exactly the set of SCCs. This interface serves as an abstraction for the algorithm caller - they should not care about the implementation of the run method; just that it returns the SCCs of the graph they provide. 
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{center}
 \begin{tikzpicture}
 \umlemptypackage[x=3]{javabdd}
@@ -95,7 +95,7 @@ With the framework described above in place, implementation of the lockstep algo
 Slight optimizations have been made from the version described in the pseudocode in \cite{lockstep}. In their pseudocode (page 45) lines 29-34, they only extend one frontier while the other one is empty. Instead of calling img/preimg on empty sets, we simply just check which set has converged and only extend the other frontier. We have also chosen to restrict edges before doing image computations in Lockstep. The algorithm already contains a restriction on vertices, but this is done after image computations by taking the intersection with P. We were inspired by the edge restriction in linear. This change does not change the number of symbolic operations, however it slightly speeds up the time it takes to compute the image.
 Other than this small change, everything is done according to the pseudocode provided. 
 
-\subsubsection*{Trimming}
+\subsubsection{Trimming}
 When describing the lockstep algorithm\cite{lockstep}, the authors mention that the algorithm can be slightly optimized by trimming the set $P$. Trimming refers to removing singleton SCCs, which is done in every call to lockstep. These are of course added to the set of SCCs before being removed.
 
 We have also implemented this variant as we believe it would be interesting to compare it to the original while testing. 
