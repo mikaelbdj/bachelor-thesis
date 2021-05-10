@@ -3,13 +3,17 @@
 
 This section dsicusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
 
+\subsection{Strongly Connected Components}
+A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such that $\forall v,w\in C$, there is a path from $v$ to $w$. In other words, a set of nodes in which every node is reachable from every other node.
+ \todo{add image of BDD, SCC, ...}
+
 \subsection{Binary decision diagrams}
 In this thesis, our primary data structure is a Binary Decision Diagram (BDD). Binary Decision Diagrams represent boolean functions as directed graphs. Each non-terminal vertex $v$ asks about the value of some variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all maximal paths end in one of these. Note that this is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
-Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a binary decision diagram representing it. To compute an output $y\in \{0,1\}$ given an assignment  $x\in\{0,1\}^n$, we start in the root and until we hit a terminal vertex we iterate the following: for each vertex $v$ we encounter (including the root) with variable $x_i$, we branch to $lo(v)$ and $hi(v)$ depending on the value assigned to $x_i$. 
-A BDD can be used to represent many things - in our paper we use it to represent a graph. The common way to represent a graph $G = (V, E)$ by a BDD is to assign each $v\in V$ to be a unique boolean assignment $x\in\{0,1\}^n$. To name all nodes we would trivially need an $n \geq \ceil{\log_2{|V|}}$. A BDD representing all the nodes is simply a BDD that satisfies each boolean assignment $x\in\{0,1\}^n$ that corresponds to a $v\in V$. Similarly, an edge can be represented by a boolean assignment $x\in\{0,1\}^{2n}$, which is the boolean assignment of two nodes concatenated. Thus, a BDD representing all edges is one that satisfies every $x\in\{0,1\}^{2n}$ that corresponds to a $(v_i, v_j)\in E$. This representation makes it easy to compute useful properties. For example, assume we have a set $S\subset V$ of nodes represented by a BDD $N$ and a BDD $M$ representing all edges $E$. We can compute the image of $S$ by restricting\todo{explain} the first $n$ variables of $M$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $N$ \cite{lockstep}.
+Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a binary decision diagram representing it. To compute an output $y\in \{0,1\}$ given an assignment  $x\in\{0,1\}^n$, we start in the root and until we hit a terminal vertex we iterate the following: for each vertex $v$ we encounter (including the root) with variable $x_i$, we branch to $lo(v)$ and $hi(v)$ depending on the value assigned to $x_i$. \\
+BDDs support simple set operations such as union, intersection, difference and equality. Using hashing and heuristics to order variables in an effective way, these operations are computationally cheap.\todo{citation}\\[2mm]
 
-\subsection{Symbolic Notation for Strongly Connected Components}
-We will be dealing with symbolic algorithms for strongly connected component analysis on these BDDs. \todo{add image of BDD, SCC, ...}A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such that $\forall v,w\in C$, there is a path from $v$ to $w$. Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G and $S\subseteq V$, we can derive the following operators: 
+\subsection{Symbolic Notation}
+Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G and $S\subseteq V$, we can derive the following operators: 
 \begin{align*}
 \img S &= \set{v' \in V}{\exists v\in S:(v, v')\in E}{|}\\
 \pre S &= \set{v' \in V}{\exists v\in S:(v', v)\in E}{|}
@@ -18,23 +22,26 @@ We will be dealing with symbolic algorithms for strongly connected component ana
 The image and preimage operations will be refered to as ``steps'', and the complexity of the algorithms will be measured in terms of these steps. \todo{more symbolic operators in Bloem}
 From these operators, we can derive the notion of forward and backward sets, which will be key elements in the algorithms.
 
-A forward set, \FW{S}, is the set of nodes that can be reached from $S$. Similarily, a backward set, \BW{S}, is a set if all the nodes that can reach $S$. These can be expressed formally as the least fixpoint of respectively $\lambda S.\{v\}\cup \text{img}(S)$ and $\lambda S.\{v\}\cup \text{preimg}(S)$. Using mu-calculus \cite{clarke_peled_grumberg_1999} this can be expressed as 
+A forward set, \FW{v}, is the set of nodes that can be reached from $v$. Similarily, a backward set, \BW{v}, is a set if all the nodes that can reach $v$. These can be expressed formally as the least fixpoint of respectively $\lambda S.\{v\}\cup \text{img}(S)$ and $\lambda S.\{v\}\cup \text{preimg}(S)$. Using mu-calculus \cite{clarke_peled_grumberg_1999} this can be expressed as 
 \begin{align}\label{fw}
-\FW{v} &= \mu S.\{v\}\cup \text{img}(S)\\
-\label{bw}\BW{v} &= \mu S.\{v\}\cup \text{preimg}(S)
+\FW{v} &= \mu S.\{v\}\cup \text{img}_G(S)\\
+\label{bw}\BW{v} &= \mu S.\{v\}\cup \text{preimg}_G(S)
 \end{align}
 
 \noindent Examining the definitions of forward and backward sets, the following is trivial:
 \begin{align}
-SCC_G(S) = \FW{S} \cap \BW{S} \label{scc}
-\end{align} \todo{What happens if the set S consists of multiple SCCs?}
-where $SCC_G(S)$ is the SCC in $G$ containing the set $S$\todo{This needs more careful phrasing — S might not be contained in an SCC}. Usually this property will be used only when $S$ is a singleton set $S=\{s\}$ - otherwise $SCC_G(S)$ might be empty.
+SCC_G(v) = \FW{v} \cap \BW{v} \label{scc}
+\end{align} 
+where $SCC_G(v)$ is the SCC in $G$ containing the node $v$.
 
-The authors \cite{linear} introduce a notion of a skeleton and a spine-set. For $u, v \in V$, a skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
+The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. For $u, v \in V$, a skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
 
 A spine-set in turn is a symbolic way of ordering sets of nodes. A spine-set is a subset\todo{not a set} \pair{S}{v} of G, for which it contains a chordless path\todo{explain} for the set $S$ ending in $v$.
 
 If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set. \todo{add illustration}
+
+\subsection{Representing a graph symbolically}
+A BDD can be used to represent many things - in our paper we use it to represent a graph. The common way to represent a graph $G = (V, E)$ by a BDD is to assign each $v\in V$ to be a unique boolean assignment $x\in\{0,1\}^n$. To name all nodes we would trivially need an $n \geq \ceil{\log_2{|V|}}$. A BDD representing all the nodes is simply a BDD that satisfies each boolean assignment $x\in\{0,1\}^n$ that corresponds to a $v\in V$. Similarly, an edge can be represented by a boolean assignment $x\in\{0,1\}^{2n}$, which is the boolean assignment of two nodes concatenated. Thus, a BDD representing all edges is one that satisfies every $x\in\{0,1\}^{2n}$ that corresponds to a $(v_i, v_j)\in E$. This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subset V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we could simply remove the first $n$ variables, and we are left with the last $n$ variables that now represents a set of nodes $S_{img}\subset V$ which is exactly the image of $S$. In terms of BDD operations this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.
 
 \end{document}
 %%% Local Variables:
