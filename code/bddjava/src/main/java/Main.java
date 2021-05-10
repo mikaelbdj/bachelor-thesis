@@ -73,7 +73,9 @@ public class Main {
     public enum AlgorithmType {
         LINEAR("linear", Linear.class),
         LOCKSTEP("lockstep", Lockstep.class),
-        LOCKSTEP_WITH_EDGE_RESTRICTION("lockstep_edge_restrict", LockstepWithEdgeRestriction.class);
+        LOCKSTEP_WITH_EDGE_RESTRICTION("lockstep_edge_restrict", LockstepWithEdgeRestriction.class),
+        LOCKSTEP_WITH_EDGE_RESTRICTION_AND_TRIMMING("lockstep_edge_restrict_trim", LockstepWithEdgeRestrictionAndTrimming.class);
+
 
         private final String name;
         private final Class<? extends GraphSCCAlgorithm> algorithm;

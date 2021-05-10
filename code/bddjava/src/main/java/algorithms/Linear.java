@@ -20,11 +20,11 @@ public class Linear implements GraphSCCAlgorithm{
     @Override
     public Set<BDD> run(BddGraph graph) {
         loggingStrategy.setBddGraph(graph);
-        loggingStrategy.logStarted("Linear iterative");
+        loggingStrategy.logStarted("Linear");
         BDD allNodes = graph.getNodes();
         bddStack.clear();
         Set<BDD> out = linear(graph, new Skeleton(graph.getBddFactory().zero(), graph.getBddFactory().zero()));
-        loggingStrategy.logFinished("Linear iterative", out);
+        loggingStrategy.logFinished("Linear", out);
         return out;
     }
 

@@ -7,38 +7,50 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-public class LockstepWithEdgeRestriction implements GraphSCCAlgorithm{
+public class LockstepWithEdgeRestrictionAndTrimming implements GraphSCCAlgorithm {
 
     private final LoggingStrategy loggingStrategy;
     private final Stack<BDD> bddStack;
 
-    public LockstepWithEdgeRestriction(LoggingStrategy loggingStrategy) {
+    public LockstepWithEdgeRestrictionAndTrimming(LoggingStrategy loggingStrategy) {
         this.loggingStrategy = loggingStrategy;
         bddStack = new Stack<>();
     }
 
-    public  Set<BDD> run(BddGraph bddGraph) {
+    public Set<BDD> run(BddGraph bddGraph) {
         loggingStrategy.setBddGraph(bddGraph);
-        loggingStrategy.logStarted("Lockstep with edge restriction");
+        loggingStrategy.logStarted("Lockstep with edge restriction and trimming");
         BDD allNodes = bddGraph.getNodes();
         bddStack.clear();
         Set<BDD> out = lockstep(bddGraph, allNodes);
-        loggingStrategy.logFinished("Lockstep with edge restriction", out);
+        loggingStrategy.logFinished("Lockstep with edge restriction and trimming", out);
         return out;
     }
-
 
 
     private Set<BDD> lockstep(BddGraph bddGraph, BDD P) {
         bddStack.push(bddGraph.getEdges().id());
         bddStack.push(P.id());
         Set<BDD> SCCs = new HashSet<>();
-        while(!bddStack.empty()) {
+        int loopCount = 0;
+        while (!bddStack.empty()) {
+            loopCount++;
             BDD currentP = bddStack.pop();
             BDD currentE = bddStack.pop();
 
             BddGraph currentGraph = bddGraph.newBddGraph(currentP, currentE);
 
+            if (loopCount == 1) {
+                BDD newP = trim(currentP, currentGraph, SCCs);
+                currentP.free();
+                currentP = newP;
+
+                BDD newE = bddGraph.restrictEdgesTo(currentP);
+                currentE.free();
+                currentE = newE;
+                currentGraph = currentGraph.newBddGraph(currentP, currentE);
+
+            }
             if (currentP.isZero()) {
                 continue;
             }
@@ -73,8 +85,7 @@ public class LockstepWithEdgeRestriction implements GraphSCCAlgorithm{
                     B.free();
                     B = newB;
                 }
-            }
-            else{
+            } else {
                 converged = B;
                 while (!(FFront.and(B).isZero())) {
                     FFront = extendFFrontier(currentGraph, currentP, FFront, F);
@@ -127,5 +138,47 @@ public class LockstepWithEdgeRestriction implements GraphSCCAlgorithm{
         frontierImg.free();
         frontier.free();
         return newFrontier;
+    }
+
+    /**
+     * @param nodeSet  this will be mutated
+     * @param bddGraph graph
+     * @return set of singleton SCCs that were trimmed away
+     */
+    private BDD trim(BDD nodeSet, BddGraph bddGraph, Set<BDD> SCCs) {
+        BDD originalNoteSet = nodeSet.id();
+        BDD newNodeSet = nodeSet.id();
+        BDD nodeSetCopy = nodeSet.id();
+
+        nodeSetCopy.free();
+        nodeSetCopy = newNodeSet;
+        BDD nodeSetImg = bddGraph.img(nodeSetCopy);
+        BDD nodeSetPreImg = bddGraph.preImg(nodeSetCopy);
+        BDD preImgAndImg = nodeSetImg.and(nodeSetPreImg);
+        newNodeSet = nodeSetCopy.and(preImgAndImg);
+        nodeSetImg.free();
+        nodeSetPreImg.free();
+        preImgAndImg.free();
+        System.out.println(newNodeSet.satCount() / Math.pow(2, bddGraph.getV()));
+
+
+        BDD difference = originalNoteSet.and(newNodeSet.not());
+        System.out.println(difference.satCount() / Math.pow(2, bddGraph.getV()));
+
+        int count = 0;
+        while (!difference.isZero()) {
+            System.out.println("picking and adding to SCCs: " + ++count);
+            BDD singletonSCC = bddGraph.pick(difference);
+            SCCs.add(singletonSCC);
+            loggingStrategy.logSccFound(singletonSCC);
+            BDD singletonNot = singletonSCC.not();
+            BDD newDifference = difference.and(singletonNot);
+            singletonNot.free();
+            difference.free();
+            difference = newDifference;
+        }
+        difference.free();
+
+        return newNodeSet;
     }
 }
