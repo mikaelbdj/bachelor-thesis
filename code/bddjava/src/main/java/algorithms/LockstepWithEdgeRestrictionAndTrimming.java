@@ -159,15 +159,10 @@ public class LockstepWithEdgeRestrictionAndTrimming implements GraphSCCAlgorithm
         nodeSetImg.free();
         nodeSetPreImg.free();
         preImgAndImg.free();
-        System.out.println(newNodeSet.satCount() / Math.pow(2, bddGraph.getV()));
-
 
         BDD difference = originalNoteSet.and(newNodeSet.not());
-        System.out.println(difference.satCount() / Math.pow(2, bddGraph.getV()));
 
-        int count = 0;
         while (!difference.isZero()) {
-            System.out.println("picking and adding to SCCs: " + ++count);
             BDD singletonSCC = bddGraph.pick(difference);
             SCCs.add(singletonSCC);
             loggingStrategy.logSccFound(singletonSCC);
