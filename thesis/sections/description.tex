@@ -54,7 +54,7 @@ We recursively call Lockstep on the set of vertices in $P\setminus Converged$. H
     \State \Return SCCs
   \end{algorithmic}
 \end{algorithm}
-
+This algorithm takes $O(n\ log\ n)$ time. Argue. Bloem p.47 
 \subsection{Linear-time algorithm}
 The second algorithm we will be comparing is the linear-time algorithm \cite{linear} introduced by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$. In the paper, the algorithm outputs vertex sets of SCC subgraphs, however here we change this to return a set of SCCs, similarly to the Lockstep algorithm.
 
@@ -98,6 +98,7 @@ Once this is done, this procedure is called recursively on two subgraphs. The fi
     \State \Return SCCs
   \end{algorithmic}
 \end{algorithm}
+\todo{missing parantheses in while loop and in skelforward}
 
 The skelForward algorithm is a helper method introduced by Gentilini et al., which computes the forward set of the given graph and the skeleton of this set. This results in the spine-set of the given graph.
 
@@ -122,8 +123,19 @@ The skelForward algorithm is a helper method introduced by Gentilini et al., whi
     \State \Return $\langle FW, S', N' \rangle$
   \end{algorithmic}
 \end{algorithm}
+\subsection{Complexity}
+Here we analyze the complexity of the two algorithms. We state the results in \label{linear}
+\begin{theorem}\label{linear} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(|V|)$ symbolic steps.
+\end{theorem}
+\begin{proof} A constant number of steps is performed in lines 1-4 and 9-18, as here we call preImg once when calculating the new $N'$ for SCCset1. Each recursive call in the pseudocode (or each iterative call in our implementation) returns an SCC, and since there are at most as many SCCs as there are nodes, we can deduce that over all iterations in lines 1-4 and 9-18, the algorithm performs $O(|V|)$ symbolic steps.
 
+Next, in lines 7-8, nodes are assiged to our SCC. Since each node can be part of at most one SCC, we can also deduce that this part of the algorithm also performs $O(|V|)$ symbolic steps globally.
 
+Lastly, we have the call to skelForward in line 5, which performs the remaining symbolic steps. Here, the number of symbolic steps is the number of elements popped from the stack in skelForward before the termintion of the second recursive call in the pseudocode, or before all node sets are popped from our implementartion of the algorithm. Since each $v\in V$ is inserted into a spine-set at most two times within Linear($V, E, \pair{S}{N}$)\cite{linear}\todo{add page number to Lemma 12}, we know that it will take at most $2|V|$ symbolic steps globally, and thereofore we also achieve the $O(|V|)$ bound for this part.
+
+Given that each of the different parts perform $O(|V|)$ symbollic steps globally, we can conclude that the algorithm runs in $O(|V|)$ symbolic steps.
+\end{proof}
+\todo{add corollary 1 ?}
 \todo{add small example that shows difference between two algorithms}
 \todo{make sure that the variable names are consistent}
 \end{document}
