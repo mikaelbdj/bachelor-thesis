@@ -13,21 +13,29 @@ import java.util.stream.IntStream;
 public class BddGraph {
 
 
-    private BDDFactory bddFactory = BDDFactory.init(1000000, 1000000);
+    private BDDFactory bddFactory;
 
     private Map<Integer, Binary> integerBinaryMap; // TODO: make singleton ?
     private final BDD edges;
     private final BDD nodes;
     private final int v;
 
-    public BddGraph(List<Edge> edges, int verticesCount) {
+
+
+    public BddGraph(List<Edge> edges, int verticesCount, int nodeNum, int cacheSize) {
+        bddFactory = BDDFactory.init(nodeNum, cacheSize);
+        bddFactory.autoReorder(BDDFactory.REORDER_WIN2);
+        bddFactory.reorderVerbose(0);
         v = log2(verticesCount);
         initializeIntegerToBinaryMap(verticesCount);
         this.edges = edgesToBDD(edges);
         nodes = generateNodes();
     }
 
-    public BddGraph(List<Queue<Integer>> adjacencyLists) {
+    public BddGraph(List<Queue<Integer>> adjacencyLists, int nodeNum, int cacheSize) {
+        bddFactory = BDDFactory.init(nodeNum, cacheSize);
+        bddFactory.autoReorder(BDDFactory.REORDER_WIN2);
+        bddFactory.reorderVerbose(0);
         v = log2(adjacencyLists.size());
         initializeIntegerToBinaryMap(adjacencyLists.size());
         edges = adjacencyListsToBDD(adjacencyLists);
@@ -54,17 +62,20 @@ public class BddGraph {
      * @return a node from the set of nodes
      */
     public BDD pick(BDD noteSet) {
-        BDD result = noteSet;
+        BDD result = noteSet.id();
         for (int i = 0; i < v; i++) {
             if (result.isZero()) {
                 return bddFactory.zero();
             }
             BDD pos = result.and(bddFactory.ithVar(i));
             BDD neg = result.and(bddFactory.nithVar(i));
+            result.free();
             if (neg.isZero()) {
+                neg.free();
                 result = pos;
             }
             else {
+                pos.free();
                 result = neg;
             }
         }
@@ -76,7 +87,9 @@ public class BddGraph {
         for (int i = v; i < 2*v; i++) {
             BDD pos = nodeSet.restrict(bddFactory.ithVar(i));
             BDD neg = nodeSet.restrict(bddFactory.nithVar(i));
-            nodeSet = pos.or(neg);
+            BDD newNodeSet = union(pos, neg);
+            nodeSet.free();
+            nodeSet = newNodeSet;
         }
 
         return nodeSet;
@@ -86,7 +99,9 @@ public class BddGraph {
         for (int i = 0; i < v; i++) {
             BDD pos = nodeSet.restrict(bddFactory.ithVar(i));
             BDD neg = nodeSet.restrict(bddFactory.nithVar(i));
-            nodeSet = pos.or(neg);
+            BDD newNodeSet = union(pos, neg);
+            nodeSet.free();
+            nodeSet = newNodeSet;
         }
 
         return nodeSet;
@@ -95,8 +110,7 @@ public class BddGraph {
     public BDD img(BDD nodes) {
         //restrict to variables defined in nodes
         BDD img = edges.and(nodes);
-
-        img = restrictAwayFromVariables(img);
+        BDD restrictedImg = restrictAwayFromVariables(img);
 
         BDDPairing pairing = bddFactory.makePair();
         for (int i = 0; i < v; i++) {
@@ -104,7 +118,9 @@ public class BddGraph {
         }
 
         //rename variables, fx. if v = 2, rename 2->0, 3->1
-        return img.replace(pairing);
+        BDD result =  restrictedImg.replace(pairing);
+        restrictedImg.free();
+        return result;
     }
 
     public BDD preImg(BDD nodes) {
@@ -118,8 +134,9 @@ public class BddGraph {
         BDD replaced = nodes.replace(pairing);
 
         BDD preImg = edges.and(replaced);
-
-        return restrictAwayToVariables(preImg);
+        BDD restrictedPreImg = restrictAwayToVariables(preImg);
+        replaced.free();
+        return restrictedPreImg;
     }
 
     private BDD edgesToBDD(List<Edge> edges) {
@@ -128,7 +145,7 @@ public class BddGraph {
         return edges
                 .stream()
                 .map(this::edgeToBDD)
-                .reduce(bddFactory.zero(), BDD::or);
+                .reduce(bddFactory.zero(), BddGraph::union);
     }
 
     private BDD adjacencyListsToBDD(List<Queue<Integer>> adjacencyLists) {
@@ -141,16 +158,16 @@ public class BddGraph {
                             .stream()
                             .map(j -> new Edge(i,j))
                             .map(this::edgeToBDD)
-                            .reduce(bddFactory.zero(), BDD::or);
+                            .reduce(bddFactory.zero(), BddGraph::union);
                 })
-                .reduce(bddFactory.zero(), BDD::or);
+                .reduce(bddFactory.zero(), BddGraph::union);
     }
 
     private BDD edgeToBDD(Edge edge) {
         Binary edgeBinary = Binary.edgeToBinary(edge, integerBinaryMap);
         return IntStream.range(0, 2 * v)
                 .mapToObj(i -> edgeBinary.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
-                .reduce(bddFactory.one(), BDD::and);
+                .reduce(bddFactory.one(), BddGraph::intersection);
     }
 
 
@@ -192,8 +209,8 @@ public class BddGraph {
             Binary number = integerBinaryMap.get(j);
             BDD node = IntStream.range(0,v)
                     .mapToObj(i -> number.getIth(i) ? bddFactory.ithVar(i) : bddFactory.nithVar(i))
-                    .reduce(bddFactory.one(), BDD::and);
-            nodes = nodes.or(node);
+                    .reduce(bddFactory.one(), BddGraph::intersection);
+            nodes = union(nodes, node);
         }
         return nodes;
     }
@@ -222,5 +239,46 @@ public class BddGraph {
         }
 
         return result;
+    }
+
+
+    public BDD restrictEdgesTo(BDD nodeSet) {
+        BDDPairing pairing = bddFactory.makePair();
+        for (int i = 0; i < v; i++) {
+            pairing.set(i, i+v);
+        }
+        BDD renamedNodeSet  = nodeSet.replace(pairing);
+
+        BDD restriction = edges.and(nodeSet).and(renamedNodeSet);
+
+        return restriction;
+    }
+
+    public static BDD union (BDD... bdds) {
+        BDD result = bdds[0];
+        for (int i = 1; i < bdds.length; i++) {
+            result = result.or(bdds[i]);
+        }
+        for (BDD bdd : bdds) {
+            bdd.free();
+        }
+
+        return result;
+    }
+
+    public static BDD intersection (BDD... bdds) {
+        BDD result = bdds[0];
+        for (int i = 1; i < bdds.length; i++) {
+            result = result.and(bdds[i]);
+        }
+        for (BDD bdd : bdds) {
+            bdd.free();
+        }
+
+        return result;
+    }
+
+    public int getV() {
+        return v;
     }
 }
