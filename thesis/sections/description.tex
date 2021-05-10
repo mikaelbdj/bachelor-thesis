@@ -126,13 +126,12 @@ The skelForward algorithm is a helper method introduced by Gentilini et al., whi
 \subsection{Complexity}
 Here we analyze the complexity of the two algorithms. We state the results in Theorems  and \ref{lockstep} and \ref{linear}. For both of these proofs we charge each step to a node. We further strengthen the complexity of linear stated in Theorem \ref{linear} in Theorem \label{linear-strengthened}, where we consider all BDD operations instead of only symbolic steps.
 
-\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(n(log\ n+p))$ symbolic steps.
+\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|(log\ |n|+p))$ symbolic steps.
 \end{theorem}
-
 \begin{proof}
-
+Here, we charge each step to a node. We prove that we charge no more than $2 log\n +3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$.
 \end{proof}
-
+\todo[inline]{complexity magi}
 \begin{theorem}\label{linear} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(|V|)$ symbolic steps.
 \end{theorem}
 \begin{proof} A constant number of steps is performed in lines 1-4 and 9-18, as here we call preImg once when calculating the new $N'$ for SCCset1. Each recursive call in the pseudocode (or each iterative call in our implementation) returns an SCC, and since there are at most as many SCCs as there are nodes, we can deduce that over all iterations in lines 1-4 and 9-18, the algorithm performs $O(|V|)$ symbolic steps.
