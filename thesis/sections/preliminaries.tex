@@ -6,6 +6,24 @@ This section dsicusses the notions used in the two algorithms we will be focusin
 \subsection{Strongly Connected Components}
 A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such that $\forall v,w\in C$, there is a path from $v$ to $w$. In other words, a set of nodes in which every node is reachable from every other node.
  \todo{add image of BDD, SCC, ...}
+\begin{figure}
+\center
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+    \node (A) at (0,0) {A};
+    \node (B) at (3,0) {B};
+    \node (C) at (6,0) {C};
+    \node (D) at (9,0) {D};
+\end{scope}
+
+\begin{scope}[>={Stealth[black]}]
+    \path [->] (A) edge  (B);
+    \path [->] (B) edge[bend left=30]  (C);
+    \path [->] (C) edge[bend left=30]  (B);
+    \path [->] (C) edge  (D);
+\end{scope}
+\end{tikzpicture}
+\end{figure}
 
 \subsection{Binary decision diagrams}
 In this thesis, our primary data structure is a Binary Decision Diagram (BDD). Binary Decision Diagrams represent boolean functions as directed graphs. Each non-terminal vertex $v$ asks about the value of some variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all maximal paths end in one of these. Note that this is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
