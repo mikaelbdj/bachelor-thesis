@@ -129,7 +129,9 @@ Here we analyze the complexity of the two algorithms. We state the results in Th
 \begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|(log\ |n|+p))$ symbolic steps.
 \end{theorem}
 \begin{proof}
-Here, we charge each step to a node. We prove that we charge no more than $2 log\n +3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$.
+  Here, we charge each step to a node. We prove that we charge no more than $2 log\ n +3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$.
+  The symbolic steps operformed in the Lockstep algorithm are contaoned in the two while loops in lines 5-9 and 14-18. In lines 5-9, there are two symbolic steps per iteration. We iterate the loop at most $k$ times, where $k=|S\cup C|$.
+  So, their argumen is that they split the set of nodes into three; $Converged\setminus C$, $C$ and $P\setminus Converged$. The smaller of the first and last in the list is denoted as S. It is of sie at most n/2. If it is the first, we know that the union with C gives us converged, which is either F or B, menaing that the while loop looped through all the nodes in it (i think?) and therefore we have k iterations here. If however it is the other set P-Converged already contains some part of C (maybe?) so therefore, it is a subset of $S\cup C$, and therefore has size at most k. given that it is two steps per iteration , we get 2k. 
 \end{proof}
 \todo[inline]{complexity magi}
 \begin{theorem}\label{linear} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(|V|)$ symbolic steps.
@@ -143,8 +145,7 @@ Lastly, we have the call to skelForward in line 5, which performs the remaining 
 Given that each of the different parts perform $O(|V|)$ symbollic steps globally, we can conclude that the algorithm runs in $O(|V|)$ symbolic steps.
 \end{proof}
 
-\begin{theorem}\label{linear-strengthened} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(|V|)$ symbolic steps.
-\end{theorem}
+\begin{theorem}\label{linear-strengthened}something something linear\end{theorem}
 \todo{add corollary 1 ?}
 \todo{add small example that shows difference between two algorithms}
 \todo{make sure that the variable names are consistent}
