@@ -126,12 +126,22 @@ The skelForward algorithm is a helper method introduced by Gentilini et al., whi
 \subsection{Complexity}
 Here we analyze the complexity of the two algorithms. We state the results in Theorems  and \ref{lockstep} and \ref{linear}. For both of these proofs we charge each step to a node. We further strengthen the complexity of linear stated in Theorem \ref{linear} in Theorem \label{linear-strengthened}, where we consider all BDD operations instead of only symbolic steps.
 
-\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|(log\ |n|+p))$ symbolic steps.
+\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|log\ |V|)$ symbolic steps.
 \end{theorem}
 \begin{proof}
-  Here, we charge each step to a node. We prove that we charge no more than $2 log\ n +3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$.
-  The symbolic steps operformed in the Lockstep algorithm are contaoned in the two while loops in lines 5-9 and 14-18. In lines 5-9, there are two symbolic steps per iteration. We iterate the loop at most $k$ times, where $k=|S\cup C|$.
-  So, their argumen is that they split the set of nodes into three; $Converged\setminus C$, $C$ and $P\setminus Converged$. The smaller of the first and last in the list is denoted as S. It is of sie at most n/2. If it is the first, we know that the union with C gives us converged, which is either F or B, menaing that the while loop looped through all the nodes in it (i think?) and therefore we have k iterations here. If however it is the other set P-Converged already contains some part of C (maybe?) so therefore, it is a subset of $S\cup C$, and therefore has size at most k. given that it is two steps per iteration , we get 2k. 
+  Here, we charge each step to a node. We prove that we charge no more than $2 log\ |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$.
+
+  
+  
+  The symbolic steps operformed in the Lockstep algorithm are contaoned in the two while loops in lines 5-9 and 14-18. In lines 5-9, there are two symbolic steps per iteration. To find out how mnay iterations we perform, we consider the way the input graph is partitioned. The algorithms splits the graph into $Converged\setminus C$, $C$ and $P\setminus Converged$. Let $S$ be the smaller of the $Converged\setminus C$ and $P\setminus Converged$ sets and $k = |S\cup C|$. We loop as long as both sets are being extended in eadch iteration. 
+
+  If $S = Converged\setminus C$, then $S\cup C = Converged$ and the first while loop performs at most $k$ iterations, as each step extends the $Converged$ set by at least one node, and the Converged set is only extended in the first loop.
+
+  If $S = P\setminus Converged$,then we know that the non-converged nodes are a subset of $|S\cup C|$ and therefore of size at most $k$, and it therefore also loops at most $k$ times.
+  
+  We charge two steps to each node in $S\cup C$, and therefore it takes at most $2k$ steps. The second loop in lines 14-18 performs at most $|C|$. This is because $C = F\cap B$, and in the worst-case the intersection is empty after the first while loop, and therefore we iterate at most as many times as there are nodes in the SCC $C$.
+
+  We then limit the total cost charged to each node by considering a recursion tree. We consider a vertex $x$ of the recursion tree $R$. Each call to the Lockstep algorithm corresponds to $x$. We have $P_x$, which corresponds to the set of nodes $P$ in that invocation, the smaller set $S_x$ as described above and our $SCC_x$. We know that any node $u\in V$ is only passed down one branch of the tree - unitil its SCC is found. We charge 3 steps when the SCC is identified - two for $S\cup C$ and one for $C$, as described above. We then look at what happens at all the vertices of R, where the SCC has not been identified. 
 \end{proof}
 \todo[inline]{complexity magi}
 \begin{theorem}\label{linear} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(|V|)$ symbolic steps.
