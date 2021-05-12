@@ -129,19 +129,19 @@ Here we analyze the complexity of the two algorithms. We state the results in Th
 \begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|log\ |V|)$ symbolic steps.
 \end{theorem}
 \begin{proof}
-  Here, we charge each step to a node. We prove that we charge no more than $2 log\ |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$.
+  Here, we charge each step to a node. We prove that we charge no more than $2 log\ |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$. We start by considering the numnber of steps and iterations for both loops, and then limit the total cost charged to a node.
 
-  
-  
-  The symbolic steps operformed in the Lockstep algorithm are contaoned in the two while loops in lines 5-9 and 14-18. In lines 5-9, there are two symbolic steps per iteration. To find out how mnay iterations we perform, we consider the way the input graph is partitioned. The algorithms splits the graph into $Converged\setminus C$, $C$ and $P\setminus Converged$. Let $S$ be the smaller of the $Converged\setminus C$ and $P\setminus Converged$ sets and $k = |S\cup C|$. We loop as long as both sets are being extended in eadch iteration. 
+  In the loop in lines 5-11 we charge 2 symbolic steps per iteration. We iterate through the loop as long as both B and F are being extended. We therefore look at the the subgraphs that result from an invocation of lockstep. We have $Converged\setminus C$, $C$ and $P\setminus Converged$. Let $S$ be the smaller of $Converged\setminus C$ and $P\setminus Converged$ and $k = |S\cup C|$.
 
-  If $S = Converged\setminus C$, then $S\cup C = Converged$ and the first while loop performs at most $k$ iterations, as each step extends the $Converged$ set by at least one node, and the Converged set is only extended in the first loop.
+  If $S = Converged\setminus C$, then we know that $S\cup C$ is the $Converged$ set, and since in each iteration we add at least one element to the set, we know that it takes at most $k$ iterations.
 
-  If $S = P\setminus Converged$,then we know that the non-converged nodes are a subset of $|S\cup C|$ and therefore of size at most $k$, and it therefore also loops at most $k$ times.
-  
-  We charge two steps to each node in $S\cup C$, and therefore it takes at most $2k$ steps. The second loop in lines 14-18 performs at most $|C|$. This is because $C = F\cap B$, and in the worst-case the intersection is empty after the first while loop, and therefore we iterate at most as many times as there are nodes in the SCC $C$.
+  The other case is $S=P\setminus Converged$. Here, we know that the nodes, which are in the non-converged set at the time of termination of the loop are a subset of $S\cup C$. Therefore, the loop iterates at most $k$ times.
 
-  We then limit the total cost charged to each node by considering a recursion tree. We consider a vertex $x$ of the recursion tree $R$. Each call to the Lockstep algorithm corresponds to $x$. We have $P_x$, which corresponds to the set of nodes $P$ in that invocation, the smaller set $S_x$ as described above and our $SCC_x$. We know that any node $u\in V$ is only passed down one branch of the tree - unitil its SCC is found. We charge 3 steps when the SCC is identified - two for $S\cup C$ and one for $C$, as described above. We then look at what happens at all the vertices of R, where the SCC has not been identified. 
+  The second while loop in lines 14-18 performs at most $|C|$ iterations, as it only extends on the non-converged set. In the worst-case, this set does not contain any node from $C$ yet and must be extended by all these nodes.
+
+  To limit the total cost per node, we consider a recursion tree R pictured in Figure \todo{add figure}. Each call to the algorithm corresponds to a vertex $x$ of R, where $P_x$, $S_x$ and $C_x$ are the $P$, $S$ and $C$ corresponding to that invocation. Any node $u \in V$ is only passed down one branch of R. 3 steps are performed at the vertex in which the SCC of $u$ is found. We now look at the vertices in which the SCC has not been found yet. Let $x'$ be the closest descendant of $x$ where $u$ is charged again. We know that $|P_{x'}|\leq |S_x|$, as $P_{x'}$ is either $S_x$ or one of its descendants. Since $|S_{x'}|\leq |P_{x'}|/2$ and therefore $|S_{x'}|\leq |S_{x}|/2$, which tells us that each node $u$ is charged at most $log\ |V|$ times and an additional 3 steps when its SCC is found.
+
+  This gives us the cost of $2|V|\ log\ |V| + 3|V|$ steps, resulting in the $O(|V|log\ |V|)$ bound.
 \end{proof}
 \todo[inline]{complexity magi}
 \begin{theorem}\label{linear} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(|V|)$ symbolic steps.
