@@ -1,7 +1,27 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
 
-The description of the implementation of the two algorithms, as well as the framework for them can be seen below. When conveting the psuedocode into Java code, we had to make some small changes. The algorithms decscribed in the two papers \cite{lockstep}\cite{linear} use recursion, however when testing during the process, we experineced that this meant stack overflow on large datasets. We have therefore chosen to use the iterative approach.
+The description of the implementation of the two algorithms, as well as the framework for them can be seen below. When conveting the psuedocode into Java code, we had to make some small changes. The algorithms decscribed in the two papers \cite{lockstep}\cite{linear} use recursion, however when testing during the process, we experineced that this meant stack overflow on large datasets. We have therefore chosen to use the iterative approach, which can be seen below.
+
+What this means for the algorithms is that first we push the algorithm's arguments to a stack. We then start a while loop while there is something on the stack. We pop these arguments and run the algorithm on them, appending the SCC we have found to our set of SCCs. We then split the graph into two subgraphs, using the appropriate splitting method. We push these two subgraphs to the stack and we run the loop again. At last, we return the SCCs we have found.
+
+\begin{algorithm}[H]
+  \caption{sccAlgorithm($arguments$)}
+  \begin{algorithmic}[1]
+    \Let{stack}{$arguments$}
+    \Statex
+    \While{stack $\neq\emptyset$}
+    \Let{$arguments$}{pop(stack)}
+    \State \(\triangleright\) Run an iteration of the algorithm on the arguments and find SCC
+    \Let{SCCs}{SCCs$\cup$SCC}
+    \State \(\triangleright\) Split graph according to algorithm into graph subsets $subset1$ and $subset2$
+    \State push(stack, $subset1$)
+    \State push(stack, $subset2$)
+    \EndWhile
+    \Statex
+    \State \Return SCCs
+  \end{algorithmic}
+\end{algorithm}
 
 \subsection{The JavaBDD library}
 An early decision was made to use the JavaBDD library when implementing the algorithms. \cite{whaley}
