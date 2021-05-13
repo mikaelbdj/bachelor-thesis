@@ -1,7 +1,7 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
 
-This section dsicusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
+This section discusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
 
 \subsection{Strongly Connected Components}
 A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such that $\forall v,w\in C$, there is a path from $v$ to $w$. In other words, a set of nodes in which every node is reachable from every other node.
@@ -49,7 +49,7 @@ Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a b
     \path [->] (C) edge  (D);
 \end{scope}
 \end{tikzpicture}
-\caption{A small example of a BDD. This particular BDD computes the boolean function $\text{XOR}:\{0,1\}^2 \rightarrow \{0,1\}$}
+\caption{Small BDD computing the boolean function $\text{XOR}:\{0,1\}^2 \rightarrow \{0,1\}$}
 \label{simplebdd}
 \end{figure}
 
@@ -160,9 +160,11 @@ where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustra
 \caption{An illustration showing that we can find the SCC containing node 1, by taking the intersection of $\FW{v}$ and $\BW{v}$. Indeed $SCC_G(1) = \{1,2\}$. } 
 \end{figure}
 
-The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. For $u, v \in V$, a skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
-\todo{fix according to comments\\ }
-A spine-set in turn is a symbolic way of ordering sets of nodes. A spine-set is a subset\todo{not a set} \pair{S}{v} of G, for which it contains a chordless path\todo{explain} for the set $S$ ending in $v$.
+The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. First, we need to define a chordless path. A chordless path is a path between nodes $v_0$ and $v_p$ iff for all $0\leq i \leq j \leq p$, where $j-i>1$ and there is no edge from $v_i$ and $v_j$\todo{maybe explain more intuitively if possible}.
+
+A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S, v} is a spine-set of G iff G contains a chordless path consisting of the set of vertices $S$, ending in $v$. $v$ can also be called the spine-anchor of the spine-set.
+
+For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton iff $u$ is also a node in $\FW{u}$ and the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
 
 If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set. \todo{add illustration Gentilini p. 139-141}
 
@@ -403,8 +405,6 @@ Now compute the intersection of this and the BDD we constructed of all edges in 
 \end{figure}
 
 Indeed if we look at the resulting BDD in Figure \ref{resultingBdd}, it symbolically represents the set $\{01,11\}$, which is exactly corresponds to our explicit findings earlier in Figure \ref{imgpreimg} ($\{1,3\}$).
-
-
 
 
 \end{document}

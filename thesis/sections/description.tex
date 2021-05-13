@@ -126,12 +126,22 @@ The skelForward algorithm is a helper method introduced by Gentilini et al., whi
 \subsection{Complexity}
 Here we analyze the complexity of the two algorithms. We state the results in Theorems  and \ref{lockstep} and \ref{linear}. For both of these proofs we charge each step to a node. We further strengthen the complexity of linear stated in Theorem \ref{linear} in Theorem \label{linear-strengthened}, where we consider all BDD operations instead of only symbolic steps.
 
-\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|(log\ |n|+p))$ symbolic steps.
+\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|log\ |V|)$ symbolic steps.
 \end{theorem}
 \begin{proof}
-  Here, we charge each step to a node. We prove that we charge no more than $2 log\ n +3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$.
-  The symbolic steps operformed in the Lockstep algorithm are contaoned in the two while loops in lines 5-9 and 14-18. In lines 5-9, there are two symbolic steps per iteration. We iterate the loop at most $k$ times, where $k=|S\cup C|$.
-  So, their argumen is that they split the set of nodes into three; $Converged\setminus C$, $C$ and $P\setminus Converged$. The smaller of the first and last in the list is denoted as S. It is of sie at most n/2. If it is the first, we know that the union with C gives us converged, which is either F or B, menaing that the while loop looped through all the nodes in it (i think?) and therefore we have k iterations here. If however it is the other set P-Converged already contains some part of C (maybe?) so therefore, it is a subset of $S\cup C$, and therefore has size at most k. given that it is two steps per iteration , we get 2k. 
+  Here, we charge each step to a node. We prove that we charge no more than $2 log\ |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$. We start by considering the numnber of steps and iterations for both loops, and then limit the total cost charged to a node.
+
+  In the loop in lines 5-11 we charge 2 symbolic steps per iteration. We iterate through the loop as long as both B and F are being extended. We therefore look at the the subgraphs that result from an invocation of lockstep. We have $Converged\setminus C$, $C$ and $P\setminus Converged$. Let $S$ be the smaller of $Converged\setminus C$ and $P\setminus Converged$ and $k = |S\cup C|$.
+
+  If $S = Converged\setminus C$, then we know that $S\cup C$ is the $Converged$ set, and since in each iteration we add at least one element to the set, we know that it takes at most $k$ iterations.
+
+  The other case is $S=P\setminus Converged$. Here, we know that the nodes, which are in the non-converged set at the time of termination of the loop are a subset of $S\cup C$. Therefore, the loop iterates at most $k$ times.
+
+  The second while loop in lines 14-18 performs at most $|C|$ iterations, as it only extends on the non-converged set. In the worst-case, this set does not contain any node from $C$ yet and must be extended by all these nodes.
+
+  To limit the total cost per node, we consider a recursion tree R pictured in Figure \todo{add figure}. Each call to the algorithm corresponds to a vertex $x$ of R, where $P_x$, $S_x$ and $C_x$ are the $P$, $S$ and $C$ corresponding to that invocation. Any node $u \in V$ is only passed down one branch of R. 3 steps are performed at the vertex in which the SCC of $u$ is found. We now look at the vertices in which the SCC has not been found yet. Let $x'$ be the closest descendant of $x$ where $u$ is charged again. We know that $|P_{x'}|\leq |S_x|$, as $P_{x'}$ is either $S_x$ or one of its descendants. Since $|S_{x'}|\leq |P_{x'}|/2$ and therefore $|S_{x'}|\leq |S_{x}|/2$, which tells us that each node $u$ is charged at most $log\ |V|$ times and an additional 3 steps when its SCC is found.
+
+  This gives us the cost of $2|V|\ log\ |V| + 3|V|$ steps, resulting in the $O(|V|log\ |V|)$ bound.
 \end{proof}
 \todo[inline]{complexity magi}
 \begin{theorem}\label{linear} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(|V|)$ symbolic steps.
