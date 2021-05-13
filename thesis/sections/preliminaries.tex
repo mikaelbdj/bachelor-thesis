@@ -80,6 +80,7 @@ Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a 
 \end{scope}
 \end{tikzpicture}
 \caption{red: $\pre {\{1\}} = \{0\}$, blue: $\img {\{2\}} = \{1,3\}$ }
+\label{imgpreimg}
 \end{figure}
 
 The image and preimage operations will be refered to as ``steps'', and the complexity of the algorithms will be measured in terms of these steps. \todo{more symbolic operators in Bloem}
@@ -240,20 +241,169 @@ As an example here are two small BDDs representing the edges $(00,01)$ and $(01,
 \end{scope}
 \end{tikzpicture}
 \caption{Symbolic representations (via BDDs) of the sets $\{0001\}$ (left) and $\{0110\}$ (right)}
-\label{simplebdd}
 \end{figure}
 
 These should be seen as symbolical representations of sets (sets consisting of all satisfying assignments). To compute the union of two sets symbolically, we can mechanically compute the OR of two BDDs as illustrated:
 
-% illustration of the two bdds ORED
+\begin{figure}[H]
+\center
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+    \node (A) at (0,0) {0};
+    \node (B) at (-1.5,-1.2) {1};
+    \node (C) at (0,-1.2) {2};
+    \node (D) at (-1.5,-2.4) {2};
+    \node (E) at (0,-2.4) {3};
+    \node (F) at (-1.5,-3.6) {3}; 
+    \node[style={rectangle}] (G) at (0,-4.8) {0};
+    \node[style={rectangle}] (H) at (-1.5,-4.8) {1};
+\end{scope}
+
+\begin{scope}[>={Stealth[black]}]
+    \path [->,dashed] (A) edge  (B);
+    \path [->,dashed] (B) edge  (C);
+    \path [->] (B) edge  (D);
+    \path [->,dashed] (C) edge  (E);
+    \path [->] (D) edge  (F);
+    \path [->] (A) edge[bend left=50]   (G);
+    \path [->] (C) edge[bend left=30]  (G);
+    \path [->,dashed] (E) edge  (G);
+    \path [->,dashed] (D) edge  (G);
+    \path [->,dashed] (F) edge  (H);
+    \path [->] (E) edge  (H);
+\end{scope}
+\end{tikzpicture}
+\caption{Symbolic representation of the set $\{0001,0110\}$.}
+\end{figure}
 
 Using this process we can construct a BDD representing the set of all edges in our simple graph from Figure \ref{graphforbdd}:
 
-% BDD of all edges
-This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we could simply remove the first $n$ variables, and we are left with the last $n$ variables that now represents a set of nodes $S_{img}\subseteq V$, which is exactly the image of $S$. In terms of BDD operations this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.\\
-Below is an example of this process:
+\begin{figure}[H]
+\center
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+    \node (A) at (0,0) {0};
+    \node (B) at (-0.5,-1.2) {1};
+    \node (C) at (0.5,-1.2) {1};
+    \node (D) at (0.5,-2.4) {2};
+    \node (E) at (1.5,-2.4) {2};
+    \node (F) at (-0.5,-4) {3};
+    \node (G) at (0.5,-4) {3};
+    \node[style={rectangle}] (H) at (-0.5,-5.5) {0};
+    \node[style={rectangle}] (I) at (0.5,-5.5) {1};
+\end{scope}
 
-% some example of computing image of the node set
+\begin{scope}[>={Stealth[black]}]
+    \path [->] (A) edge  (B);
+    \path [->,dashed] (A) edge  (C);
+    \path [->] (C) edge  (D);
+    \path [->,dashed] (C) edge  (E);
+    \path [->,dashed] (B) edge  (F);
+    \path [->] (D) edge  (G);
+    \path [->,dashed] (E) edge  (F);
+    \path [->,dashed] (F) edge  (H);
+    \path [->] (F) edge  (I);
+    \path [->] (G) edge  (H);
+    \path [->,dashed] (G) edge  (I);
+    \path [->,dashed] (D) edge  (H);
+    \path [->] (E) edge[bend left=20]  (H);
+    \path [->] (B) edge[bend right=40]  (H);
+\end{scope}
+\end{tikzpicture}
+\caption{Symbolic representation of the set $\{0001,0110,1001,1011\}$. This corresponds to all edges of our graph in Figure \ref{graphforbdd}. Since all nodes are part of an edge, this BDD can fully symbolically represent the original graph.}
+\label{edgebdd}
+\end{figure}
+
+This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we remove the first $n$ variables, and then rename the last $n$ variables to their counterparts in the first $n$ variables (subtract $n$ from every variable). We are left with a BDD representing a set of nodes $S_{img}\subseteq V$, which is exactly the image of $S$. In terms of BDD operations this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.\\
+As an example, let us compute the image of node $10$, as we did in the original graph in Figure \ref{imgpreimg} (blue). The BDD representing $\{10\}$ is simple:
+
+\begin{figure}[H]
+\center
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+    \node (A) at (0,0) {0};
+    \node (B) at (0,-1.2) {1};
+    \node[style={rectangle}] (C) at (-0.5,-2.4) {1};
+    \node[style={rectangle}] (D) at (0.5,-2.4) {0};
+\end{scope}
+
+\begin{scope}[>={Stealth[black]}]
+    \path [->](A) edge  (B);
+    \path [->,dashed](B) edge  (C);
+    \path [->](B) edge  (D);
+    \path [->,dashed](A) edge[bend left=30]  (D);
+\end{scope}
+\end{tikzpicture}
+\caption{Symbollic representation of $\{10\}$}
+\end{figure}
+Now compute the intersection of this and the BDD we constructed of all edges in Figure \ref{edgebdd}. Remove the first two variables and rename the variables accordingly as described before. These three steps are illustrated in Figure  \ref{imgprocess}:
+
+\begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+    \node (A) at (0,0) {0};
+    \node (B) at (0,-1.2) {1};
+    \node (C) at (0,-2.4) {3};
+    \node[style={rectangle}] (D) at (-0.5,-3.6) {1};
+    \node[style={rectangle}] (E) at (0.5,-3.6) {0};
+\end{scope}
+
+\begin{scope}[>={Stealth[black]}]
+    \path [->](A) edge  (B);
+    \path [->,dashed](B) edge  (C);
+    \path [->](B) edge[bend left=20]  (E);
+    \path [->,dashed](A) edge[bend left=30]  (E);
+    \path [->,dashed](C) edge  (E);
+    \path [->](C) edge  (D);
+\end{scope}
+\end{tikzpicture}
+         \caption{$B_E' = B_E\cap B_S$ - Done by ANDing the two BDDs.}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+    \node (C) at (0,-2.4) {3};
+    \node[style={rectangle}] (D) at (-0.5,-3.6) {1};
+    \node[style={rectangle}] (E) at (0.5,-3.6) {0};
+\end{scope}
+
+\begin{scope}[>={Stealth[black]}]
+    \path [->,dashed](C) edge  (E);
+    \path [->](C) edge  (D);
+\end{scope}
+\end{tikzpicture}
+         \caption{$B_E''$. Remove the first 2 variables}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle,thick,draw}]
+    \node (C) at (0,-2.4) {1};
+    \node[style={rectangle}] (D) at (-0.5,-3.6) {1};
+    \node[style={rectangle}] (E) at (0.5,-3.6) {0};
+\end{scope}
+
+\begin{scope}[>={Stealth[black]}]
+    \path [->,dashed](C) edge  (E);
+    \path [->](C) edge  (D);
+\end{scope}
+\end{tikzpicture}
+         \caption{$B_{img} = B_E''[2\rightarrow 0, 3\rightarrow 1]$}. Rename the variables
+         \label{resultingBdd}
+\end{subfigure}
+\center
+
+\caption{The full process of computing the image of $S=\{10\}$. }
+\label{imgprocess}
+\end{figure}
+
+Indeed if we look at the resulting BDD in Figure \ref{resultingBdd}, it symbolically represents the set $\{01,11\}$, which is exactly corresponds to our explicit findings earlier in Figure \ref{imgpreimg} ($\{1,3\}$).
+
 
 
 
