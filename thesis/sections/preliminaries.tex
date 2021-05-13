@@ -49,7 +49,7 @@ Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a b
     \path [->] (C) edge  (D);
 \end{scope}
 \end{tikzpicture}
-\caption{A small example of a BDD. This particular BDD computes the boolean function $\text{XOR}:\{0,1\}^2 \rightarrow \{0,1\}$}
+\caption{Small BDD computing the boolean function $\text{XOR}:\{0,1\}^2 \rightarrow \{0,1\}$}
 \label{simplebdd}
 \end{figure}
 
@@ -159,9 +159,11 @@ where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustra
 \caption{An illustration showing that we can find the SCC containing node 1, by taking the intersection of $\FW{v}$ and $\BW{v}$. Indeed $SCC_G(1) = \{1,2\}$. } 
 \end{figure}
 
-The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. For $u, v \in V$, a skeleton of a forward set of the vertex $v$ \FW{v} is \pair{S}{v}, iff the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
-\todo{fix according to comments\\ }
-A spine-set in turn is a symbolic way of ordering sets of nodes. A spine-set is a subset\todo{not a set} \pair{S}{v} of G, for which it contains a chordless path\todo{explain} for the set $S$ ending in $v$.
+The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. First, we need to define a chordless path. A chordless path is a path between nodes $v_0$ and $v_p$ iff for all $0\leq i \leq j \leq p$, where $j-i>1$ and there is no edge from $v_i$ and $v_j$\todo{maybe explain more intuitively if possible}.
+
+A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S, v} is a spine-set of G iff G contains a chordless path consisting of the set of vertices $S$, ending in $v$. $v$ can also be called the spine-anchor of the spine-set.
+
+For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton iff $u$ is also a node in $\FW{u}$ and the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
 
 If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set. \todo{add illustration Gentilini p. 139-141}
 
@@ -253,7 +255,7 @@ Using this process we can construct a BDD representing the set of all edges in o
 This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we could simply remove the first $n$ variables, and we are left with the last $n$ variables that now represents a set of nodes $S_{img}\subseteq V$, which is exactly the image of $S$. In terms of BDD operations this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.\\
 Below is an example of this process:
 
-% some example of computing image of the node set
+\todo{some example of computing image of the node set}
 
 
 
