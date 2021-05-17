@@ -199,6 +199,9 @@ public class LinearWithTrimming implements GraphSCCAlgorithm{
         loggingStrategy.logSymbolicStep(2);
 
         BDD difference = originalNoteSet.and(newNodeSet.not());
+        int trimCount = (int)(difference.satCount()/Math.pow(2, bddGraph.getV()));
+
+        loggingStrategy.logString("Trimming found " + trimCount + " SCCs.");
 
         while (!difference.isZero()) {
             BDD singletonSCC = bddGraph.pick(difference);

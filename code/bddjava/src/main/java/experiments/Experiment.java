@@ -7,6 +7,8 @@ import experiments.util.ReadFile;
 import net.sf.javabdd.BDD;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,10 +35,11 @@ public class Experiment {
         long startReading = System.currentTimeMillis();
         try (Stream<Edge> stream = ReadFile.read(filePath, nodesAreOneIndexed)) {
             long startCreatingGraph = System.currentTimeMillis();
+            List<Edge> edges = stream.collect(Collectors.toList());
             System.out.println("Finished reading file: " + (startCreatingGraph - startReading) + " ms");
-            System.out.println("Found " + nodeAmount + " nodes in the graph, one_indexed = " + nodesAreOneIndexed);
+            System.out.println("Found " + nodeAmount + " nodes and " + edges.size() + " edges in the graph, one_indexed = " + nodesAreOneIndexed);
 
-            BddGraph graph = new BddGraph(stream.collect(Collectors.toList()), nodeAmount, bddNodeNum, bddCacheSize);
+            BddGraph graph = new BddGraph(edges, nodeAmount, bddNodeNum, bddCacheSize);
 
             long startFindingSCC = System.currentTimeMillis();
             System.out.println("Finished creating graph object: " + (startFindingSCC - startCreatingGraph) + " ms");
