@@ -14,13 +14,13 @@ import java.util.stream.Stream;
 public class Experiment {
 
     private final String filePath;
-    private final int nodeAmount;
+    private int nodeAmount;
     private final GraphSCCAlgorithm algorithm;
-    private final boolean nodesAreOneIndexed;
+    private Boolean nodesAreOneIndexed;
     private final int bddNodeNum;
     private final int bddCacheSize;
 
-    private Experiment(String filePath, int nodeAmount, GraphSCCAlgorithm algorithm, boolean nodesAreOneIndexed, int nodeNum, int cacheSize) {
+    private Experiment(String filePath, int nodeAmount, GraphSCCAlgorithm algorithm, Boolean nodesAreOneIndexed, int nodeNum, int cacheSize) {
         this.filePath = filePath;
         this.nodeAmount = nodeAmount;
         this.algorithm = algorithm;
@@ -51,7 +51,7 @@ public class Experiment {
         private String filePath;
         private Integer nodeAmount;
         private GraphSCCAlgorithm algorithm;
-        private boolean nodesAreOneIndexed;
+        private Boolean nodesAreOneIndexed;
         private int bddNodeNum = 1000000;
         private int bddCacheSize = 10000;
 
@@ -88,7 +88,17 @@ public class Experiment {
         public Experiment build() {
             if (filePath == null) throw new RuntimeException("Please provide a file path for an experiment");
             if (algorithm == null) throw new RuntimeException("Please provide a algorithm for an experiment");
-            if (nodeAmount == null) throw new RuntimeException("Please provide a node amount for an experiment");
+
+            try {
+                if (nodesAreOneIndexed == null) {
+                    nodesAreOneIndexed = ReadFile.inferOneIndexed(filePath);
+                }
+                if (nodeAmount == null) {
+                    nodeAmount = ReadFile.inferNodeAmount(filePath, nodesAreOneIndexed);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return new Experiment(filePath, nodeAmount, algorithm, nodesAreOneIndexed, bddNodeNum, bddCacheSize);
         }
     }
