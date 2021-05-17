@@ -54,6 +54,13 @@ public class Main {
         Experiment.ExperimentBuilder experimentBuilder = new Experiment.ExperimentBuilder();
         experimentBuilder.setAlgorithm(algorithm);
         experimentBuilder.setFilePath(fileNameStr);
+
+        List<String> nodeNumArg = params.get("n");
+        if (nodeNumArg != null) {
+            int nodeNum = Integer.parseInt(nodeNumArg.get(0));
+            experimentBuilder.setBddNodeNum(nodeNum);
+        }
+
         Experiment experiment = experimentBuilder.build();
         experiment.run();
 
@@ -63,8 +70,9 @@ public class Main {
     private static void initAlgorithms() {
         algorithms.put("lockstep", (loggingStrategy) -> new Lockstep(loggingStrategy));
         algorithms.put("linear", (loggingStrategy) -> new Linear(loggingStrategy));
-        algorithms.put("lockstep_edge_restrict_with_trim", (loggingStrategy) -> new LockstepWithEdgeRestrictionAndTrimming(loggingStrategy));
+        algorithms.put("lockstep_edge_restrict_trim", (loggingStrategy) -> new LockstepWithEdgeRestrictionAndTrimming(loggingStrategy));
         algorithms.put("lockstep_edge_restrict", (loggingStrategy) -> new LockstepWithEdgeRestriction(loggingStrategy));
+        algorithms.put("linear_trim", (loggingStrategy) -> new LinearWithTrimming(loggingStrategy));
     }
 
     private static final Map<String, LoggingStrategy> loggingStrategies = new HashMap<>();

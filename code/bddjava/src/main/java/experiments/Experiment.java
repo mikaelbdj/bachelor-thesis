@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 public class Experiment {
 
     private final String filePath;
-    private int nodeAmount;
+    private final int nodeAmount;
     private final GraphSCCAlgorithm algorithm;
-    private Boolean nodesAreOneIndexed;
+    private final Boolean nodesAreOneIndexed;
     private final int bddNodeNum;
     private final int bddCacheSize;
 
@@ -34,6 +34,8 @@ public class Experiment {
         try (Stream<Edge> stream = ReadFile.read(filePath, nodesAreOneIndexed)) {
             long startCreatingGraph = System.currentTimeMillis();
             System.out.println("Finished reading file: " + (startCreatingGraph - startReading) + " ms");
+            System.out.println("Found " + nodeAmount + " nodes in the graph, one_indexed = " + nodesAreOneIndexed);
+
             BddGraph graph = new BddGraph(stream.collect(Collectors.toList()), nodeAmount, bddNodeNum, bddCacheSize);
 
             long startFindingSCC = System.currentTimeMillis();

@@ -45,7 +45,7 @@ public class LockstepWithEdgeRestrictionAndTrimming implements GraphSCCAlgorithm
                 currentP.free();
                 currentP = newP;
 
-                BDD newE = bddGraph.restrictEdgesTo(currentP);
+                BDD newE = currentGraph.restrictEdgesTo(currentP);
                 currentE.free();
                 currentE = newE;
                 currentGraph = currentGraph.newBddGraph(currentP, currentE);
@@ -140,11 +140,7 @@ public class LockstepWithEdgeRestrictionAndTrimming implements GraphSCCAlgorithm
         return newFrontier;
     }
 
-    /**
-     * @param nodeSet  this will be mutated
-     * @param bddGraph graph
-     * @return set of singleton SCCs that were trimmed away
-     */
+
     private BDD trim(BDD nodeSet, BddGraph bddGraph, Set<BDD> SCCs) {
         BDD originalNoteSet = nodeSet.id();
         BDD newNodeSet = nodeSet.id();
