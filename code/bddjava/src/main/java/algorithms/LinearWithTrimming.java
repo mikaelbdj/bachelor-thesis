@@ -196,6 +196,8 @@ public class LinearWithTrimming implements GraphSCCAlgorithm{
         nodeSetPreImg.free();
         preImgAndImg.free();
 
+        loggingStrategy.logSymbolicStep(2);
+
         BDD difference = originalNoteSet.and(newNodeSet.not());
 
         while (!difference.isZero()) {
