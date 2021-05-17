@@ -163,6 +163,28 @@ The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. F
 
 A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S, v} is a spine-set of G iff G contains a chordless path consisting of the set of vertices $S$, ending in $v$. $v$ can also be called the spine-anchor of the spine-set.
 
+\begin{figure}[H]
+\center
+\begin{tikzpicture}
+  roundnode/.style={circle, fill=black, inner sep=0pt, minimum size=2mm}
+\begin{scope}[every node/.style={circle, fill=black, inner sep=0pt, minimum size=2mm}]
+    \node (A) at (0,0) {00};
+    \node (B) at (3,0) {01};
+    \node (C) at (6,0) {10};
+    \node (D) at (9,0) {11};
+\end{scope}
+
+\begin{scope}[>={Stealth[black]}]
+    \path [->] (A) edge  (B);
+    \path [->] (B) edge[bend left=30]  (C);
+    \path [->] (C) edge[bend left=30]  (B);
+    \path [->] (C) edge  (D);
+\end{scope}
+\end{tikzpicture}
+\caption{Spine-set}
+\label{spine}
+\end{figure}
+
 For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton iff $u$ is also a node in $\FW{u}$ and the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
 
 If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set. \todo{add illustration Gentilini p. 139-141}
@@ -190,7 +212,6 @@ A BDD can be used to represent many things - in our paper we use it to represent
 \caption{The graph from before, now with binary node naming}
 \label{graphforbdd}
 \end{figure}
-
 
 A BDD representing all the nodes is simply a BDD that satisfies each boolean assignment $x\in\{0,1\}^n$ that corresponds to a $v\in V$. Similarly, an edge can be represented by a boolean assignment $x\in\{0,1\}^{2n}$, which is the boolean assignment of two nodes concatenated. Thus, a BDD representing all edges is one that satisfies every $x\in\{0,1\}^{2n}$ that corresponds to a $(v_i, v_j)\in E$.
 
@@ -315,7 +336,8 @@ Using this process we can construct a BDD representing the set of all edges in o
 \label{edgebdd}
 \end{figure}
 
-This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we remove the first $n$ variables, and then rename the last $n$ variables to their counterparts in the first $n$ variables (subtract $n$ from every variable). We are left with a BDD representing a set of nodes $S_{img}\subseteq V$, which is exactly the image of $S$. In terms of BDD operations this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.\\
+This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we remove the first $n$ variables, and then rename the last $n$ variables to their counterparts in the first $n$ variables (subtract $n$ from every variable). We are left with a BDD representing a set of nodes $S_{img}\subseteq V$, which is exactly the image of $S$. In terms of BDD operations, this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.
+
 As an example, let us compute the image of node $10$, as we did in the original graph in Figure \ref{imgpreimg} (blue). The BDD representing $\{10\}$ is simple:
 
 \begin{figure}[H]
