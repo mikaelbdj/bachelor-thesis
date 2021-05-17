@@ -53,7 +53,7 @@ Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a b
 \label{simplebdd}
 \end{figure}
 
-BDDs support simple set operations such as union, intersection, difference and equality. Using hashing and heuristics to order variables in an effective way, these operations are computationally cheap.\todo{citation and maybe figures of taking the intersection of two simple BDDs}\\[2mm]
+BDDs support simple set operations such as union, intersection, difference and equality. Using hashing and heuristics to order variables in an effective way, these operations are computationally cheap.
 
 \subsection{Symbolic Notation}
 Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G and $S\subseteq V$, we can derive the following operators: 
@@ -83,8 +83,7 @@ Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a 
 \label{imgpreimg}
 \end{figure}
 
-The image and preimage operations will be refered to as ``steps'', and the complexity of the algorithms will be measured in terms of these steps. \todo{more symbolic operators in Bloem}
-From these operators, we can derive the notion of forward and backward sets, which will be key elements in the algorithms.
+The image and preimage operations will be refered to as ``steps'', and the complexity of the algorithms will be measured in terms of these steps. From these operators, we can derive the notion of forward and backward sets, which will be key elements in the algorithms.
 
 A forward set, \FW{v}, is the set of nodes that can be reached from $v$. Similarily, a backward set, \BW{v}, is a set if all the nodes that can reach $v$. These can be expressed formally as the least fixpoint of respectively $\lambda S.\{v\}\cup \text{img}(S)$ and $\lambda S.\{v\}\cup \text{preimg}(S)$. Using mu-calculus \cite{clarke_peled_grumberg_1999} this can be expressed as 
 \begin{align}\label{fw}
@@ -135,7 +134,7 @@ A forward set, \FW{v}, is the set of nodes that can be reached from $v$. Similar
 \begin{align}
 SCC_G(v) = \FW{v} \cap \BW{v} \label{scc}
 \end{align} 
-where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustrated nicely by overlaying the forward set and backward set that we showed in Figure \ref{fwbw}:
+where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustrated nicely by overlaying the forward set and backward set that we showed in Figure \ref{fwbw}.
 
 
 \begin{figure}[H]
@@ -157,7 +156,7 @@ where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustra
     \path [->] (C) edge  (D);
 \end{scope}
 \end{tikzpicture}
-\caption{An illustration showing that we can find the SCC containing node 1, by taking the intersection of $\FW{v}$ and $\BW{v}$. Indeed $SCC_G(1) = \{1,2\}$. } 
+\caption{Intersection of $\FW{v}$ and $\BW{v}$ gives us SCC containing node 1; indeed $SCC_G(1) = \{1,2\}$. } 
 \end{figure}
 
 The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. First, we need to define a chordless path. A chordless path is a path between nodes $v_0$ and $v_p$ iff for all $0\leq i \leq j \leq p$, where $j-i>1$ and there is no edge from $v_i$ and $v_j$\todo{maybe explain more intuitively if possible}.
@@ -278,7 +277,7 @@ These should be seen as symbolical representations of sets (sets consisting of a
 \caption{Symbolic representation of the set $\{0001,0110\}$.}
 \end{figure}
 
-Using this process we can construct a BDD representing the set of all edges in our simple graph from Figure \ref{graphforbdd}:
+Using this process we can construct a BDD representing the set of all edges in our simple graph from Figure \ref{graphforbdd}, whcih can be seen in Figure \ref{edgebdd}.
 
 \begin{figure}[H]
 \center
