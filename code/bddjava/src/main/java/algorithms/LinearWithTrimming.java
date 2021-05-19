@@ -65,9 +65,10 @@ public class LinearWithTrimming implements GraphSCCAlgorithm{
             if (currentV.isZero())
                 continue;
 
-            if (currentS.isZero())
+            if (currentS.isZero()) {
                 currentN.free();
                 currentN = currentGraph.pick(currentV);
+            }
 
             FWSkel newFWskel = skelForward(currentGraph, currentN);
             BDD FW = newFWskel.getFW();
@@ -112,8 +113,8 @@ public class LinearWithTrimming implements GraphSCCAlgorithm{
             V_ = currentV.and(notFW);
             S_ = currentS.and(notSCC);
             BDD sccAndCurrentS = SCC.and(currentS);
-            BDD sccAndCurrentSAndNewS = sccAndCurrentS.and(S_);
-            N_ = currentGraph.preImg(sccAndCurrentSAndNewS);
+            BDD sccAndCurrentSPreImg = currentGraph.preImg(sccAndCurrentS);
+            N_ = sccAndCurrentSPreImg.and(S_);
             loggingStrategy.logSymbolicStep(1);
             E_ = currentGraph.restrictEdgesTo(V_);
             bddStack.push(V_);
@@ -130,7 +131,7 @@ public class LinearWithTrimming implements GraphSCCAlgorithm{
             notSCC.free();
             notFW.free();
             sccAndCurrentS.free();
-            sccAndCurrentSAndNewS.free();
+            sccAndCurrentSPreImg.free();
 
             loggingStrategy.logStackSize(bddStack.size());
         }

@@ -6,8 +6,9 @@ import net.sf.javabdd.BDD;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
-public class Linear implements GraphSCCAlgorithm{
+public class Linear implements GraphSCCAlgorithm {
 
     private final LoggingStrategy loggingStrategy;
     private final Stack<BDD> bddStack;
@@ -41,7 +42,7 @@ public class Linear implements GraphSCCAlgorithm{
 
         Set<BDD> SCCs = new HashSet<>();
 
-        while(!bddStack.empty()) {
+        while (!bddStack.empty()) {
             BDD currentE = bddStack.pop();
             BDD currentN = bddStack.pop();
             BDD currentS = bddStack.pop();
@@ -52,9 +53,13 @@ public class Linear implements GraphSCCAlgorithm{
             if (currentV.isZero())
                 continue;
 
-            if (currentS.isZero())
+
+
+            if (currentS.isZero()) {
                 currentN.free();
                 currentN = currentGraph.pick(currentV);
+            }
+
 
             FWSkel newFWskel = skelForward(currentGraph, currentN);
             BDD FW = newFWskel.getFW();
@@ -73,13 +78,18 @@ public class Linear implements GraphSCCAlgorithm{
                     break;
                 }
                 BDD newSCC = SCC.or(preAndFW);
+                System.out.println(currentGraph.nodeSetToIntegerSet(newSCC));
                 SCC.free();
                 preAndFW.free();
                 notSCC.free();
                 preAndFWAndNotSCC.free();
                 SCC = newSCC;
+
+                System.out.println(currentGraph.nodeSetToIntegerSet(SCC));
             }
             SCCs.add(SCC);
+            System.out.println(SCCs.stream().map(currentGraph::nodeSetToIntegerSet).collect(Collectors.toList()));
+
             loggingStrategy.logSccFound(SCC);
 
             BDD notSCC = SCC.not();
@@ -99,8 +109,8 @@ public class Linear implements GraphSCCAlgorithm{
             V_ = currentV.and(notFW);
             S_ = currentS.and(notSCC);
             BDD sccAndCurrentS = SCC.and(currentS);
-            BDD sccAndCurrentSAndNewS = sccAndCurrentS.and(S_);
-            N_ = currentGraph.preImg(sccAndCurrentSAndNewS);
+            BDD sccAndCurrentSPreImg = currentGraph.preImg(sccAndCurrentS);
+            N_ = sccAndCurrentSPreImg.and(S_);
             loggingStrategy.logSymbolicStep(1);
             E_ = currentGraph.restrictEdgesTo(V_);
             bddStack.push(V_);
@@ -117,7 +127,7 @@ public class Linear implements GraphSCCAlgorithm{
             notSCC.free();
             notFW.free();
             sccAndCurrentS.free();
-            sccAndCurrentSAndNewS.free();
+            sccAndCurrentSPreImg.free();
 
             loggingStrategy.logStackSize(bddStack.size());
         }
