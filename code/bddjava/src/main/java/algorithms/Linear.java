@@ -78,17 +78,13 @@ public class Linear implements GraphSCCAlgorithm {
                     break;
                 }
                 BDD newSCC = SCC.or(preAndFW);
-                System.out.println(currentGraph.nodeSetToIntegerSet(newSCC));
                 SCC.free();
                 preAndFW.free();
                 notSCC.free();
                 preAndFWAndNotSCC.free();
                 SCC = newSCC;
-
-                System.out.println(currentGraph.nodeSetToIntegerSet(SCC));
             }
             SCCs.add(SCC);
-            System.out.println(SCCs.stream().map(currentGraph::nodeSetToIntegerSet).collect(Collectors.toList()));
 
             loggingStrategy.logSccFound(SCC);
 
