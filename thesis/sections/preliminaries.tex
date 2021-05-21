@@ -159,7 +159,8 @@ where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustra
 \caption{Intersection of $\FW{v}$ and $\BW{v}$ gives us SCC containing node 1; indeed $SCC_G(1) = \{1,2\}$. } 
 \end{figure}
 
-The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. First, we need to define a chordless path. A chordless path is a path between nodes $v_0$ and $v_p$ iff for all $0\leq i \leq j \leq p$, where $j-i>1$ and there is no edge from $v_i$ and $v_j$\todo{maybe explain more intuitively if possible}.
+\subsection{Skeleton and spine-sets}
+The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. First, we need to define a chordless path. A chordless path is a path between nodes $v_0$ and $v_p$ iff for all $0\leq i \leq j \leq p$, where $j-i>1$ and there is no edge from $v_i$ to $v_j$. In other words there can be no shortcuts - for all $v_i$ in the chordless path, the path from $v_0$ to $v_i$ is a shortest path.
 
 A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S, v} is a spine-set of G iff G contains a chordless path consisting of the set of vertices $S$, ending in $v$. $v$ can also be called the spine-anchor of the spine-set.
 
