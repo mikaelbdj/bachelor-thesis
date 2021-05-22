@@ -229,7 +229,7 @@ For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton if
 \label{skeleton}
 \end{figure}
 
-If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set. \todo{add illustration Gentilini p. 139-141}
+If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set.
 
 \subsection{Representing a graph symbolically}
 A BDD can be used to represent many things - in our paper we use it to represent a graph. The common way to represent a graph $G = (V, E)$ by a BDD is to assign each $v\in V$ to be a unique vector of boolean assignments $x\in\{0,1\}^n$. To name all nodes we would trivially need an $n \geq \ceil{\log_2{|V|}}$. Taking our graph from before we can name each node using two booleans:

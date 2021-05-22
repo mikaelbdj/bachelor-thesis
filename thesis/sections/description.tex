@@ -115,7 +115,7 @@ The skelForward algorithm is a helper method introduced by Gentilini et al., whi
     \State $S' \gets N' \gets pick(L)$
     \While{stack $\neq\emptyset$}
     \Let{$L$}{pop(stack)}
-    \Let{$S'$}{$S'\cup\text{pick(pre(}S')\cap L)$}
+    \Let{$S'$}{$S'\cup\text{pick(preimg(}S')\cap L)$}
     \EndWhile
     \Statex
     \State \Return $\langle FW, S', N' \rangle$
