@@ -7,6 +7,8 @@ import experiments.util.ReadFile;
 import net.sf.javabdd.BDD;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,11 +18,11 @@ public class Experiment {
     private final String filePath;
     private final int nodeAmount;
     private final GraphSCCAlgorithm algorithm;
-    private final boolean nodesAreOneIndexed;
+    private final Boolean nodesAreOneIndexed;
     private final int bddNodeNum;
     private final int bddCacheSize;
 
-    private Experiment(String filePath, int nodeAmount, GraphSCCAlgorithm algorithm, boolean nodesAreOneIndexed, int nodeNum, int cacheSize) {
+    private Experiment(String filePath, int nodeAmount, GraphSCCAlgorithm algorithm, Boolean nodesAreOneIndexed, int nodeNum, int cacheSize) {
         this.filePath = filePath;
         this.nodeAmount = nodeAmount;
         this.algorithm = algorithm;
@@ -33,8 +35,11 @@ public class Experiment {
         long startReading = System.currentTimeMillis();
         try (Stream<Edge> stream = ReadFile.read(filePath, nodesAreOneIndexed)) {
             long startCreatingGraph = System.currentTimeMillis();
+            List<Edge> edges = stream.collect(Collectors.toList());
             System.out.println("Finished reading file: " + (startCreatingGraph - startReading) + " ms");
-            BddGraph graph = new BddGraph(stream.collect(Collectors.toList()), nodeAmount, bddNodeNum, bddCacheSize);
+            System.out.println("Found " + nodeAmount + " nodes and " + edges.size() + " edges in the graph, one_indexed = " + nodesAreOneIndexed);
+
+            BddGraph graph = new BddGraph(edges, nodeAmount, bddNodeNum, bddCacheSize);
 
             long startFindingSCC = System.currentTimeMillis();
             System.out.println("Finished creating graph object: " + (startFindingSCC - startCreatingGraph) + " ms");
@@ -51,7 +56,7 @@ public class Experiment {
         private String filePath;
         private Integer nodeAmount;
         private GraphSCCAlgorithm algorithm;
-        private boolean nodesAreOneIndexed;
+        private Boolean nodesAreOneIndexed;
         private int bddNodeNum = 1000000;
         private int bddCacheSize = 10000;
 
@@ -88,7 +93,17 @@ public class Experiment {
         public Experiment build() {
             if (filePath == null) throw new RuntimeException("Please provide a file path for an experiment");
             if (algorithm == null) throw new RuntimeException("Please provide a algorithm for an experiment");
-            if (nodeAmount == null) throw new RuntimeException("Please provide a node amount for an experiment");
+
+            try {
+                if (nodesAreOneIndexed == null) {
+                    nodesAreOneIndexed = ReadFile.inferOneIndexed(filePath);
+                }
+                if (nodeAmount == null) {
+                    nodeAmount = ReadFile.inferNodeAmount(filePath, nodesAreOneIndexed);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return new Experiment(filePath, nodeAmount, algorithm, nodesAreOneIndexed, bddNodeNum, bddCacheSize);
         }
     }

@@ -6,14 +6,13 @@ import net.sf.javabdd.BDD;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
-public class Linear implements GraphSCCAlgorithm {
+public class LinearWithTrimming implements GraphSCCAlgorithm{
 
     private final LoggingStrategy loggingStrategy;
     private final Stack<BDD> bddStack;
 
-    public Linear(LoggingStrategy loggingStrategy) {
+    public LinearWithTrimming(LoggingStrategy loggingStrategy) {
         this.loggingStrategy = loggingStrategy;
         bddStack = new Stack<>();
     }
@@ -41,8 +40,9 @@ public class Linear implements GraphSCCAlgorithm {
         bddStack.push(E.id());
 
         Set<BDD> SCCs = new HashSet<>();
-
-        while (!bddStack.empty()) {
+        int loopCount = 0;
+        while(!bddStack.empty()) {
+            loopCount++;
             BDD currentE = bddStack.pop();
             BDD currentN = bddStack.pop();
             BDD currentS = bddStack.pop();
@@ -50,16 +50,25 @@ public class Linear implements GraphSCCAlgorithm {
 
             BddGraph currentGraph = graph.newBddGraph(currentV, currentE);
 
+            if (loopCount == 1) {
+                BDD newV = trim(currentV, currentGraph, SCCs);
+                currentV.free();
+                currentV = newV;
+
+                BDD newE = currentGraph.restrictEdgesTo(currentV);
+                currentE.free();
+                currentE = newE;
+                currentGraph = currentGraph.newBddGraph(currentV, currentE);
+
+            }
+
             if (currentV.isZero())
                 continue;
-
-
 
             if (currentS.isZero()) {
                 currentN.free();
                 currentN = currentGraph.pick(currentV);
             }
-
 
             FWSkel newFWskel = skelForward(currentGraph, currentN);
             BDD FW = newFWskel.getFW();
@@ -85,7 +94,6 @@ public class Linear implements GraphSCCAlgorithm {
                 SCC = newSCC;
             }
             SCCs.add(SCC);
-
             loggingStrategy.logSccFound(SCC);
 
             BDD notSCC = SCC.not();
@@ -171,5 +179,43 @@ public class Linear implements GraphSCCAlgorithm {
         }
 
         return new FWSkel(FW, new Skeleton(S_, N_));
+    }
+
+
+    private BDD trim(BDD nodeSet, BddGraph bddGraph, Set<BDD> SCCs) {
+        BDD originalNoteSet = nodeSet.id();
+        BDD newNodeSet = nodeSet.id();
+        BDD nodeSetCopy = nodeSet.id();
+
+        nodeSetCopy.free();
+        nodeSetCopy = newNodeSet;
+        BDD nodeSetImg = bddGraph.img(nodeSetCopy);
+        BDD nodeSetPreImg = bddGraph.preImg(nodeSetCopy);
+        BDD preImgAndImg = nodeSetImg.and(nodeSetPreImg);
+        newNodeSet = nodeSetCopy.and(preImgAndImg);
+        nodeSetImg.free();
+        nodeSetPreImg.free();
+        preImgAndImg.free();
+
+        loggingStrategy.logSymbolicStep(2);
+
+        BDD difference = originalNoteSet.and(newNodeSet.not());
+        int trimCount = (int)(difference.satCount()/Math.pow(2, bddGraph.getV()));
+
+        loggingStrategy.logString("Trimming found " + trimCount + " SCCs.");
+
+        while (!difference.isZero()) {
+            BDD singletonSCC = bddGraph.pick(difference);
+            SCCs.add(singletonSCC);
+            loggingStrategy.logSccFound(singletonSCC);
+            BDD singletonNot = singletonSCC.not();
+            BDD newDifference = difference.and(singletonNot);
+            singletonNot.free();
+            difference.free();
+            difference = newDifference;
+        }
+        difference.free();
+
+        return newNodeSet;
     }
 }

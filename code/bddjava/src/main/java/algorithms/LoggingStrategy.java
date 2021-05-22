@@ -13,4 +13,7 @@ public interface LoggingStrategy {
     void logStackSize(int stackSize);
     void logSymbolicStep(int step);
     void setBddGraph(BddGraph bddGraph);
+    default void logString(String s) {
+        System.out.println(s);
+    }
 }
