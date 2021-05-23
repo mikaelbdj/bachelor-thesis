@@ -1,25 +1,57 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
-Thsi section describes the inputs we used for experiments, as well as the general observations made based on the results. To test and experiment with our implementation, we found datasets of different types and sizes. There are graphs with amount of nodes between 200 and 720000. The graohs also vary in the amount of SCCs which they contain, as we have some with as 
+Thsi section describes the inputs we used for experiments, as well as the general observations made based on the results. To test and experiment with our implementation, we found datasets of different types and sizes. There are graphs with amount of nodes between 200 and 720000. The graphs also vary in the amount of SCCs which they contain, as we have some with as as little as 1 SCC and some with up to 25 thousand.
 
-Small graphs:
-\begin{itemize}
-\item not so much correlation between nodes and steps
-\item moderate positive correlation between nodes and time
-\item moderate positive correlation between number of SCCs in graph and steps - although with some outliers if there are many nodes in an SCC
-\item generally negative correaltion between how many nodes there are per scc and steps
-\item linears and locksteps tend to stick together, with trimming helping slightly some of the time. Linears generally tend to do a little worse than locksteps
-\item locksteps seem to perform better time wise, but worse step wise
-\end{itemize}
-Big graphs:
-\begin{itemize}
-\item slight positive correlation between nodes and steps if trimmign not used - trimming improves complexity
-\item slight positive, but really no correlation between time and nodes, trimming improves runtime
-\item positive correlation betwen no of SCCs and steps, trimming helps with bigger graphs
-\item generally negative correlation between nodes per scc and steps, where trimming helps significantly on some data
-\item linears perform slightly worse than locksteps in steps
-\item linears are slightly better on larger datasets time-wise
-\end{itemize}
+We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction.
+
+We started by caomparing the symbolic steps and number of nodes in the graph to the number of nodes, as the complexity of the algorithms was described in terms of these two. The two graphs below show that there is a somewhat positive correlation between number fo nodes and symbolic steps, with some outliers. This may be explained by the strengthened bound on the algorithms, which also takes the graphs diameter and all symbolic operators into consideration. \todo{maybe add that compleity analysis to description} Contrary to our assumptions, the plot of the linear-time algorithms look almost identical to those of Lockstep algorithms, where the linear-time algorithm appears to take longer time than the Lockstep algorithm.
+% \begin{tikzpicture}
+% \begin{axis}[
+% height = \textwidth,
+% width=\textwidth,
+% xtick=data,
+% x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
+% title={Linear-time algorithm},
+% xlabel={Nodes},
+% ylabel={Steps},
+% ymin=50, ymax=3000000,
+% legend style={at={(0.5,1)},anchor=south,legend cell align=left},
+% ymajorgrids=true,
+% grid style=dashed,
+% ymode=log,
+% log basis y={10},
+% symbolic x coords={289, 1183, 1952, 3996, 5486, 8879, 8921, 10849, 10879, 18746, 25217, 40006, 52268, 83436, 116456, 157604, 281903, 720247}]
+
+% \addplot[color=blue,mark=square,]coordinates {(289, 591)(1183, 650)(1952, 104)(3996, 19344)(5486, 12773)(8879, 12664)(8921, 30529)(10849, 136)(10879, 20434)(18746, 349)(25217, 0)(40006, 0)(52268, 48495)(83436, 1661)(116456, 560414)(157604, 570525)(281903, 0)(720247, 2156545)};
+% \addplot[color=cyan,mark=square,]coordinates {(289, 578)(1183, 630)(1952, 106)(3996, 19332)(5486, 11211)(8879, 12716)(8921, 24640)(10849, 83)(10879, 1938)(18746, 342)(25217, 0)(40006, 0)(52268, 48497)(83436, 1658)(116456, 560411)(157604, 344348)(281903, 0)(720247, 20945)};
+% \legend{Linear, Linear with trimming}
+% \end{axis}
+% \end{tikzpicture}
+
+
+% \begin{tikzpicture}
+% \begin{axis}[
+% height = \textheight,
+% width=\textwidth,
+% xtick=data,
+% x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
+% title={Lockstep algorithm},
+% xlabel={Nodes},
+% ylabel={Steps},
+% ymin=0, ymax=3000000,
+% legend style={at={(0.5,1)},anchor=south,legend cell align=left},
+% ymajorgrids=true,
+% grid style=dashed,
+% ymode=log,
+% log basis y={10},
+% symbolic x coords={289, 1183, 1952, 3996, 5486, 8879, 8921, 10849, 10879, 18746, 25217, 40006, 52268, 83436, 116456, 157604, 281903, 720247}]
+
+% \addplot[color=red,mark=square,]coordinates {(289, 322)(1183, 350)(1952, 62)(3996, 7992)(5486, 5945)(8879, 5783)(8921, 16032)(10849, 61)(10879, 13209)(18746, 145)(25217, 50434)(40006, 80011)(52268, 30384)(83436, 986)(116456, 0)(157604, 291672)(281903, 0)(720247, 1435356)};
+% \addplot[color=orange,mark=square,]coordinates {(289, 322)(1183, 350)(1952, 62)(3996, 7992)(5486, 5945)(8879, 5783)(8921, 16032)(10849, 61)(10879, 13209)(18746, 145)(25217, 50434)(40006, 80011)(52268, 30384)(83436, 986)(116456, 0)(157604, 0)(281903, 122371)(720247, 1435356)};
+% \addplot[color=purple,mark=square,]coordinates {(289, 322)(1183, 350)(1952, 64)(3996, 7990)(5486, 5191)(8879, 5783)(8921, 12264)(10849, 61)(10879, 1243)(18746, 145)(25217, 50432)(40006, 80013)(52268, 30386)(83436, 986)(116456, 0)(157604, 169828)(281903, 81275)(720247, 13872)};
+% \legend{Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
+% \end{axis}
+% \end{tikzpicture}
 
 \begin{tikzpicture}
 \begin{axis}[
@@ -48,6 +80,33 @@ symbolic x coords={289, 1183, 1952, 3996, 5486, 8879, 8921, 10849, 10879, 18746,
 
 \begin{tikzpicture}
 \begin{axis}[
+height = \textheight,
+width=\textwidth,
+xtick=data,
+x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
+title={Big graphs},
+xlabel={Nodes},
+ylabel={Steps},
+ymin=0, ymax=3000000,
+legend style={at={(0.5,1)},anchor=south,legend cell align=left},
+ymajorgrids=true,
+grid style=dashed,
+ymode=log,
+log basis y={10},
+symbolic x coords={52268, 83436, 116456, 157604, 281903, 720247}]
+\addplot[color=blue,mark=square,]coordinates {(52268, 48495)(83436, 1661)(116456, 560414)(157604, 570525)(281903, 0)(720247, 2156545)};
+\addplot[color=cyan,mark=square,]coordinates {(52268, 48497)(83436, 1658)(116456, 560411)(157604, 344348)(281903, 0)(720247, 20945)};
+\addplot[color=red,mark=square,]coordinates {(52268, 30384)(83436, 986)(116456, 0)(157604, 291672)(281903, 0)(720247, 1435356)};
+\addplot[color=orange,mark=square,]coordinates {(52268, 30384)(83436, 986)(116456, 0)(157604, 0)(281903, 122371)(720247, 1435356)};
+\addplot[color=purple,mark=square,]coordinates {(52268, 30386)(83436, 986)(116456, 0)(157604, 169828)(281903, 81275)(720247, 13872)};
+\legend{Linear, Linear with trimming, Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
+\end{axis}
+\end{tikzpicture}
+
+Since the first comparison didn't give us much new insight, we decided to also compare the number of nodes to the time it takes to find SCCs. This showed a stronger positive correlation. We noticed 
+
+\begin{tikzpicture}
+\begin{axis}[
 height = \textwidth,
 width=\textwidth,
 xtick=data,
@@ -73,6 +132,31 @@ symbolic x coords={289, 1183, 1952, 3996, 5486, 8879, 8921, 10849, 10879, 18746,
 
 \begin{tikzpicture}
 \begin{axis}[
+height = \textheight,
+width=\textwidth,
+xtick=data,
+x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
+title={Big graphs},
+xlabel={Nodes},
+ylabel={Time},
+ymin=0, ymax=1600000,
+legend style={at={(0.5,1)},anchor=south,legend cell align=left},
+ymajorgrids=true,
+grid style=dashed,
+ymode=log,
+log basis y={10},
+symbolic x coords={52268, 83436, 116456, 157604, 281903, 720247 }]
+\addplot[color=blue,mark=square,]coordinates {(52268, 25608)(83436, 13562)(116456, 146786)(157604, 253563)(281903, 0)(720247, 97531)};
+\addplot[color=cyan,mark=square,]coordinates {(52268, 27534)(83436, 15691)(116456, 149855)(157604, 191313)(281903, 0)(720247, 23638)};
+\addplot[color=red,mark=square,]coordinates {(52268, 117469)(83436, 9936)(116456, 0)(157604, 1542037)(281903, 0)(720247, 732579)};
+\addplot[color=orange,mark=square,]coordinates {(52268, 23209)(83436, 4034)(116456, 0)(157604, 0)(281903, 1216873)(720247, 159329)};
+\addplot[color=purple,mark=square,]coordinates {(52268, 25463)(83436, 6205)(116456, 0)(157604, 1137648)(281903, 834071)(720247, 47275)};
+\legend{Linear, Linear with trimming, Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[
 height = \textwidth,
 width=\textwidth,
 xtick=data,
@@ -92,6 +176,31 @@ symbolic x coords={0, 0, 1, 2, 25, 33, 49, 2197, 2525, 3996, 6563, 7412, 25217 }
 \addplot[color=red,mark=square,]coordinates {(1, 62)(1, 80011)(2, 61)(25, 350)(33, 145)(49, 322)(2197, 5783)(2525, 5945)(3996, 7992)(6563, 13209)(7412, 16032)(25217, 50434)};
 \addplot[color=orange,mark=square,]coordinates {(1, 62)(1, 80011)(2, 61)(25, 350)(33, 145)(49, 322)(2197, 5783)(2525, 5945)(3996, 7992)(6563, 13209)(7412, 16032)(25217, 50434)};
 \addplot[color=purple,mark=square,]coordinates {(1, 64)(1, 80013)(2, 61)(25, 350)(33, 145)(49, 322)(2197, 5783)(2525, 5191)(3996, 7990)(6563, 1243)(7412, 12264)(25217, 50432)};
+\legend{Linear, Linear with trimming, Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[
+height = \textheight,
+width=\textwidth,
+xtick=data,
+x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
+title={Big graphs},
+xlabel={SCCs},
+ylabel={Steps},
+ymin=0, ymax=3000000,
+legend style={at={(0.5,1)},anchor=south,legend cell align=left},
+ymajorgrids=true,
+grid style=dashed,
+ymode=log,
+log basis y={10},
+symbolic x coords={0, 253, 11828, 29914, 116456, 143111, 713126 }]
+\addplot[color=blue,mark=square,]coordinates {(253, 1661)(11828, 48495)(29914, 0)(116456, 560414)(143111, 570525)(713126, 2156545)};
+\addplot[color=cyan,mark=square,]coordinates {(253, 1658)(11828, 48497)(29914, 0)(116456, 560411)(143111, 344348)(713126, 20945)};
+\addplot[color=red,mark=square,]coordinates {(253, 986)(11828, 30384)(29914, 0)(116456, 0)(143111, 291672)(713126, 1435356)};
+\addplot[color=orange,mark=square,]coordinates {(253, 986)(11828, 30384)(29914, 122371)(116456, 0)(143111, 291672)(713126, 1435356)};
+\addplot[color=purple,mark=square,]coordinates {(253, 986)(11828, 30386)(29914, 81275)(116456, 0)(143111, 169828)(713126, 13872)};
 \legend{Linear, Linear with trimming, Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
 \end{axis}
 \end{tikzpicture}
@@ -128,81 +237,6 @@ width=\textwidth,
 xtick=data,
 x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
 title={Big graphs},
-xlabel={Nodes},
-ylabel={Steps},
-ymin=0, ymax=3000000,
-legend style={at={(0.5,1)},anchor=south,legend cell align=left},
-ymajorgrids=true,
-grid style=dashed,
-ymode=log,
-log basis y={10},
-symbolic x coords={52268, 83436, 116456, 157604, 281903, 720247}]
-\addplot[color=blue,mark=square,]coordinates {(52268, 48495)(83436, 1661)(116456, 560414)(157604, 570525)(281903, 0)(720247, 2156545)};
-\addplot[color=cyan,mark=square,]coordinates {(52268, 48497)(83436, 1658)(116456, 560411)(157604, 344348)(281903, 0)(720247, 20945)};
-\addplot[color=red,mark=square,]coordinates {(52268, 30384)(83436, 986)(116456, 0)(157604, 291672)(281903, 0)(720247, 1435356)};
-\addplot[color=orange,mark=square,]coordinates {(52268, 30384)(83436, 986)(116456, 0)(157604, 0)(281903, 122371)(720247, 1435356)};
-\addplot[color=purple,mark=square,]coordinates {(52268, 30386)(83436, 986)(116456, 0)(157604, 169828)(281903, 81275)(720247, 13872)};
-\legend{Linear, Linear with trimming, Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-\begin{axis}[
-height = \textheight,
-width=\textwidth,
-xtick=data,
-x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
-title={Small graphs},
-xlabel={Nodes},
-ylabel={Time},
-ymin=0, ymax=1600000,
-legend style={at={(0.5,1)},anchor=south,legend cell align=left},
-ymajorgrids=true,
-grid style=dashed,
-ymode=log,
-log basis y={10},
-symbolic x coords={52268, 83436, 116456, 157604, 281903, 720247 }]
-\addplot[color=blue,mark=square,]coordinates {(52268, 25608)(83436, 13562)(116456, 146786)(157604, 253563)(281903, 0)(720247, 97531)};
-\addplot[color=cyan,mark=square,]coordinates {(52268, 27534)(83436, 15691)(116456, 149855)(157604, 191313)(281903, 0)(720247, 23638)};
-\addplot[color=red,mark=square,]coordinates {(52268, 117469)(83436, 9936)(116456, 0)(157604, 1542037)(281903, 0)(720247, 732579)};
-\addplot[color=orange,mark=square,]coordinates {(52268, 23209)(83436, 4034)(116456, 0)(157604, 0)(281903, 1216873)(720247, 159329)};
-\addplot[color=purple,mark=square,]coordinates {(52268, 25463)(83436, 6205)(116456, 0)(157604, 1137648)(281903, 834071)(720247, 47275)};
-\legend{Linear, Linear with trimming, Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-\begin{axis}[
-height = \textheight,
-width=\textwidth,
-xtick=data,
-x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
-title={Small graphs},
-xlabel={SCCs},
-ylabel={Steps},
-ymin=0, ymax=3000000,
-legend style={at={(0.5,1)},anchor=south,legend cell align=left},
-ymajorgrids=true,
-grid style=dashed,
-ymode=log,
-log basis y={10},
-symbolic x coords={0, 253, 11828, 29914, 116456, 143111, 713126 }]
-\addplot[color=blue,mark=square,]coordinates {(253, 1661)(11828, 48495)(29914, 0)(116456, 560414)(143111, 570525)(713126, 2156545)};
-\addplot[color=cyan,mark=square,]coordinates {(253, 1658)(11828, 48497)(29914, 0)(116456, 560411)(143111, 344348)(713126, 20945)};
-\addplot[color=red,mark=square,]coordinates {(253, 986)(11828, 30384)(29914, 0)(116456, 0)(143111, 291672)(713126, 1435356)};
-\addplot[color=orange,mark=square,]coordinates {(253, 986)(11828, 30384)(29914, 122371)(116456, 0)(143111, 291672)(713126, 1435356)};
-\addplot[color=purple,mark=square,]coordinates {(253, 986)(11828, 30386)(29914, 81275)(116456, 0)(143111, 169828)(713126, 13872)};
-\legend{Linear, Linear with trimming, Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-\begin{axis}[
-height = \textheight,
-width=\textwidth,
-xtick=data,
-x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
-title={Small graphs},
 xlabel={Nodes/SCC},
 ylabel={Steps},
 ymin=0, ymax=3000000,
@@ -221,6 +255,24 @@ symbolic x coords={1.0, 1.0099856126406834, 1.1012710413595042, 4.41900574907000
 \end{axis}
 \end{tikzpicture}
 
+Small graphs:
+\begin{itemize}
+\item not so much correlation between nodes and steps
+\item moderate positive correlation between nodes and time
+\item moderate positive correlation between number of SCCs in graph and steps - although with some outliers if there are many nodes in an SCC
+\item generally negative correaltion between how many nodes there are per scc and steps
+\item linears and locksteps tend to stick together, with trimming helping slightly some of the time. Linears generally tend to do a little worse than locksteps
+\item locksteps seem to perform better time wise, but worse step wise
+\end{itemize}
+Big graphs:
+\begin{itemize}
+\item slight positive correlation between nodes and steps if trimmign not used - trimming improves complexity
+\item slight positive, but really no correlation between time and nodes, trimming improves runtime
+\item positive correlation betwen no of SCCs and steps, trimming helps with bigger graphs
+\item generally negative correlation between nodes per scc and steps, where trimming helps significantly on some data
+\item linears perform slightly worse than locksteps in steps
+\item linears are slightly better on larger datasets time-wise
+\end{itemize}
 \end{document}
 %%% Local Variables:
 %%% mode: latex
