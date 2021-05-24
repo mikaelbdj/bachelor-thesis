@@ -1,0 +1,27 @@
+\documentclass[../master/master.tex]{subfiles}
+\begin{document}
+
+Small graphs:
+\begin{itemize}
+\item not so much correlation between nodes and steps
+\item moderate positive correlation between nodes and time
+\item moderate positive correlation between number of SCCs in graph and steps - although with some outliers if there are many nodes in an SCC
+\item generally negative correaltion between how many nodes there are per scc and steps
+\item linears and locksteps tend to stick together, with trimming helping slightly some of the time. Linears generally tend to do a little worse than locksteps
+\item locksteps seem to perform better time wise, but worse step wise
+\end{itemize}
+Big graphs:
+\begin{itemize}
+\item slight positive correlation between nodes and steps if trimmign not used - trimming improves complexity
+\item slight positive, but really no correlation between time and nodes, trimming improves runtime
+\item positive correlation betwen no of SCCs and steps, trimming helps with bigger graphs
+\item generally negative correlation between nodes per scc and steps, where trimming helps significantly on some data
+\item linears perform slightly worse than locksteps in steps
+\item linears are slightly better on larger datasets time-wise
+\end{itemize}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../master/master"
+%%% End:
