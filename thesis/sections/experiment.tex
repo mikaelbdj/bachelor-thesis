@@ -4,54 +4,91 @@ Thsi section describes the inputs we used for experiments, as well as the genera
 
 We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction.
 
-We started by caomparing the symbolic steps and number of nodes in the graph to the number of nodes, as the complexity of the algorithms was described in terms of these two. The two graphs below show that there is a somewhat positive correlation between number fo nodes and symbolic steps, with some outliers. This may be explained by the strengthened bound on the algorithms, which also takes the graphs diameter and all symbolic operators into consideration. \todo{maybe add that compleity analysis to description} Contrary to our assumptions, the plot of the linear-time algorithms look almost identical to those of Lockstep algorithms, where the linear-time algorithm appears to take longer time than the Lockstep algorithm.
-% \begin{tikzpicture}
-% \begin{axis}[
-% height = \textwidth,
-% width=\textwidth,
-% xtick=data,
-% x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
-% title={Linear-time algorithm},
-% xlabel={Nodes},
-% ylabel={Steps},
-% ymin=50, ymax=3000000,
-% legend style={at={(0.5,1)},anchor=south,legend cell align=left},
-% ymajorgrids=true,
-% grid style=dashed,
-% ymode=log,
-% log basis y={10},
-% symbolic x coords={289, 1183, 1952, 3996, 5486, 8879, 8921, 10849, 10879, 18746, 25217, 40006, 52268, 83436, 116456, 157604, 281903, 720247}]
+\begin{center}
+\begin{tabular}{ |c|c||c|c|c||c|c|c||c|c|c||c|c|c||c|c|c| } 
+\hline
+ \multicolumn{2}{|c||}{} & \multicolumn{3}{c||}{Linear} & \multicolumn{3}{c||}{Linear with trimming} & \multicolumn{3}{c||}{Lockstep} & \multicolumn{3}{c||}{Lockstep with edge restriction} & \multicolumn{3}{c||}{Lockstep with edge restriction and trimming}\\
+\hline
+\multicolumn{2}{|c||}{}& Steps & Time & SCCs& Steps & Time & SCCs& Steps & Time & SCCs& Steps & Time & SCCs& Steps & Time & SCCs\\
+\hline
+\multirow{2}{4em}{vasy\_0\_1} & 289 & \multirow{2}{4em}{591} & \multirow{2}{4em}{49 ms} & \multirow{2}{4em}{49} & \multirow{2}{4em}{578} & \multirow{2}{4em}{52 ms} & \multirow{2}{4em}{49} & \multirow{2}{4em}{322} & \multirow{2}{4em}{39 ms} & \multirow{2}{4em}{49} & \multirow{2}{4em}{322} & \multirow{2}{4em}{37 ms} & \multirow{2}{4em}{49} & \multirow{2}{4em}{322} & \multirow{2}{4em}{38 ms} & \multirow{2}{4em}{49} \\
+\cline{2-2}
+ & 1224  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_1\_4} & 1183 & \multirow{2}{4em}{650} & \multirow{2}{4em}{161 ms} & \multirow{2}{4em}{25} & \multirow{2}{4em}{630} & \multirow{2}{4em}{200 ms} & \multirow{2}{4em}{25} & \multirow{2}{4em}{350} & \multirow{2}{4em}{134 ms} & \multirow{2}{4em}{25} & \multirow{2}{4em}{350} & \multirow{2}{4em}{128 ms} & \multirow{2}{4em}{25} & \multirow{2}{4em}{350} & \multirow{2}{4em}{159 ms} & \multirow{2}{4em}{25} \\
+\cline{2-2}
+ & 4464  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{cwi\_1\_2} & 1952 & \multirow{2}{4em}{104} & \multirow{2}{4em}{149 ms} & \multirow{2}{4em}{1} & \multirow{2}{4em}{106} & \multirow{2}{4em}{142 ms} & \multirow{2}{4em}{1} & \multirow{2}{4em}{62} & \multirow{2}{4em}{50 ms} & \multirow{2}{4em}{1} & \multirow{2}{4em}{62} & \multirow{2}{4em}{43 ms} & \multirow{2}{4em}{1} & \multirow{2}{4em}{64} & \multirow{2}{4em}{70 ms} & \multirow{2}{4em}{1} \\
+\cline{2-2}
+ & 2387  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{cwi\_3\_14} & 3996 & \multirow{2}{4em}{19344} & \multirow{2}{4em}{843 ms} & \multirow{2}{4em}{3996} & \multirow{2}{4em}{19332} & \multirow{2}{4em}{891 ms} & \multirow{2}{4em}{3996} & \multirow{2}{4em}{7992} & \multirow{2}{4em}{1426 ms} & \multirow{2}{4em}{3996} & \multirow{2}{4em}{7992} & \multirow{2}{4em}{2286 ms} & \multirow{2}{4em}{3996} & \multirow{2}{4em}{7990} & \multirow{2}{4em}{2413 ms} & \multirow{2}{4em}{3996} \\
+\cline{2-2}
+ & 14552  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_5\_9} & 5486 & \multirow{2}{4em}{12773} & \multirow{2}{4em}{922 ms} & \multirow{2}{4em}{2525} & \multirow{2}{4em}{11211} & \multirow{2}{4em}{815 ms} & \multirow{2}{4em}{2525} & \multirow{2}{4em}{5945} & \multirow{2}{4em}{1523 ms} & \multirow{2}{4em}{2525} & \multirow{2}{4em}{5945} & \multirow{2}{4em}{2242 ms} & \multirow{2}{4em}{2525} & \multirow{2}{4em}{5191} & \multirow{2}{4em}{2468 ms} & \multirow{2}{4em}{2525} \\
+\cline{2-2}
+ & 9676  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_8\_24} & 8879 & \multirow{2}{4em}{12664} & \multirow{2}{4em}{2305 ms} & \multirow{2}{4em}{2197} & \multirow{2}{4em}{12716} & \multirow{2}{4em}{2505 ms} & \multirow{2}{4em}{2197} & \multirow{2}{4em}{5783} & \multirow{2}{4em}{2938 ms} & \multirow{2}{4em}{2197} & \multirow{2}{4em}{5783} & \multirow{2}{4em}{4804 ms} & \multirow{2}{4em}{2197} & \multirow{2}{4em}{5783} & \multirow{2}{4em}{5250 ms} & \multirow{2}{4em}{2197} \\
+\cline{2-2}
+ & 24411  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_8\_38} & 8921 & \multirow{2}{4em}{30529} & \multirow{2}{4em}{1386 ms} & \multirow{2}{4em}{7412} & \multirow{2}{4em}{24640} & \multirow{2}{4em}{1174 ms} & \multirow{2}{4em}{7412} & \multirow{2}{4em}{16032} & \multirow{2}{4em}{5167 ms} & \multirow{2}{4em}{7412} & \multirow{2}{4em}{16032} & \multirow{2}{4em}{7558 ms} & \multirow{2}{4em}{7412} & \multirow{2}{4em}{12264} & \multirow{2}{4em}{12674 ms} & \multirow{2}{4em}{7412} \\
+\cline{2-2}
+ & 38424  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_10\_56} & 10849 & \multirow{2}{4em}{136} & \multirow{2}{4em}{1213 ms} & \multirow{2}{4em}{2} & \multirow{2}{4em}{83} & \multirow{2}{4em}{2005 ms} & \multirow{2}{4em}{2} & \multirow{2}{4em}{61} & \multirow{2}{4em}{574 ms} & \multirow{2}{4em}{2} & \multirow{2}{4em}{61} & \multirow{2}{4em}{584 ms} & \multirow{2}{4em}{2} & \multirow{2}{4em}{61} & \multirow{2}{4em}{755 ms} & \multirow{2}{4em}{2} \\
+\cline{2-2}
+ & 56156  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{p2p-Gnutella04.txt} & 10879 & \multirow{2}{4em}{20434} & \multirow{2}{4em}{2343 ms} & \multirow{2}{4em}{6563} & \multirow{2}{4em}{1938} & \multirow{2}{4em}{1066 ms} & \multirow{2}{4em}{6563} & \multirow{2}{4em}{13209} & \multirow{2}{4em}{5072 ms} & \multirow{2}{4em}{6563} & \multirow{2}{4em}{13209} & \multirow{2}{4em}{2451 ms} & \multirow{2}{4em}{6563} & \multirow{2}{4em}{1243} & \multirow{2}{4em}{741 ms} & \multirow{2}{4em}{6563} \\
+\cline{2-2}
+ & 39994  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_18\_73} & 18746 & \multirow{2}{4em}{349} & \multirow{2}{4em}{4279 ms} & \multirow{2}{4em}{33} & \multirow{2}{4em}{342} & \multirow{2}{4em}{6804 ms} & \multirow{2}{4em}{33} & \multirow{2}{4em}{145} & \multirow{2}{4em}{1081 ms} & \multirow{2}{4em}{33} & \multirow{2}{4em}{145} & \multirow{2}{4em}{1165 ms} & \multirow{2}{4em}{33} & \multirow{2}{4em}{145} & \multirow{2}{4em}{1542 ms} & \multirow{2}{4em}{33} \\
+\cline{2-2}
+ & 73043  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_25\_25} & 25217 & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{50434} & \multirow{2}{4em}{47465 ms} & \multirow{2}{4em}{25217} & \multirow{2}{4em}{50434} & \multirow{2}{4em}{143599 ms} & \multirow{2}{4em}{25217} & \multirow{2}{4em}{50432} & \multirow{2}{4em}{146235 ms} & \multirow{2}{4em}{25217} \\
+\cline{2-2}
+ & 25216  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_40\_60} & 40006 & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{80011} & \multirow{2}{4em}{133708 ms} & \multirow{2}{4em}{1} & \multirow{2}{4em}{80011} & \multirow{2}{4em}{136794 ms} & \multirow{2}{4em}{1} & \multirow{2}{4em}{80013} & \multirow{2}{4em}{133621 ms} & \multirow{2}{4em}{1} \\
+\cline{2-2}
+ & 60007  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_52\_318} & 52268 & \multirow{2}{4em}{48495} & \multirow{2}{4em}{25608 ms} & \multirow{2}{4em}{11828} & \multirow{2}{4em}{48497} & \multirow{2}{4em}{27534 ms} & \multirow{2}{4em}{11828} & \multirow{2}{4em}{30384} & \multirow{2}{4em}{117469 ms} & \multirow{2}{4em}{11828} & \multirow{2}{4em}{30384} & \multirow{2}{4em}{23209 ms} & \multirow{2}{4em}{11828} & \multirow{2}{4em}{30386} & \multirow{2}{4em}{25463 ms} & \multirow{2}{4em}{11828} \\
+\cline{2-2}
+ & 318126  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_83\_325} & 83436 & \multirow{2}{4em}{1661} & \multirow{2}{4em}{13562 ms} & \multirow{2}{4em}{253} & \multirow{2}{4em}{1658} & \multirow{2}{4em}{15691 ms} & \multirow{2}{4em}{253} & \multirow{2}{4em}{986} & \multirow{2}{4em}{9936 ms} & \multirow{2}{4em}{253} & \multirow{2}{4em}{986} & \multirow{2}{4em}{4034 ms} & \multirow{2}{4em}{253} & \multirow{2}{4em}{986} & \multirow{2}{4em}{6205 ms} & \multirow{2}{4em}{253} \\
+\cline{2-2}
+ & 325584  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_116\_368} & 116456 & \multirow{2}{4em}{560414} & \multirow{2}{4em}{146786 ms} & \multirow{2}{4em}{116456} & \multirow{2}{4em}{560411} & \multirow{2}{4em}{149855 ms} & \multirow{2}{4em}{116456} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} \\
+\cline{2-2}
+ & 368569  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_157\_297} & 157604 & \multirow{2}{4em}{570525} & \multirow{2}{4em}{253563 ms} & \multirow{2}{4em}{143111} & \multirow{2}{4em}{344348} & \multirow{2}{4em}{191313 ms} & \multirow{2}{4em}{143111} & \multirow{2}{4em}{291672} & \multirow{2}{4em}{1542037 ms} & \multirow{2}{4em}{143111} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{169828} & \multirow{2}{4em}{1137648 ms} & \multirow{2}{4em}{143111} \\
+\cline{2-2}
+ & 297000  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{web-Stanford.txt} & 281903 & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0} & \multirow{2}{4em}{0 ms} & \multirow{2}{4em}{0} & \multirow{2}{4em}{122371} & \multirow{2}{4em}{1216873 ms} & \multirow{2}{4em}{29914} & \multirow{2}{4em}{81275} & \multirow{2}{4em}{834071 ms} & \multirow{2}{4em}{29914} \\
+\cline{2-2}
+ & 2312497  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\multirow{2}{4em}{vasy\_720\_390} & 720247 & \multirow{2}{4em}{2156545} & \multirow{2}{4em}{97531 ms} & \multirow{2}{4em}{713126} & \multirow{2}{4em}{20945} & \multirow{2}{4em}{23638 ms} & \multirow{2}{4em}{713126} & \multirow{2}{4em}{1435356} & \multirow{2}{4em}{732579 ms} & \multirow{2}{4em}{713126} & \multirow{2}{4em}{1435356} & \multirow{2}{4em}{159329 ms} & \multirow{2}{4em}{713126} & \multirow{2}{4em}{13872} & \multirow{2}{4em}{47275 ms} & \multirow{2}{4em}{713126} \\
+\cline{2-2}
+ & 390999  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+\hline
+\end{tabular}
+\end{center}
 
-% \addplot[color=blue,mark=square,]coordinates {(289, 591)(1183, 650)(1952, 104)(3996, 19344)(5486, 12773)(8879, 12664)(8921, 30529)(10849, 136)(10879, 20434)(18746, 349)(25217, 0)(40006, 0)(52268, 48495)(83436, 1661)(116456, 560414)(157604, 570525)(281903, 0)(720247, 2156545)};
-% \addplot[color=cyan,mark=square,]coordinates {(289, 578)(1183, 630)(1952, 106)(3996, 19332)(5486, 11211)(8879, 12716)(8921, 24640)(10849, 83)(10879, 1938)(18746, 342)(25217, 0)(40006, 0)(52268, 48497)(83436, 1658)(116456, 560411)(157604, 344348)(281903, 0)(720247, 20945)};
-% \legend{Linear, Linear with trimming}
-% \end{axis}
-% \end{tikzpicture}
 
-
-% \begin{tikzpicture}
-% \begin{axis}[
-% height = \textheight,
-% width=\textwidth,
-% xtick=data,
-% x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
-% title={Lockstep algorithm},
-% xlabel={Nodes},
-% ylabel={Steps},
-% ymin=0, ymax=3000000,
-% legend style={at={(0.5,1)},anchor=south,legend cell align=left},
-% ymajorgrids=true,
-% grid style=dashed,
-% ymode=log,
-% log basis y={10},
-% symbolic x coords={289, 1183, 1952, 3996, 5486, 8879, 8921, 10849, 10879, 18746, 25217, 40006, 52268, 83436, 116456, 157604, 281903, 720247}]
-
-% \addplot[color=red,mark=square,]coordinates {(289, 322)(1183, 350)(1952, 62)(3996, 7992)(5486, 5945)(8879, 5783)(8921, 16032)(10849, 61)(10879, 13209)(18746, 145)(25217, 50434)(40006, 80011)(52268, 30384)(83436, 986)(116456, 0)(157604, 291672)(281903, 0)(720247, 1435356)};
-% \addplot[color=orange,mark=square,]coordinates {(289, 322)(1183, 350)(1952, 62)(3996, 7992)(5486, 5945)(8879, 5783)(8921, 16032)(10849, 61)(10879, 13209)(18746, 145)(25217, 50434)(40006, 80011)(52268, 30384)(83436, 986)(116456, 0)(157604, 0)(281903, 122371)(720247, 1435356)};
-% \addplot[color=purple,mark=square,]coordinates {(289, 322)(1183, 350)(1952, 64)(3996, 7990)(5486, 5191)(8879, 5783)(8921, 12264)(10849, 61)(10879, 1243)(18746, 145)(25217, 50432)(40006, 80013)(52268, 30386)(83436, 986)(116456, 0)(157604, 169828)(281903, 81275)(720247, 13872)};
-% \legend{Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
-% \end{axis}
-% \end{tikzpicture}
+\subsection{Nodes vs. Steps}
+We started by caomparing the symbolic steps and number of nodes in the graph to the number of nodes, as the complexity of the algorithms was described in terms of these two. The two graphs below show that there is a somewhat positive correlation between number fo nodes and symbolic steps, with some outliers. 
 
 \begin{tikzpicture}
 \begin{axis}[
@@ -80,7 +117,7 @@ symbolic x coords={289, 1183, 1952, 3996, 5486, 8879, 8921, 10849, 10879, 18746,
 
 \begin{tikzpicture}
 \begin{axis}[
-height = \textheight,
+height = \textwidth,
 width=\textwidth,
 xtick=data,
 x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
@@ -103,7 +140,9 @@ symbolic x coords={52268, 83436, 116456, 157604, 281903, 720247}]
 \end{axis}
 \end{tikzpicture}
 
-Since the first comparison didn't give us much new insight, we decided to also compare the number of nodes to the time it takes to find SCCs. This showed a stronger positive correlation. We noticed 
+\subsection{Nodes vs. Time}
+
+Since the first comparison didn't give us much new insight, we decided to also compare the number of nodes to the time it takes to find SCCs. This showed a stronger positive correlation. We noticed that for both small and large grpahs,  the linear-algorithm tends to take less time to run, while the Lockstep algorithm tends to jump to much higher values the more nodes there are.
 
 \begin{tikzpicture}
 \begin{axis}[
@@ -132,7 +171,7 @@ symbolic x coords={289, 1183, 1952, 3996, 5486, 8879, 8921, 10849, 10879, 18746,
 
 \begin{tikzpicture}
 \begin{axis}[
-height = \textheight,
+height = \textwidth,
 width=\textwidth,
 xtick=data,
 x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
@@ -154,6 +193,8 @@ symbolic x coords={52268, 83436, 116456, 157604, 281903, 720247 }]
 \legend{Linear, Linear with trimming, Lockstep, Lockstep with edge restriction, Lockstep with edge restriction and trimming}
 \end{axis}
 \end{tikzpicture}
+
+\subsection{SCCs vs Steps}
 
 \begin{tikzpicture}
 \begin{axis}[
@@ -182,7 +223,7 @@ symbolic x coords={0, 0, 1, 2, 25, 33, 49, 2197, 2525, 3996, 6563, 7412, 25217 }
 
 \begin{tikzpicture}
 \begin{axis}[
-height = \textheight,
+height = \textwidth,
 width=\textwidth,
 xtick=data,
 x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
@@ -205,6 +246,7 @@ symbolic x coords={0, 253, 11828, 29914, 116456, 143111, 713126 }]
 \end{axis}
 \end{tikzpicture}
 
+\subsection{Nodes per SCC vs. Steps}
 \begin{tikzpicture}
 \begin{axis}[
 height = \textwidth,
@@ -232,7 +274,7 @@ symbolic x coords={ 1.0, 1.0, 1.203588774959525, 1.657626085631571, 2.1726732673
 
 \begin{tikzpicture}
 \begin{axis}[
-height = \textheight,
+height = \textwidth,
 width=\textwidth,
 xtick=data,
 x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
