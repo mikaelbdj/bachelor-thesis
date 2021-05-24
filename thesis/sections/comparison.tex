@@ -1,24 +1,32 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
+In this section, we now compare the results of experiments to each other and to the theoretical analysis of the algorithms and their complexity.
+From the graphs above, the algorithms do not show a clear $O(n)$ or $O(n\ log(n))$. However, we also know that there is a tighter bound of $O(min(n, dN)$ on the linear-time algorithm and $O(min(n\ log(n) for the Lockstep algorithm, dN)$, where $d$ is the diameter of the graph and $N$ is the number of SCCs, which still gives us a worst-case performance of $O(n)$ and $O(n\ log(n))$. \todo{add tighter bound to complexity} This bound also explains why the number of SCCs seems to have a positive correlation to the number of steps.
 
-Small graphs:
-\begin{itemize}
-\item not so much correlation between nodes and steps
-\item moderate positive correlation between nodes and time
-\item moderate positive correlation between number of SCCs in graph and steps - although with some outliers if there are many nodes in an SCC
-\item generally negative correaltion between how many nodes there are per scc and steps
-\item linears and locksteps tend to stick together, with trimming helping slightly some of the time. Linears generally tend to do a little worse than locksteps
-\item locksteps seem to perform better time wise, but worse step wise
-\end{itemize}
-Big graphs:
-\begin{itemize}
-\item slight positive correlation between nodes and steps if trimmign not used - trimming improves complexity
-\item slight positive, but really no correlation between time and nodes, trimming improves runtime
-\item positive correlation betwen no of SCCs and steps, trimming helps with bigger graphs
-\item generally negative correlation between nodes per scc and steps, where trimming helps significantly on some data
-\item linears perform slightly worse than locksteps in steps
-\item linears are slightly better on larger datasets time-wise
-\end{itemize}
+In the thesis, we decribe that edge restriction and trimming should improve the bound somewhat. In the graphs from our experiment, we can see that the different variations of the algorithms perform similarily to the originals. Edge restriction does not seem to alter the number of steps in comparison to the original algorithms. Trimming, however, does seem to have an effect on the number of steps in some cases. For a majority of the graphs, trimming performs as well as the original algorithms, with some graphs, for which it significantly improves the steps number.
+
+Even though theoretically it would be smart to use the linear-time algorithm, we can see that the Lockstep performs better than the linear-time one when considering steps. However, if we look at the runtime of the two algorithms, linear seems to perform better with larger graphs.
+
+If one wants to optimize the number of steps, trimming should be used, as it can make significant improvements in some cases. However, one should also consider the time it takes to find all SCCs when using trimming - as it may also worsen the runtime of the algorithms slightly in some cases.
+
+% Small graphs:
+% \begin{itemize}
+% \item not so much correlation between nodes and steps
+% \item moderate positive correlation between nodes and time
+% \item moderate positive correlation between number of SCCs in graph and steps - although with some outliers if there are many nodes in an SCC
+% \item generally negative correaltion between how many nodes there are per scc and steps
+% \item linears and locksteps tend to stick together, with trimming helping slightly some of the time. Linears generally tend to do a little worse than locksteps
+% \item locksteps seem to perform better time wise, but worse step wise
+% \end{itemize}
+% Big graphs:
+% \begin{itemize}
+% \item slight positive correlation between nodes and steps if trimmign not used - trimming improves complexity
+% \item slight positive, but really no correlation between time and nodes, trimming improves runtime
+% \item positive correlation betwen no of SCCs and steps, trimming helps with bigger graphs
+% \item generally negative correlation between nodes per scc and steps, where trimming helps significantly on some data
+% \item linears perform slightly worse than locksteps in steps
+% \item linears are slightly better on larger datasets time-wise
+% \end{itemize}
 
 \end{document}
 %%% Local Variables:
