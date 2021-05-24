@@ -166,7 +166,8 @@ A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S, v} is a
 
 \begin{figure}[H]
 \center
-\begin{tikzpicture}
+\begin{scaletikzpicturetowidth}{\textwidth}
+\begin{tikzpicture}[scale=\tikzscale]
 \begin{scope}[every node/.style={circle, fill=black, inner sep=0pt, minimum size=3mm}]
     \node (A) at (0,0) {};
     \node (B) at (3,0) {};
@@ -193,6 +194,7 @@ A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S, v} is a
   \end{scope}
 \draw (6,0) ellipse (7cm and 1.2cm);
 \end{tikzpicture}
+\end{scaletikzpicturetowidth}
 \caption{Spine-set}
 \label{spine}
 \end{figure}
@@ -200,7 +202,8 @@ A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S, v} is a
 For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton iff $u$ is also a node in $\FW{u}$ and the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
 \begin{figure}[H]
 \center
-\begin{tikzpicture}
+\begin{scaletikzpicturetowidth}{\textwidth}
+\begin{tikzpicture}[scale=\tikzscale]
 \begin{scope}[every node/.style={circle, fill=black, inner sep=0pt, minimum size=3mm}]
     \node[label=$u$] (A) at (0,0) {};
     \node (B) at (3,0) {};
@@ -226,6 +229,7 @@ For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton if
   \end{scope}
 \draw (7.5,0) ellipse (8.5cm and 1.2cm);
 \end{tikzpicture}
+\end{scaletikzpicturetowidth}
 \caption{Skeleton}
 \label{skeleton}
 \end{figure}

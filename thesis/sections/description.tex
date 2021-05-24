@@ -127,7 +127,7 @@ Here we analyze the complexity of the two algorithms. We state the results in Th
 \begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|log\ |V|)$ symbolic steps.
 \end{theorem}
 \begin{proof}
-  Here, we charge each step to a node. We prove that we charge no more than $2 log\ |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$. We start by considering the numnber of steps and iterations for both loops, and then limit the total cost charged to a node.
+  Here, we charge each step to a node. We prove that we charge no more than $2 log\ |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$. We start by considering the number of steps and iterations for both loops, and then limit the total cost charged to a node.
 
   In the loop in lines 5-11 we charge 2 symbolic steps per iteration. We iterate through the loop as long as both B and F are being extended. We therefore look at the the subgraphs that result from an invocation of lockstep. We have $Converged\setminus C$, $C$ and $P\setminus Converged$. Let $S$ be the smaller of $Converged\setminus C$ and $P\setminus Converged$ and $k = |S\cup C|$.
 
