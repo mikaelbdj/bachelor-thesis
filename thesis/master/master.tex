@@ -11,6 +11,7 @@
 \usepackage[noend]{algpseudocode}
 \usepackage{algorithmicx}
 \usepackage{multirow}
+
 \usepackage{pdflscape}
 \usepackage{environ}
 \makeatletter
@@ -25,6 +26,9 @@
   \BODY
 }
 \makeatother
+
+\usepackage{adjustbox}
+
 
 \usepackage{tikz-uml}
 \usetikzlibrary{positioning}
@@ -104,8 +108,6 @@
 
 \begin{document}
 
- \pagestyle{empty}
-
 \maketitle
 
 \subfile{\sectionpath/abstract}
@@ -123,13 +125,13 @@
 \subfile{\sectionpath/experiment}
 
 \section{Comparison of results}
-
-\section{Theoretical analysis of the results}
+\subfile{\sectionpath/comparison}
 
 \section{Conclusion}
 
 \printbibliography
 \appendix
+\subfile{\sectionpath/appendix}
 \end{document}
 %%% Local Variables:
 %%% mode: latex
