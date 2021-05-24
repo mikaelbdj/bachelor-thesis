@@ -150,7 +150,13 @@ Trimming has been implemented on top of edge restriction in the class
 \subsection{Linear}
 Just as with implementing the Lockstep algorithm, it was quite straightforward to implement the linear-time algorithm given the framework described and the pseudocode. Most of the code was implemented from the pseudocode of the Linear-time algorithm and the skelForward algorithm.
 
-While implementing the algorithm, we noticed that it is important to include restriction of edges, even though we do not explicitly use them for any computations. In each iteration, we make a new BDD graph from the subsets of vertices and restricted edges, even though it isn't very efficient. The graph is used for the image computations, where it is crucial that the edges are restricted, otherwise the algorithm would loop on some of the same subsets and find already found SCCs, which should never happen.
+While implementing the algorithm, we noticed that it is important to include restriction of edges, even though we do not explicitly use them for any computations. In each iteration, we make a new BDD graph from the subsets of vertices and restricted edges. The graph is used for the image computations, where it is crucial that the edges are restricted, otherwise the algorithm would loop on some of the same subsets and find already found SCCs, which should never happen.
+The linear algorithm has been implemented in the class \texttt{Linear}. 
+
+\subsubsection{Linear with trimming}
+As with lockstep, we have added a version of the algorithm that implements trimming. This is implemented on top of the regular linear implementation in the class \texttt{LinearTrim}.
+
+
 
 
 \end{document}
