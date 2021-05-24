@@ -11,7 +11,6 @@
 \usepackage[noend]{algpseudocode}
 \usepackage{algorithmicx}
 \usepackage{multirow}
-\usepackage{pdflscape}
 
 \usepackage{tikz-uml}
 \usetikzlibrary{positioning}
@@ -91,8 +90,6 @@
 
 \begin{document}
 
- \pagestyle{empty}
-
 \maketitle
 
 \subfile{\sectionpath/abstract}
@@ -117,6 +114,7 @@
 
 \printbibliography
 \appendix
+\subfile{\sectionpath/appendix}
 \end{document}
 %%% Local Variables:
 %%% mode: latex
