@@ -4,7 +4,7 @@
 This section discusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
 
 \subsection{Strongly Connected Components}
-A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such that $\forall v,w\in C$, there is a path from $v$ to $w$. In other words, a set of nodes in which every node is reachable from every other node.
+A strongly connected component (SCC) is a maximal set of nodes $C\subseteq V$ such that $\forall v,w\in C$, there is a path from $v$ to $w$. In other words, a set of nodes in which every node is reachable from every other node. A trivial SCC is an SCC that only contains a single node.
 \begin{figure}[H]
 \center
 \begin{tikzpicture}
@@ -26,7 +26,7 @@ A strongly connected component (SCC) is a maximal set of nodes $C\in V$ such tha
 \end{figure}
 
 \subsection{Binary decision diagrams}
-In this thesis, our primary data structure is a Binary Decision Diagram (BDD). Binary Decision Diagrams represent boolean functions as directed graphs. Each non-terminal vertex $v$ asks about the value of some variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all maximal paths end in one of these. Note that this is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
+In this thesis, our primary data structure is a Binary Decision Diagram (BDD). Binary Decision Diagrams represent boolean functions as directed graphs. Each non-terminal vertex $v$ asks about the value of some variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all maximal paths end in one of these. There is a special root node that has no incoming edgees (this can also be a terminal node). Note that the graph is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
 Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a binary decision diagram representing it. To compute an output $y\in \{0,1\}$ given an assignment  $x\in\{0,1\}^n$, we start in the root and until we hit a terminal vertex we iterate the following: for each vertex $v$ we encounter (including the root) with variable $x_i$, we branch to $lo(v)$ and $hi(v)$ depending on the value assigned to $x_i$. When illustrating BDDs, $hi(v)$ and $lo(v)$ are represented by respectively a full line and a dotted line. A small example of a BDD can be seen in Figure \ref{simplebdd}.
 
 \begin{figure}[H]
@@ -237,7 +237,7 @@ For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton if
 If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set.
 
 \subsection{Representing a graph symbolically}
-A BDD can be used to represent many things - in our paper we use it to represent a graph. The common way to represent a graph $G = (V, E)$ by a BDD is to assign each $v\in V$ to be a unique vector of boolean assignments $x\in\{0,1\}^n$. To name all nodes we would trivially need an $n \geq \ceil{\log_2{|V|}}$. Taking our graph from before we can name each node using two booleans:
+A BDD can be used to represent many things - in our paper we use it to represent a graph. The common way to represent a graph $G = (V, E)$ by a BDD is to assign each $v\in V$ to be a unique vector of boolean assignments $x\in\{0,1\}^n$. To name all nodes we trivially need an $n \geq \ceil{\log_2{|V|}}$. Taking our graph from before we can name each node using two booleans:
 
 \begin{figure}[H]
 \center
