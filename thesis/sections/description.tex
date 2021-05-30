@@ -5,15 +5,16 @@ The first algorithm we will be looking at is the Lockstep algorithm proposed by 
 
 We have modified this algorithm slightly, as we do not look at Streett automata, and are therefore not interested in the Report function introduced in the article. For the same reason, we also modified the input of the algorithm to only take a graph and a set of vertices. 
 
-We start by initializing the set $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v} of some node, as well as their frontiers, which are all initially set to $v\in G$ - the singleton set of a node picked from $P$.
+We start by initializing the set $P=V$ in the first iteration, for which we will be finding SCCs. During the iterations, this set will be modified, and once it is empty, we return, as no SCCs exist in an empty set. The algorithm then initializes the forward and backward sets \FW{v} and \BW{v} of some node $v$, as well as their frontiers, which are all initially set to $v\in G$ - the singleton set of a node picked from $P$.
 
 The next step is simultaneously performing forward and backward set computations until either \FW{v} or \BW{v} converges. This is done by extending the forward and backward frontiers by taking their image and preimage respectively, selecting only those of the nodes, which are in our current $P$ and finally removing all the nodes which already exist in \FW{v} and \BW{v} respectively. We then update the values of \FW{v} and \BW{v} to include the elements that we have found in their respective frontiers. This is done in iterations until either of the frontiers is an empty set, meaning that it will no longer be updated.
-In other words, by iteratively computing the two functions (\ref{fw}) and (\ref{bw}) until one of them reaches its least fixpoint. The forward or backward set with the empty frontier is then set as \emph{Converged}. This is essential for obtaining the $n$\,log\,$n$ bound that will be examined later on.
+In other words, by iteratively computing the two functions (\ref{fw}) and (\ref{bw}) until one of them reaches its least fixpoint. The forward or backward set with the empty frontier is then set as \emph{Converged}. This is essential for obtaining the $n$\,log\,$n$ bound that will be argued later on.
 
 Once one of the sets has converged, we continue updating the other set, just like before until its frontier has no nodes in common with the \emph{Converged} set, as then no more nodes can be found in the SCC.
 We have now found a SCC, which is the nodes in $\FW{v}\cap\BW{v}$. 
 
-We recursively call Lockstep on the set of vertices in $P\setminus Converged$. Here, we don't check for strongly connected components in the \emph{Converged} set, and therefore we also call the Lockstep procedure on this set of nodes, once we have removed the SCC from it.
+We recursively call Lockstep on the set of vertices in $P\setminus Converged$. Here, we don't check for strongly connected components in the \emph{Converged} set, and therefore we also call the Lockstep procedure on this set of nodes, once we have removed the SCC from it. We call the Lockstep on these two sets, as we need to check for any nodes, which may be in a strongly connected component of their own. These two sets are disjoint and do not include any of the nodes, which we already found in the SCC of this iteration.\todo{Expand this description a bit to argue why this is correct. Also explain both recursive calls}
+\todo{maybe add an illustration?}
 
 \begin{algorithm}
   \caption{Lockstep((V, E), P $\subseteq$ V)}
@@ -57,7 +58,7 @@ We recursively call Lockstep on the set of vertices in $P\setminus Converged$. H
 \subsection{Linear-time algorithm}
 The second algorithm we will be comparing is the linear-time algorithm \cite{linear} introduced by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$. In the paper, the algorithm outputs vertex sets of SCC subgraphs, however here we change this to return a set of SCCs, similarly to the Lockstep algorithm.
 
-The first thing the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\emptyset$, in which case the algorithm terminates. If $S\neq\emptyset$ and $N={v_p}$, then $v_p$ is chosen. Otherwise, an arbitrary $v$ is assigned to N.
+The first thing the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\emptyset$, in which case the algorithm terminates. If $S\neq\emptyset$ and $N={v_p}$, then $v_p$ is chosen. Otherwise, an arbitrary node $v_i$ is chosen to act as the spine-anchor.
 
 Next, \FW{N} and a skeleton \pair{S'}{N'} on this forward-set is computed. The next step is to determine the SCC containing N. We do this by checking if the set of nodes that can reach the current SCC(initially set to N) has any nodes in common with the forward set of N - all the nodes that N can reach. The SCCs, which is our set of SCCs, is then extended by the SCC that the current iteration of the algorithm has just found.
 
@@ -124,10 +125,10 @@ The skelForward algorithm is a helper method introduced by Gentilini et al., whi
 \subsection{Complexity}
 Here we analyze the complexity of the two algorithms. We state the results in Theorems  and \ref{lockstep} and \ref{linear}. For both of these proofs we charge each step to a node. We further strengthen the complexity of linear stated in Theorem \ref{linear} in Theorem \label{linear-strengthened}, where we consider all BDD operations instead of only symbolic steps.
 
-\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|log\ |V|)$ symbolic steps.
+\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $O(|V|\log |V|)$ symbolic steps.
 \end{theorem}
 \begin{proof}
-  Here, we charge each step to a node. We prove that we charge no more than $2 log\ |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$. We start by considering the number of steps and iterations for both loops, and then limit the total cost charged to a node.
+  Here, we charge each step to a node. We prove that we charge no more than $2 \log |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$. We start by considering the number of steps and iterations for both loops, and then limit the total cost charged to a node.
 
   In the loop in lines 5-11 we charge 2 symbolic steps per iteration. We iterate through the loop as long as both B and F are being extended. We therefore look at the the subgraphs that result from an invocation of lockstep. We have $Converged\setminus C$, $C$ and $P\setminus Converged$. Let $S$ be the smaller of $Converged\setminus C$ and $P\setminus Converged$ and $k = |S\cup C|$.
 
@@ -135,11 +136,11 @@ Here we analyze the complexity of the two algorithms. We state the results in Th
 
   The other case is $S=P\setminus Converged$. Here, we know that the nodes, which are in the non-converged set at the time of termination of the loop are a subset of $S\cup C$. Therefore, the loop iterates at most $k$ times.
 
-  The second while loop in lines 14-18 performs at most $|C|$ iterations, as it only extends on the non-converged set. In the worst-case, this set does not contain any node from $C$ yet and must be extended by all these nodes.
+  The second while loop in lines 14-18 performs at most $|C|$ iterations, as it only extends on the non-converged set.\todo{This is not sufficient explanation. It is also not clear what “all these nodes” refers to.} In the worst-case, this set does not contain any node from $C$ yet and must be extended by all these nodes.
 
-  To limit the total cost per node, we consider a recursion tree R pictured in Figure \ref{R}. Each call to the algorithm corresponds to a vertex $x$ of R, where $P_x$, $S_x$ and $C_x$ are the $P$, $S$ and $C$ corresponding to that invocation. Any node $u \in V$ is only passed down one branch of R. 3 steps are performed at the vertex in which the SCC of $u$ is found. We now look at the vertices in which the SCC has not been found yet. Let $x'$ be the closest descendant of $x$ where $u$ is charged again. We know that $|P_{x'}|\leq |S_x|$, as $P_{x'}$ is either $S_x$ or one of its descendants. Since $|S_{x'}|\leq |P_{x'}|/2$ and therefore $|S_{x'}|\leq |S_{x}|/2$, which tells us that each node $u$ is charged at most $log\ |V|$ times and an additional 3 steps when its SCC is found.
+  To limit the total cost per node, we consider a recursion tree R pictured in Figure \ref{R}. Each call to the algorithm corresponds to a vertex $x$ of R, where $P_x$, $S_x$ and $C_x$ are the $P$, $S$ and $C$ corresponding to that invocation. Any node $u \in V$ is only passed down one branch of R. 3 steps are performed at the vertex in which the SCC of $u$ is found\todo{Explain how you associate the recursive call with this node u. Is it the one picked in line 3?}. We now look at the vertices in which the SCC has not been found yet. Let $x'$ be the closest descendant of $x$ where $u$ is charged again. We know that $|P_{x'}|\leq |S_x|$, as $P_{x'}$ is either $S_x$ or one of its descendants. Since $|S_{x'}|\leq |P_{x'}|/2$\todo{Where is this argued?} and therefore $|S_{x'}|\leq |S_{x}|/2$, which tells us that each node $u$ is charged at most $\log |V|$ times and an additional 3 steps when its SCC is found.
 
-  This gives us the cost of $2|V|\ log\ |V| + 3|V|$ steps, resulting in the $O(|V|log\ |V|)$ bound.
+  This gives us the cost of $2|V|\ \log |V| + 3|V|$ steps, resulting in the $O(|V|\log |V|)$ bound.
 \end{proof}
 \begin{figure}
   \centering
@@ -162,13 +163,13 @@ Here we analyze the complexity of the two algorithms. We state the results in Th
 Next, in lines 7-8, nodes are assiged to our SCC. Since each node can be part of at most one SCC, we can also deduce that this part of the algorithm also performs $O(|V|)$ symbolic steps globally.
 
 Lastly, we have the call to skelForward in line 5, which performs the remaining symbolic steps. Here, the number of symbolic steps is the number of elements popped from the stack in skelForward before the termintion of the second recursive call in the pseudocode, or before all node sets are popped from our implementartion of the algorithm. Since each $v\in V$ is inserted into a spine-set at most two times within Linear($V, E, \pair{S}{N}$) \cite[p.~137-138]{linear}, we know that it will take at most $2|V|$ symbolic steps globally, and thereofore we also achieve the $O(|V|)$ bound for this part.
-
+\todo[inline]{finish}
 Given that each of the different parts perform $O(|V|)$ symbollic steps globally, we can conclude that the algorithm runs in $O(|V|)$ symbolic steps.
 \end{proof}
-%We can then further strengthen the bound presented above for the linear-time algorithm by considering all symbolic operations.
-%\begin{theorem}\label{linear-strengthened} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(\text{min}(|V|, dN))$ symbolic steps, where $d$ is the diameter of $G$ and $N$ is the number of SCCs in $G$ .\end{theorem}
-%\begin{proof}
-%\end{proof}
+We can then further strengthen the bound presented above for both the linear-time and Lockstep algorithms by considering all symbolic operations.
+\begin{theorem}\label{linear-strengthened} Linear($V, E, \pair{\emptyset}{\emptyset}$) runs in $O(\text{min}(|V|, dN))$ symbolic steps, where $d$ is the diameter of $G$ and $N$ is the number of SCCs in $G$ .\end{theorem}
+\begin{proof}
+\end{proof}
 \todo{add small example that shows difference between two algorithms}
 \end{document}
 %%% Local Variables:
