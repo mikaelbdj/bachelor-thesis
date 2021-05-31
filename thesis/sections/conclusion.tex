@@ -11,10 +11,9 @@ An effectiveness measure, which we were disappointed to see fail was edge restri
 \subsection{Future work}
 While we did not have the chance to look at edge restriction and trimming in more depth while writing this thesis, we think it would be very interesting to look into it further.
 
-The effect of edge restriction seemed quite random in our data. While we would generally not suggest using it, we think it would be worth investigating which graphs it performed better on, as there may be some pattern. It is possible that edge restriction does help on some kinds of graphs - perhaps graphs below or above a certain diameter, some number of SCCs or even the ratio of nodes to edges. 
+The effect of edge restriction seemed quite random in our data. While we would generally not suggest using it, we think it would be worth investigating which graphs it performed better on, as there may be some pattern. It is possible that edge restriction does help on some kinds of graphs - perhaps graphs below or above a certain diameter, some number of SCCs or even the ratio of nodes to edges.
 
-
-Future work: investigate when edge restriction is useful, look at how many times trimming shoudl be run to make it the most effective
+Trimming on the other hand proved to be very useful, and using it on all graphs would be wise, as it does not harm the performace of the algorithms, and can improve it. What we did notice was that sometimes only running trimming once did not affect the number of symbolic steps or time at all. This is due to the fact that it removes a very small percentage of nodes from the graphs, which does not help the overall performance. The effect of trimming on symbolic steps and time may also vary depending on whether the graph is quite linear or very interconnected. It would be worth looking at how many times trimming should be run to optimize its effectiveness. We would expect that one should continue trimming until trimming only removes a small percentage of nodes, as then it starts being less effective and may take a toll on the overall runtime if done too many times. 
 \end{document}
 %%% Local Variables:
 %%% mode: latex
