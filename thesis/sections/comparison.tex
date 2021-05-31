@@ -8,10 +8,9 @@ In the thesis, we decribe that edge restriction and trimming should improve the 
 
 The second improvement we suggested was trimming. As can be seen in the different graphs,it does have an effect on the number of steps and the time taken. The algorithms with trimming perform either just as well as the vanilla versions, or better. When implementing trimming, we decided to only trim once at the very beginning. It is definitelt worth considering how many time trimming should be run to optimize the algorithms and whether the amount of times it is run shoudl depend on the type of graph it is run on.
 
+The theoretical analysis of the complexity of the two algorithms suggests that the linear-time algorithm should perform better.  Although we expected that the linear-time algorithm would perform better or just as well as Lockstep in the number of steps, we thought it would perform worse in terms of runtime. This was not the case. We were surprised to see that there was only a small difference in the number of steps performed on the differnt graphs by the two algorithms. However, what was more surprising was the fact that the Lockstep algorithm performed slightly better when only looking at the number of steps. When comparing the time it took to run the algorithms, we found out that linear tended to perform better than Lockstep.
 
-Even though theoretically it would be smart to use the linear-time algorithm, we can see that the Lockstep performs better than the linear-time one when considering steps. However, if we look at the runtime of the two algorithms, linear seems to perform better with larger graphs.
-
-If one wants to optimize the number of steps, trimming should be used, as it can make significant improvements in some cases. However, one should also consider the time it takes to find all SCCs when using trimming - as it may also worsen the runtime of the algorithms slightly in some cases.
+From the data we have gathered by running experiments, we can see that the choice of algorithm should depend on whether one values the number of symbolic steps performed or the runtime of the algorithm. 
 
 % Small graphs:
 % \begin{itemize}
