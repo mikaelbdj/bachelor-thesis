@@ -16,7 +16,7 @@ We have now found a SCC, which is the nodes in $\FW{v}\cap\BW{v}$.
 We recursively call Lockstep on the set of vertices in $P\setminus Converged$. Here, we don't check for strongly connected components in the \emph{Converged} set, and therefore we also call the Lockstep procedure on this set of nodes, once we have removed the SCC from it. We call the Lockstep on these two sets, as we need to check for any nodes, which may be in a strongly connected component of their own. These two sets are disjoint and do not include any of the nodes, which we already found in the SCC of this iteration.\todo{Expand this description a bit to argue why this is correct. Also explain both recursive calls}
 \todo{maybe add an illustration?}
 
-\begin{algorithm}
+\begin{algorithm}[H]
   \caption{Lockstep((V, E), P $\subseteq$ V)}
   \begin{algorithmic}[1]
     \Statex
@@ -133,8 +133,7 @@ For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton if
 
 If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set.
 
-
-
+\subsubsection{The algorithm}
 The second algorithm we will be comparing is the linear-time algorithm \cite{linear} introduced by Gentilini et al. This algorithm takes as input a graph G and spine-set $\langle S, N\rangle$. In the paper, the algorithm outputs vertex sets of SCC subgraphs, however here we change this to return a set of SCCs, similarly to the Lockstep algorithm.
 
 The first thing the algorithm does, is to choose for which vertex the next SCC will be computed, unless $V=\emptyset$, in which case the algorithm terminates. If $S\neq\emptyset$ and $N={v_p}$, then $v_p$ is chosen. Otherwise, an arbitrary node $v_i$ is chosen to act as the spine-anchor.
@@ -143,7 +142,7 @@ Next, \FW{N} and a skeleton \pair{S'}{N'} on this forward-set is computed. The n
 
 Once this is done, this procedure is called recursively on two subgraphs. The first recursive call is on the subgraph $V\setminus FW$ (its vertices and edges) as well as its spine-set, obtained by removing the SCC from the spine-set \pair{S}{N}. We then recurse again on a second subgraph, $FW\setminus SCC$ and its spine-set, \pair{newS}{newN}, which we found by computing the skeleton of $(V, E, N)$.
 
-\begin{algorithm}[h!]
+\begin{algorithm}[H]
   \caption{Linear((V, E), \pair{S}{N})}
   \begin{algorithmic}[1]
     \If{$V=\emptyset$}
