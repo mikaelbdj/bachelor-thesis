@@ -1,5 +1,19 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
+Having implemented and experimented on the two algorithms we have been working on during the thesis, we can decide on the best algorithm for strongly connected component analysis. We have considered different measures of comparing the algorithm. We started by looking at the theoretical analysis of the complexity of the algorithm, which suggested that the Linear algorithm should have performed better in terms of symbolic steps. However, through experiments, we came to the conclusion that the Lockstep algorithm performed slightly better in average-case.
+
+While comparing the results of the experiments, we realized that comparing based on the number of symbolic steps was not the best way of looking at it in practice. When runnign algorithms, we usually value the time it takes for the algorithm to complete, and we want this to be as quick as possible. Contrary to our initial assumptions, we learned that the Linear-time algorithm performed better time-wise.
+
+This was further improved by using trimming. In our algorithms, we only ran trimming once at the beginning of each algorithm, which sometimes removed a lot of nodes and therefore improved botht the numnber of symbolic steps and time significantly, while other times it only removed a couple nodes, giving us the same results as the vanilla versions.
+
+An effectiveness measure, which we were disappointed to see fail was edge restriction. Although we believed that it would improve the time per symbolic step, and therefore improve the total runtime, we discovered that was not a great idea in practice. Sometimes it would improve the time slightly, while other times it could slow it down significantly.
+
+\subsection{Future work}
+While we did not have the chance to look at edge restriction and trimming in more depth while writing this thesis, we think it would be very interesting to look into it further.
+
+The effect of edge restriction seemed quite random in our data. While we would generally not suggest using it, we think it would be worth investigating which graphs it performed better on, as there may be some pattern. It is possible that edge restriction does help on some kinds of graphs - perhaps graphs below or above a certain diameter, some number of SCCs or even the ratio of nodes to edges. 
+
+
 Future work: investigate when edge restriction is useful, look at how many times trimming shoudl be run to make it the most effective
 \end{document}
 %%% Local Variables:
