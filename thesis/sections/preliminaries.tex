@@ -53,7 +53,14 @@ Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a b
 \label{simplebdd}
 \end{figure}
 
-BDDs support simple set operations such as union, intersection, difference and equality. Using hashing and heuristics to order variables in an effective way, these operations are computationally cheap.
+As BDDs represent boolean functions, they can also represent sets. This is due to the fact that we can always represent a set $S$ as the boolean function $f_S$ that denotes membership of $S$. Thus, a BDD $B_S$ representing the function $f_S$ can also represent the set $S$. In other words, we can think of a BDD with cardinality $n$ as representing the set of all assignments $x_n$ that satisfies it. Going forward with this, we can define set operations on BDDs $B_A$ and $B_B$
+\begin{itemize}
+\item $B_A\cup B_B$: This corresponds to computing the logical OR of $B_A$ and $B_B$.
+\item $B_A\cap B_B$: This corresponds to computing the logical AND of $B_A$ and $B_B$.
+\item $B_A\setminus B_B$: This corresponds to computing the logical AND of $B_A$ and NOT $B_B$.
+\end{itemize}
+
+Computing these logical operations is a mechanical process that is computationally cheap. For the BDDs to preserve their efficient nature, some variable ordering heuristics should be done after each operation. In this paper, we assume that the BDDs we work with do these reordering heuristics automatically. Furthermore, we assume that BDDs use hashing so we can compute equality of two BDDs in constant time. Ordering heuristics and hashing is explained in more detail in \cite{bryant_1992}.
 
 \subsection{Symbolic Notation}
 Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G and $S\subseteq V$, we can derive the following operators: 
@@ -159,82 +166,6 @@ where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustra
 \caption{Intersection of $\FW{v}$ and $\BW{v}$ gives us SCC containing node 1; indeed $SCC_G(1) = \{1,2\}$. } 
 \end{figure}
 
-\subsection{Skeleton and spine-sets}
-The authors in \cite{linear} introduce a notion of a skeleton and a spine-set. First, we need to define a chordless path. A chordless path is a path between nodes $v_0$ and $v_p$ iff for all $0\leq i \leq j \leq p$, where $j-i>1$ and there is no edge from $v_i$ to $v_j$. In other words there can be no shortcuts - for all $v_i$ in the chordless path, the path from $v_0$ to $v_i$ is a shortest path.
-
-A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S, v} is a spine-set of G iff G contains a chordless path consisting of the set of vertices $S$, ending in $v$. $v$ can also be called the spine-anchor of the spine-set.
-
-\begin{figure}[H]
-\center
-\begin{scaletikzpicturetowidth}{\textwidth}
-\begin{tikzpicture}[scale=\tikzscale]
-\begin{scope}[every node/.style={circle, fill=black, inner sep=0pt, minimum size=3mm}]
-    \node (A) at (0,0) {};
-    \node (B) at (3,0) {};
-    \node (G) at (4.5,-1.5) {};
-    \node (C) at (6,0) {};
-    \node (H) at (7.5,-1.5) {};
-    \node (D) at (9,0) {};
-    \node[label=$v$] (E) at (12,0) {};
-    \node (F) at (15,0) {};
-\end{scope}
-
-\begin{scope}[>={Stealth[black]}]
-    \path [->] (A) edge  (B);
-    \path [->] (B) edge (C);
-    \path [->] (B) edge (G);
-    \path [->] (G) edge (H);
-    % \path [->] (C) edge[bend left=30]  (B);
-    \path [->] (H) edge (D);
-    \path [->] (C) edge  (D);
-    \path [->] (D) edge  (E);
-    \path [->] (E) edge  (F);
-    \path [->] (E) edge[bend right=40]  (D);
-    \path [->] (A) edge[bend left=30]  (F);
-  \end{scope}
-\draw (6,0) ellipse (7cm and 1.2cm);
-\end{tikzpicture}
-\end{scaletikzpicturetowidth}
-\caption{Spine-set}
-\label{spine}
-\end{figure}
-
-For $u, v \in V$ and a forward set \FW{v}, the pair \pair{S}{v} is a skeleton iff $u$ is also a node in $\FW{u}$ and the distance from $v$ to $u$ is maximum and $S$ is the set of nodes on the shortest path between the two vertices.
-\begin{figure}[H]
-\center
-\begin{scaletikzpicturetowidth}{\textwidth}
-\begin{tikzpicture}[scale=\tikzscale]
-\begin{scope}[every node/.style={circle, fill=black, inner sep=0pt, minimum size=3mm}]
-    \node[label=$u$] (A) at (0,0) {};
-    \node (B) at (3,0) {};
-    \node (G) at (4.5,-1.5) {};
-    \node (C) at (6,0) {};
-    \node (H) at (7.5,-1.5) {};
-    \node (D) at (9,0) {};
-    \node (E) at (12,0) {};
-    \node[label=$v$] (F) at (15,0) {};
-\end{scope}
-
-\begin{scope}[>={Stealth[black]}]
-    \path [->] (A) edge  (B);
-    \path [->] (B) edge (C);
-    \path [->] (B) edge (G);
-    \path [->] (G) edge (H);
-    \path [->] (H) edge (D);
-    \path [->] (C) edge  (D);
-    \path [->] (D) edge  (E);
-    \path [->] (E) edge  (F);
-    \path [->] (E) edge[bend right=40]  (D);
-    \path [->] (F) edge[bend right=30]  (A);
-  \end{scope}
-\draw (7.5,0) ellipse (8.5cm and 1.2cm);
-\end{tikzpicture}
-\end{scaletikzpicturetowidth}
-\caption{Skeleton}
-\label{skeleton}
-\end{figure}
-
-If \FW{v} is the forward-set of $v \in V$, and if the skeleton of this forward set is \pair{S}{u}, then it is also a spine-set in G. We will be making use of this in the linear-time algorithm when computing the spine-set.
 
 \subsection{Representing a graph symbolically}
 A BDD can be used to represent many things - in our paper we use it to represent a graph. The common way to represent a graph $G = (V, E)$ by a BDD is to assign each $v\in V$ to be a unique vector of boolean assignments $x\in\{0,1\}^n$. To name all nodes we trivially need an $n \geq \ceil{\log_2{|V|}}$. Taking our graph from before we can name each node using two booleans:
@@ -260,7 +191,8 @@ A BDD can be used to represent many things - in our paper we use it to represent
 \label{graphforbdd}
 \end{figure}
 
-A BDD representing all the nodes is simply a BDD that satisfies each boolean assignment $x\in\{0,1\}^n$ that corresponds to a $v\in V$. Similarly, an edge can be represented by a boolean assignment $x\in\{0,1\}^{2n}$, which is the boolean assignment of two nodes concatenated. Thus, a BDD representing all edges is one that satisfies every $x\in\{0,1\}^{2n}$ that corresponds to a $(v_i, v_j)\in E$.
+A BDD representing all the nodes is simply a BDD that satisfies each boolean assignment $x\in\{0,1\}^n$ that corresponds to a $v\in V$. Similarly, an edge can be represented by a boolean assignment $x\in\{0,1\}^{2n}$, which is the boolean assignment of two nodes concatenated. This can be viewed as a tuple of two nodes, and  using this term we can view the BDD as representing a relation over $V\times V$. 
+Thus, a BDD $B_E$ representing edges $E$, is a relation $R_E$ where: for all $a\in V$ and $b \in V$, $a$ $R_E$ $b$ iff. $(a,b)\in E$.
 
 As an example here are two small BDDs representing the edges $(00,01)$ and $(01,10)$:
 
@@ -309,10 +241,9 @@ As an example here are two small BDDs representing the edges $(00,01)$ and $(01,
     \path [->] (D) edge  (E);
 \end{scope}
 \end{tikzpicture}
-\caption{Symbolic representations (via BDDs) of the sets $\{0001\}$ (left) and $\{0110\}$ (right)}
+\caption{Symbolic representations (via BDDs) of the relations $\{(00,01)\}$ (left) and $\{(01,10)\}$ (right)}
 \end{figure}
-
-These should be seen as symbolical representations of sets (sets consisting of all satisfying assignments). To compute the union of two sets symbolically, we can mechanically compute the OR of two BDDs as illustrated:
+As mentioned earlier, to compute the union of two sets /relations symbolically, we can mechanically compute the OR of two BDDs as illustrated:
 
 \begin{figure}[H]
 \center
@@ -342,10 +273,10 @@ These should be seen as symbolical representations of sets (sets consisting of a
     \path [->] (E) edge  (H);
 \end{scope}
 \end{tikzpicture}
-\caption{Symbolic representation of the set $\{0001,0110\}$.}
+\caption{Symbolic representation of the relation $\{(00,01),(01,10)\}$.}
 \end{figure}
 
-Using this process we can construct a BDD representing the set of all edges in our simple graph from Figure \ref{graphforbdd}, whcih can be seen in Figure \ref{edgebdd}.
+Using this process we can construct a BDD representing the set of all edges in our simple graph from Figure \ref{graphforbdd}, which can be seen in Figure \ref{edgebdd}.
 
 \begin{figure}[H]
 \center
@@ -379,7 +310,7 @@ Using this process we can construct a BDD representing the set of all edges in o
     \path [->] (B) edge[bend right=40]  (H);
 \end{scope}
 \end{tikzpicture}
-\caption{Symbolic representation of the set $\{0001,0110,1001,1011\}$. This corresponds to all edges of our graph in Figure \ref{graphforbdd}. Since all nodes are part of an edge, this BDD can fully symbolically represent the original graph.}
+\caption{Symbolic representation of the set $\{(00,01),(01,10),(10,01),(10,11)\}$. This corresponds to all edges of our graph in Figure \ref{graphforbdd}. Since all nodes are part of an edge, this BDD can fully symbolically represent the original graph.}
 \label{edgebdd}
 \end{figure}
 
