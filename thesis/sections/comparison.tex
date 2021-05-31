@@ -10,7 +10,7 @@ The second improvement we suggested was trimming. As can be seen in the differen
 
 The theoretical analysis of the complexity of the two algorithms suggests that the linear-time algorithm should perform better.  Although we expected that the linear-time algorithm would perform better or just as well as Lockstep in the number of steps, we thought it would perform worse in terms of runtime. This was not the case. We were surprised to see that there was only a small difference in the number of steps performed on the differnt graphs by the two algorithms. However, what was more surprising was the fact that the Lockstep algorithm performed slightly better when only looking at the number of steps. When comparing the time it took to run the algorithms, we found out that linear tended to perform better than Lockstep.
 
-From the data we have gathered by running experiments, we can see that the choice of algorithm should depend on whether one values the number of symbolic steps performed or the runtime of the algorithm. 
+From the data we have gathered by running experiments, we can see that the choice of algorithm should depend on whether one values the number of symbolic steps performed or the runtime of the algorithm. If time is of the essence, the linear-time algorithm should be run - but if one wants to minimize the number of steps performed, Lockstep performs best on most graphs, as the worst-case $O(n\log n)$ bound is rarely reached. Furthermore, trimming should be used, as it can improve both number of symbolic operations performed and runtime, or at least performs just as well as the vanilla versions of the algorithms. Edge restriction did not prove to be as useful as we thought. It did not have an impact on the number of symbolic steps, and it varied a lot from graph to graph whether it improved or worsened the runtime.
 
 % Small graphs:
 % \begin{itemize}
@@ -30,7 +30,7 @@ From the data we have gathered by running experiments, we can see that the choic
 % \item linears perform slightly worse than locksteps in steps
 % \item linears are slightly better on larger datasets time-wise
 % \end{itemize}
-Future work: investigate when edge restriction is useful, look at how many times trimming shoudl be run to make it the most effective
+
 \end{document}
 %%% Local Variables:
 %%% mode: latex
