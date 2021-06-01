@@ -161,7 +161,26 @@ log basis x={10}]
 \end{axis}
 \end{tikzpicture}
 
+\subsection{something something worst-case performance}
 
+\begin{tikzpicture}
+ 
+\begin{axis} [ybar = .05cm,
+    bar width = 12pt,
+    enlarge x limits = {abs = .8},
+    xtick={1,2},
+    xticklabels={lockstep, linear},
+    legend style={at={(0, 1)},anchor=north west,legend cell align=left},
+]
+
+\addplot coordinates {(1, 50434) (2, 126083)};
+\addplot coordinates {(1, 75652) (2, 126079)};
+ 
+\legend {start at the beginning, start in the middle};
+ 
+\end{axis}
+ 
+\end{tikzpicture}
 
 \end{document}
 %%% Local Variables:
