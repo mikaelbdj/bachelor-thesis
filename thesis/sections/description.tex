@@ -245,7 +245,7 @@ Given that each of the different parts perform $\mathcal{O}(|V|)$ symbollic step
 \end{proof}
 
 We can then further strengthen the bound presented above for both the linear-time and Lockstep algorithms by considering all symbolic operations.
-\begin{theorem}\label{linear-strengthened} Linear($V, E, \pair{\emptyset}{\emptyset}$) and Lockstep($(V, E), P\in V$) runs in $\mathcal{O}(\text{min}(|V|, dN))$ and $\mathcal{O}(\text{min}(|V|\log|V|, dN))$ symbolic steps respectively, where $d$ is the diameter of $G$ and $N$ is the number of SCCs in $G$.\end{theorem}
+\begin{theorem}\label{magic} Linear($V, E, \pair{\emptyset}{\emptyset}$) and Lockstep($(V, E), P\in V$) runs in $\mathcal{O}(\text{min}(|V|, dN))$ and $\mathcal{O}(\text{min}(|V|\log|V|, dN))$ symbolic steps respectively, where $d$ is the diameter of $G$ and $N$ is the number of SCCs in $G$.\end{theorem}
 \begin{proof}
   Since each call to Linear produces a new strongly connected component, the number of recursive calls is bounded by $N$. We will now show that the number of symbolic steps per iteration is bounded by $\mathcal{O}(d)$.
 
