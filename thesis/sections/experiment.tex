@@ -152,8 +152,8 @@ log basis x={10},
 \caption{Steps performed compared to number of SCCs in graphs}\label{stepscc}
 \end{figure}
 
-\subsection{Dimaeter*SCC vs. Steps}
-Earlier on, we compared steps to nodes, but as the strengthened bound of $O(dN)$ on the number of symbolic steps is described in terms of diameter $d$ and number of SCCs $N$, we also decided to compare this with the number of steps. We hoped that this would explain the outliers from Figure \ref{steps}.
+\subsection{Dimaeter and SCCs vs. Steps}
+Earlier on, we compared steps to nodes, but as the strengthened bound of $O(dN)$ on the number of symbolic steps is described in terms of diameter $d$ and number of SCCs $N$, we also decided to compare this with the number of steps. This can be seen in Figure \ref{dn}. We hoped that this would explain the outliers from Figure \ref{steps}.
 \begin{figure}
   \centering
 \begin{tikzpicture}
@@ -181,6 +181,8 @@ log basis x={10}]
 \legend{Linear, Lockstep, Linear with trimming, Lockstep with ER  and trimming}
 \end{axis}
 \end{tikzpicture}
+\caption{Steps compared to the strengthened bound}\label{dn}
+\end{figure}
 
 \subsection{something something worst-case performance}
 
