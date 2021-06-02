@@ -1,16 +1,21 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
-\todo[inline]{add barchart of vasy\_25\_25 for linear and lockstep starting at the beginning and starting in the middle}
-This section describes the inputs we used for experiments, as well as the general observations made based on the results. To test and experiment with our implementation, we found datasets of different types and sizes. There are graphs with amount of nodes between 200 and 720000. The graphs also vary in the amount of SCCs which they contain, as we have some with as as little as 1 SCC and some with up to 25 thousand.
-
-We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction. The data can be seen in Figure \ref{fig:data}
 \todo[inline]{Here and throughout: Smaller figures, thicker lines, use different marker for the different algorithms. One might view this in black\& white printout, or be color blind. It is good to have these in minds whenever you present plots}
 
+In this section, we look at how the theoretical analysis of the algorithms relates to how the algorithms perform in practice. We investigate which algorithm performs faster, both in terms of symbolic steps, as well as runtime. From the theoretical analysis of complexity, we expect that the linear-time algorithm should perform less symbolic steps. Since Lockstep is the algorithm used in practice, based on \todo{citation}, we predict that the lockstep algorithm will perform better time-wise. We hope to test whether our predictions are correct and find the most effective version of the algorithms.
+
+In order to do this, we have collected a set of graphs of different number of nodes, diameter, interconnectivity, or number of SCCs. An overview of the graphs can be seen in Table \todo{which table}. We want to find out whether the number of nodes, the diameter or how interconnected the graph is has an influence on which algorithm works best, or if there is one algorithm superior to the others.
+
+To measure the performance of the algorithms, we count the number of symbolic steps each algorithm performs, and furthermore note the time it took to run the algorithm. Here, we do not record how long it took to read a graph file and load it into a BDD, but only record the time in which the algorithm is actually doing work.\todo{which machine was it run on?}
+
+We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction. The data can be seen in Figure \ref{fig:data}\todo{make tables and reference here}
+
 \subsection{Edge Restriction}
-As edge restriction does only improves the runtime of the Lockstep algorithm, and does not change the number of symbolic steps performed, we have pltted Lockstep and Lockstep with edge restriction on a graph of their own. Here, we look at the time it takes per symbolic step in relation to the number of nodes. As can be seen below, Lockstep with edge restriction tends to perform better than Lockstep, or the same. There are some cases in which edge restriction slows the algorithm down slightly.
+As edge restriction only improves the runtime of the Lockstep algorithm, and does not change the number of symbolic steps performed, we have pltted Lockstep and Lockstep with edge restriction on a graph of their own (Figure \ref{er graph}). Here, we look at the time it takes per symbolic step in relation to the number of nodes. As can be seen below, the effect of edge restriction is not clear, as there is no significant change in performance for better or worse. Even though we hoped that edge restriction woudl improve the runtime, we can now see that it can be quite a heavy, and therefore time consuming operation on some graphs.
 
-Since edge restriction does not change the number of symbolic steps, we will not be comparing it in the graphs below for the rest of the algorithms.
-
+Since edge restriction does not change the number of symbolic steps in comparison to the vanilla lockstep, we will not be comparing it in the graphs below with the rest of the algorithms.
+\begin{figure}[h!]
+  \centering
 \begin{tikzpicture}
 \begin{axis}[
 height = \textwidth,
@@ -18,7 +23,7 @@ width=\textwidth,
 x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
 % title={Small graphs},
 xlabel={Nodes},
-ylabel={Time per Step},
+ylabel={Time per Step (ms)},
 ymin=0, ymax=100,
 legend style={at={(0,1)}, anchor=north west,legend cell align=left},
 ymajorgrids=true,
@@ -35,16 +40,21 @@ log basis x={10},
 \legend{Lockstep, Lockstep with edge restriction}
 \end{axis}
 \end{tikzpicture}
+\caption{Comparison for time taken per step for vanilla and ER Lockstep.} \label{er graph}
+\end{figure}
 
 \subsection{Nodes vs. Steps}
-We started by comparing the symbolic steps and number of nodes in the graph to the number of nodes, as the complexity of the algorithms was described in terms of these two. The two graphs below show that there is a somewhat positive correlation between number of nodes and symbolic steps, with some outliers. 
+We started by comparing the symbolic steps and number of nodes in the graph, as the complexity of the algorithms in Theorems \ref{linear} and \ref{lockstep} was described in terms of these two. Figure \ref{steps} shows that there is a somewhat positive correlation between number of nodes and symbolic steps, with some outliers. This is most likely due to the strengthened bound described in Theorem \ref{magic}. This will be tested in a later experiment.
 
+The effect of trimming on the number of steps can be seen in this graph - it tends to help significantly is some cases, and even when it doesn't help, it doesn't harm the performance either.
+\begin{figure}
+  \centering
 \begin{tikzpicture}
 \begin{axis}[
 height = \textwidth,
 width=\textwidth,
 x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
-xlabel={Nodes},
+xlabel={Number of nodes in graph},
 ylabel={Steps},
 ymin=0, ymax=3000000,
 legend style={at={(0,1)},anchor=north west,legend cell align=left},
@@ -69,18 +79,22 @@ log basis x={10},
 \legend{Linear, Lockstep, Linear with trimming, Lockstep with ER and trimming}
 \end{axis}
 \end{tikzpicture}
-
+\caption{Symbolic steps compared to number of nodes} \label{steps}
+\end{figure}
+\todo[inline]{fix blank space}
 \subsection{Nodes vs. Time}
+Since the first comparison didn't give us much new insight, we decided to also compare the number of nodes to the time it takes to find SCCs, as we think of it as a quite impotant measure in practice. This graph (Figure \ref{time}  showed a stronger positive correlation. We noticed that for both small and large grpahs, the linear-algorithm tends to take less time to run, however both algorithms perform slightly randomly the larger the graphs get. This may be due to how interconnected they are or the number of SCCs in them, however we did not investigate this further.
 
-Since the first comparison didn't give us much new insight, we decided to also compare the number of nodes to the time it takes to find SCCs. This showed a stronger positive correlation. We noticed that for both small and large grpahs, the linear-algorithm tends to take less time to run, while the Lockstep algorithm tends to jump to much higher values the more nodes there are.
-
+From the graph, we can see that trimming not only has a positive effect on steps, but also on the runtime, or at least doesn't slow it down.
+\begin{figure}
+  \centering
 \begin{tikzpicture}
 \begin{axis}[
 height = \textwidth,
 width=\textwidth,
 x tick label style = {font = \small, align = center, rotate = 70, anchor = north east},
-xlabel={Nodes},
-ylabel={Time},
+xlabel={Number of nodes in graph},
+ylabel={Time (ms)},
 ymin=0, ymax=7000000,
 legend style={at={(0,1)},anchor=north west,legend cell align=left},
 ymajorgrids=true,
@@ -101,10 +115,13 @@ log basis x={10},
 \legend{Linear, Lockstep,  Linear with trimming, Lockstep with ER and trimming}
 \end{axis}
 \end{tikzpicture}
+\caption{Time taken to run algorithms} \label{time}
+\end{figure}
 
 \subsection{SCCs vs Steps}
-The next comparison that seemed obvious to us was to compare if there was a correlation between the number of SCCs in the graph and the amount of steps it took to find them. While running some preliminary tests, we seemed to notice that the more SCCs the graph had, the longer time it would take. As can be seen in the graphs below, there is a more obvious positive correlation than there was when comparing to the number of nodes. However, there is an outlier which was a fairly large graph with only one SCC consisting of almost all of the graph's nodes.
-
+The next comparison that seemed obvious to us was to compare if there was a correlation between the number of SCCs in the graph and the amount of steps it took to find them. While running some preliminary tests, we seemed to notice that the more SCCs the graph had, the longer time it would take. As can be seen in Figure \ref{stepscc}, there is a very obvious positive correlation. However, there is an outlier. This was a fairly large graph with only one SCC consisting of almost all of the graph's nodes, meaning that it took more steps than it would have to find a small SCC.
+\begin{figure}
+  \centering
 \begin{tikzpicture}
 \begin{axis}[
 height = \textwidth,
@@ -132,9 +149,13 @@ log basis x={10},
 \legend{Linear, Lockstep, Linear with trimming, Lockstep with ER and trimming}
 \end{axis}
 \end{tikzpicture}
+\caption{Steps performed compared to number of SCCs in graphs}\label{stepscc}
+\end{figure}
 
 \subsection{Dimaeter*SCC vs. Steps}
-As the strengthened bound of $O(dN)$ on the number of symbolic steps is described in terms of diameter $d$ and number of SCCs $N$, we also decided to compare this with the number of steps.
+Earlier on, we compared steps to nodes, but as the strengthened bound of $O(dN)$ on the number of symbolic steps is described in terms of diameter $d$ and number of SCCs $N$, we also decided to compare this with the number of steps. We hoped that this would explain the outliers from Figure \ref{steps}.
+\begin{figure}
+  \centering
 \begin{tikzpicture}
 \begin{axis}[
 height = \textwidth,
