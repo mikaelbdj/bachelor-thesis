@@ -202,7 +202,7 @@ The skelForward algorithm is a helper method introduced by Gentilini et al., whi
 \subsection{Complexity}
 Here we analyze the complexity of the two algorithms. We state the results in Theorems  and \ref{lockstep} and \ref{linear}. For both of these proofs we charge each step to a node. We further strengthen the complexity of linear and Lockstep stated in Theorems \ref{linear} and \ref{lockstep} respectively in Theorem \label{linear-strengthened}.
 
-\begin{theorem}\label{lockstep} Lockstep($(V, E), P\in V$) runs in $\mathcal{O}(|V|\log |V|)$ symbolic steps.
+\begin{theorem}\label{lockstep} Lockstep($(V, E), V$) runs in $\mathcal{O}(|V|\log |V|)$ symbolic steps.
 \end{theorem}
 \begin{proof}
   Here, we charge each step to a node. We prove that we charge no more than $2 \log |V|+3$ steps per node, which gives the bound of $2|V|log|V|+3|V|$. We start by considering the number of steps and iterations for both loops, and then limit the total cost charged to a node.
