@@ -8,7 +8,7 @@ In order to do this, we have collected a set of graphs of different number of no
  
 We want to find out whether the number of nodes, the diameter or how interconnected the graph is has an influence on which algorithm works best, or if there is one algorithm superior to the others.
 
-To measure the performance of the algorithms, we count the number of symbolic steps each algorithm performs, and furthermore note the time it took to run the algorithm. Here, we do not record how long it took to read a graph file and load it into a BDD, but only record the time in which the algorithm is actually doing work.\todo{which machine was it run on?}
+To measure the performance of the algorithms, we count the number of symbolic steps each algorithm performs, and furthermore note the time it took to run the algorithm. Here, we do not record how long it took to read a graph file and load it into a BDD, but only record the time in which the algorithm is actually doing work. The experiments where executed and timed on a machine running Ubuntu 20.04.2 LTS with an Intel Core i5-10400F CPU (2.90 GHz) and 16 GB memory.
 
 We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction. The data can be seen in Figures \ref{timeres} and \ref{stepres}.
 
