@@ -49,7 +49,7 @@ log basis x={10},
 We started by comparing the symbolic steps and number of nodes in the graph, as the complexity of the algorithms in Theorems \ref{linear} and \ref{lockstep} was described in terms of these two. Figure \ref{steps} shows that there is a somewhat positive correlation between number of nodes and symbolic steps, with some outliers. This is most likely due to the strengthened bound described in Theorem \ref{magic}. This will be tested in a later experiment.
 
 The effect of trimming on the number of steps can be seen in this graph - it tends to help significantly is some cases, and even when it doesn't help, it doesn't harm the performance either.
-\begin{figure}
+\begin{figure}[h!]
   \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -85,10 +85,10 @@ log basis x={10},
 \end{figure}
 \todo[inline]{fix blank space}
 \subsection{Nodes vs. Time}
-Since the first comparison didn't give us much new insight, we decided to also compare the number of nodes to the time it takes to find SCCs, as we think of it as a quite impotant measure in practice. This graph (Figure \ref{time}  showed a stronger positive correlation. We noticed that for both small and large grpahs, the linear-algorithm tends to take less time to run, however both algorithms perform slightly randomly the larger the graphs get. This may be due to how interconnected they are or the number of SCCs in them, however we did not investigate this further.
+Since the first comparison didn't give us much new insight), we decided to also compare the number of nodes to the time it takes to find SCCs, as we think of it as a quite impotant measure in practice. This graph (Figure \ref{time}  showed a stronger positive correlation. We noticed that for both small and large grpahs, the linear-algorithm tends to take less time to run, however both algorithms perform slightly randomly the larger the graphs get. This may be due to how interconnected they are or the number of SCCs in them, however we did not investigate this further.
 
 From the graph, we can see that trimming not only has a positive effect on steps, but also on the runtime, or at least doesn't slow it down.
-\begin{figure}
+\begin{figure}[h!]
   \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -122,7 +122,7 @@ log basis x={10},
 
 \subsection{SCCs vs Steps}
 The next comparison that seemed obvious to us was to compare if there was a correlation between the number of SCCs in the graph and the amount of steps it took to find them. While running some preliminary tests, we seemed to notice that the more SCCs the graph had, the longer time it would take. As can be seen in Figure \ref{stepscc}, there is a very obvious positive correlation. However, there is an outlier. This was a fairly large graph with only one SCC consisting of almost all of the graph's nodes, meaning that it took more steps than it would have to find a small SCC.
-\begin{figure}
+\begin{figure}[h!]
   \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -156,7 +156,7 @@ log basis x={10},
 
 \subsection{Diameter and SCCs vs. Steps}
 Earlier on, we compared steps to nodes, but as the strengthened bound of $O(dN)$ on the number of symbolic steps is described in terms of diameter $d$ and number of SCCs $N$, we also decided to compare this with the number of steps. This can be seen in Figure \ref{dn}. We hoped that this would explain the outliers from Figure \ref{steps}.
-\begin{figure}
+\begin{figure}[h!]
   \centering
 \begin{tikzpicture}
 \begin{axis}[
