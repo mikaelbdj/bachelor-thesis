@@ -4,13 +4,13 @@
 
 In this section, we look at how the theoretical analysis of the algorithms relates to how the algorithms perform in practice. We investigate which algorithm performs faster, both in terms of symbolic steps, as well as runtime. From the theoretical analysis of complexity, we expect that the linear-time algorithm should perform less symbolic steps. Since Lockstep is the algorithm used in practice, based on \todo{citation}, we predict that the lockstep algorithm will perform better time-wise. We hope to test whether our predictions are correct and find the most effective version of the algorithms.
 
-In order to do this, we have collected a set of graphs of different number of nodes, diameter, interconnectivity, or number of SCCs. Most of these graphs are from the VLTS benchmark suite \cite{vlts} and two of them are from Stanford Large Network Dataset Collection \cite{snapnets}. An overview of the graphs can be seen in Table \todo{which table}. 
+In order to do this, we have collected a set of graphs of different number of nodes, diameter, interconnectivity, or number of SCCs. Most of these graphs are from the VLTS benchmark suite \cite{vlts} and two of them are from Stanford Large Network Dataset Collection \cite{snapnets}. An overview of the graphs can be seen in Table \ref{graphs}. 
  
 We want to find out whether the number of nodes, the diameter or how interconnected the graph is has an influence on which algorithm works best, or if there is one algorithm superior to the others.
 
 To measure the performance of the algorithms, we count the number of symbolic steps each algorithm performs, and furthermore note the time it took to run the algorithm. Here, we do not record how long it took to read a graph file and load it into a BDD, but only record the time in which the algorithm is actually doing work.\todo{which machine was it run on?}
 
-We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction. The data can be seen in Figure \ref{fig:data}\todo{make tables and reference here}
+We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction. The data can be seen in Figures \ref{timeres} and \ref{stepres}.
 
 \subsection{Edge Restriction}
 As edge restriction only improves the runtime of the Lockstep algorithm, and does not change the number of symbolic steps performed, we have pltted Lockstep and Lockstep with edge restriction on a graph of their own (Figure \ref{er graph}). Here, we look at the time it takes per symbolic step in relation to the number of nodes. As can be seen below, the effect of edge restriction is not clear, as there is no significant change in performance for better or worse. Even though we hoped that edge restriction woudl improve the runtime, we can now see that it can be quite a heavy, and therefore time consuming operation on some graphs.
