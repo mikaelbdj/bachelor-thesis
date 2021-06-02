@@ -1,10 +1,14 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
-\todo[inline]{add barchart of vasy\_25\_25 for linear and lockstep starting at the beginning and starting in the middle}
-This section describes the inputs we used for experiments, as well as the general observations made based on the results. To test and experiment with our implementation, we found datasets of different types and sizes. There are graphs with amount of nodes between 200 and 720000. The graphs also vary in the amount of SCCs which they contain, as we have some with as as little as 1 SCC and some with up to 25 thousand.
-
-We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction. The data can be seen in Figure \ref{fig:data}
 \todo[inline]{Here and throughout: Smaller figures, thicker lines, use different marker for the different algorithms. One might view this in black\& white printout, or be color blind. It is good to have these in minds whenever you present plots}
+
+In this section, we look at how the theoretical analysis of the algorithms relates to how the algorithms perform in practice. We investigate which algorithm performs faster, both in terms of symbolic steps, as well as runtime. From the theoretical analysis of complexity, we expect that the linear-time algorithm should perform less symbolic steps. Since Lockstep is the algorithm used in practice, based on \todo{citation}, we predict that the lockstep algorithm will perform better time-wise. We hope to test whether our predictions are correct and find the most effective version of the algorithms.
+
+In order to do this, we have collected a set of graphs of different number of nodes, diameter, interconnectivity, or number of SCCs. An overview of the graphs can be seen in Table \todo{which table}. We want to find out whether the number of nodes, the diameter or how interconnected the graph is has an influence on which algorithm works best, or if there is one algorithm superior to the others.
+
+To measure the performance of the algorithms, we count the number of symbolic steps each algorithm performs, and furthermore note the time it took to run the algorithm. Here, we do not record how long it took to read a graph file and load it into a BDD, but only record the time in which the algorithm is actually doing work.\todo{which machine was it run on?}
+
+We have tested our implementations of the linear-time and Lockstep algorithms as descried in the papers \cite{linear}\cite{lockstep}, as well as our modification of the two using trimming and of lockstep using edge restriction. The data can be seen in Figure \ref{fig:data}\todo{make tables and reference here}
 
 \subsection{Edge Restriction}
 As edge restriction does only improves the runtime of the Lockstep algorithm, and does not change the number of symbolic steps performed, we have pltted Lockstep and Lockstep with edge restriction on a graph of their own. Here, we look at the time it takes per symbolic step in relation to the number of nodes. As can be seen below, Lockstep with edge restriction tends to perform better than Lockstep, or the same. There are some cases in which edge restriction slows the algorithm down slightly.
