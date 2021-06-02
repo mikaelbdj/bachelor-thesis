@@ -4,7 +4,9 @@
 
 In this section, we look at how the theoretical analysis of the algorithms relates to how the algorithms perform in practice. We investigate which algorithm performs faster, both in terms of symbolic steps, as well as runtime. From the theoretical analysis of complexity, we expect that the linear-time algorithm should perform less symbolic steps. Since Lockstep is the algorithm used in practice, based on \todo{citation}, we predict that the lockstep algorithm will perform better time-wise. We hope to test whether our predictions are correct and find the most effective version of the algorithms.
 
-In order to do this, we have collected a set of graphs of different number of nodes, diameter, interconnectivity, or number of SCCs. An overview of the graphs can be seen in Table \todo{which table}. We want to find out whether the number of nodes, the diameter or how interconnected the graph is has an influence on which algorithm works best, or if there is one algorithm superior to the others.
+In order to do this, we have collected a set of graphs of different number of nodes, diameter, interconnectivity, or number of SCCs. Most of these graphs are from the VLTS benchmark suite \cite{vlts} and two of them are from Stanford Large Network Dataset Collection \cite{snapnets}. An overview of the graphs can be seen in Table \todo{which table}. 
+ 
+We want to find out whether the number of nodes, the diameter or how interconnected the graph is has an influence on which algorithm works best, or if there is one algorithm superior to the others.
 
 To measure the performance of the algorithms, we count the number of symbolic steps each algorithm performs, and furthermore note the time it took to run the algorithm. Here, we do not record how long it took to read a graph file and load it into a BDD, but only record the time in which the algorithm is actually doing work.\todo{which machine was it run on?}
 
@@ -152,7 +154,7 @@ log basis x={10},
 \caption{Steps performed compared to number of SCCs in graphs}\label{stepscc}
 \end{figure}
 
-\subsection{Dimaeter and SCCs vs. Steps}
+\subsection{Diameter and SCCs vs. Steps}
 Earlier on, we compared steps to nodes, but as the strengthened bound of $O(dN)$ on the number of symbolic steps is described in terms of diameter $d$ and number of SCCs $N$, we also decided to compare this with the number of steps. This can be seen in Figure \ref{dn}. We hoped that this would explain the outliers from Figure \ref{steps}.
 \begin{figure}
   \centering
