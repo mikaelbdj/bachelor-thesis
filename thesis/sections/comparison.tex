@@ -26,32 +26,13 @@ To get a better overview of how well the algorithms performed, we ranked the alg
 \caption{results of the weighted geometric mean}\label{mean}
 \end{figure}
 
-In the thesis, we suggest that edge restriction and trimming should improve the bound somewhat. In the graphs from our experiment, we can see that the different variations of the algorithms perform similarily to the originals. In the graph where we compare the vanilla and edge restriction Lockstep (Figure \ref{er graph}), we can see that edge restriction does help in some cases and in other cases the opposite. Thus, we cannot conclude that it always helps, as we hoped we could. However, the results in Figure \ref{mean} does suggest that edge restriction increases the practical run-time in the average case. 
+In the thesis, we suggest that edge restriction and trimming should improve the bound somewhat. In the graphs from our experiment, we can see that the different variations of the algorithms perform similarily to the originals. In the graph where we compare the vanilla and edge restriction Lockstep (Figure \ref{er graph}), we can see that edge restriction does help in some cases and in other cases does the opposite. Thus, we cannot conclude that it always helps, as we hoped we could. However, the results in Figure \ref{mean} do suggest that edge restriction decreases the practical run-time in the average case. 
 
 The second improvement we suggested was trimming. As can be seen in the different graphs, it does have an effect on the number of steps and the time taken. The algorithms with trimming perform either just as well as the vanilla versions, or better. This is also supported by the results in Figure \ref{mean}. When implementing trimming, we decided to only trim once at the very beginning. It is definitely worth considering how many times trimming should be run to optimize the algorithms, whether the amount of times it is run should depend on some heuristic, and if it should be run in between recursive calls.
 
 Based on their time complexities we expected that the linear-time algorithm would perform better or just as well as Lockstep in the number of steps. This was not the case. There was only a small difference in the number of steps performed on the different graphs by the two algorithms; more surpringly, the Lockstep algorithm performed slightly better when only looking at the number of steps. When comparing the time it took to run the algorithms, linear tended to perform better than Lockstep - once again this is supported by the results in Figure \ref{mean}.
 
 We can observe that the winner in practical time in Figure \ref{mean} is the linear algorithm with trim. This makes sense as linear tended to perform better than lockstep on large graphs and trimming on average improves the practical run time.
-
-% Small graphs:
-% \begin{itemize}
-% \item not so much correlation between nodes and steps
-% \item moderate positive correlation between nodes and time
-% \item moderate positive correlation between number of SCCs in graph and steps - although with some outliers if there are many nodes in an SCC
-% \item generally negative correaltion between how many nodes there are per scc and steps
-% \item linears and locksteps tend to stick together, with trimming helping slightly some of the time. Linears generally tend to do a little worse than locksteps
-% \item locksteps seem to perform better time wise, but worse step wise
-% \end{itemize}
-% Big graphs:
-% \begin{itemize}
-% \item slight positive correlation between nodes and steps if trimmign not used - trimming improves complexity
-% \item slight positive, but really no correlation between time and nodes, trimming improves runtime
-% \item positive correlation betwen no of SCCs and steps, trimming helps with bigger graphs
-% \item generally negative correlation between nodes per scc and steps, where trimming helps significantly on some data
-% \item linears perform slightly worse than locksteps in steps
-% \item linears are slightly better on larger datasets time-wise
-% \end{itemize}
 
 \end{document}
 %%% Local Variables:
