@@ -4,7 +4,7 @@ In this section, we now compare the results of experiments to each other and to 
 
 From the graphs above, the algorithms do not show a clear $\mathcal{O}(n)$ or $\mathcal{O}(n\log n)$ bound. However, we also know that there is a tighter bound of $\mathcal{O}(\text{min}(n, dN))$ on the linear-time algorithm and $\mathcal{O}(\text{min}(n\log n, dN)$ for the Lockstep algorithm, where $d$ is the diameter of the graph and $N$ is the number of SCCs, which still gives us a worst-case performance of $\mathcal{O}(n)$ and $\mathcal{O}(n\log n)$. This bound also explains why the number of SCCs has a positive correlation to the number of steps.
 
-To get a better overview of how well the algorithms performed, we ranked the algorithms by calculating a weighted arithmetic mean. We deemed the larger graphs as more important, and therefore gave them a heavier weight in the calculations: $\sqrt[2]{nodes}$. The results of this weighted average can be seen in Figure \ref{mean}.
+To get a better overview of how well the algorithms performed, we ranked the algorithms by calculating a weighted geometric mean on normalized values for both time and steps. We deemed the larger graphs as more important, and therefore gave them a heavier weight in the calculations: $\log_2(nodes)$. The results of this weighted average can be seen in Figure \ref{mean}.
 
 \begin{figure}[h]
   \centering
@@ -12,18 +12,18 @@ To get a better overview of how well the algorithms performed, we ranked the alg
     \hline
     Algorithm              & Time   & Steps  \\
     \hline
-    Linear                 & 85.75  & 208.88 \\
+    Linear                 & 0.355 & 0.999 \\
     \hline
-    Linear w/ trim         & 84.86  & 134.33 \\
+    Linear w/ trim         & 0.319 & 0.555 \\
     \hline
-    Lockstep               & 145.54 & 121.45 \\
+    Lockstep               & 0.422 & 0.536 \\
     \hline
-    Lockstep w/ ER         & 91.26  & 121.45 \\
+    Lockstep w/ ER         & 0.357 & 0.536 \\
     \hline
-    Lockstep w/ ER \& Trim & 78.17  & 74.89 \\
+    Lockstep w/ ER \& Trim & 0.328 & 0.305 \\
     \hline
 \end{tabular}
-\caption{results of the weighted arithmetic mean}\label{mean}
+\caption{results of the weighted geometric mean}\label{mean}
 \end{figure}
 
 In the thesis, we suggest that edge restriction and trimming should improve the bound somewhat. In the graphs from our experiment, we can see that the different variations of the algorithms perform similarily to the originals. In the graph where we compare the vanilla and edge restriction Lockstep (Figure \ref{er graph}), we can see that edge restriction does help in some cases and in other cases the opposite. Thus, we cannot conclude that it always helps, as we hoped we could. However, the results in Figure \ref{mean} does suggest that edge restriction increases the practical run-time in the average case. 
