@@ -4,7 +4,7 @@ In this section, we now compare the results of experiments to each other and to 
 
 From the graphs above, the algorithms do not show a clear $\mathcal{O}(n)$ or $\mathcal{O}(n\log n)$ bound. However, we also know that there is a tighter bound of $\mathcal{O}(\text{min}(n, dN))$ on the linear-time algorithm and $\mathcal{O}(\text{min}(n\log n, dN)$ for the Lockstep algorithm, where $d$ is the diameter of the graph and $N$ is the number of SCCs, which still gives us a worst-case performance of $\mathcal{O}(n)$ and $\mathcal{O}(n\log n)$. This bound also explains why the number of SCCs has a positive correlation to the number of steps.
 
-To get a better overview of how well the algorithms performed, we ranked the algorithms by calculating a weighted geometric mean on normalized values for both time and steps. We deemed the larger graphs as more important, and therefore gave them a heavier weight in the calculations: $\log_2(nodes)$. The results of this weighted average can be seen in Figure \ref{mean}.
+To get a better overview of how well the algorithms performed, we ranked the algorithms by calculating a weighted geometric mean on normalized values for both time and steps. We deemed the larger graphs as more important, and therefore gave them a heavier weight in the calculations: $\log_2(|V|)$. The results of this weighted average can be seen in Figure \ref{mean}.
 
 \begin{figure}[h]
   \centering
@@ -30,7 +30,9 @@ In the thesis, we suggest that edge restriction and trimming should improve the 
 
 The second improvement we suggested was trimming. As can be seen in the different graphs, it does have an effect on the number of steps and the time taken. The algorithms with trimming perform either just as well as the vanilla versions, or better. This is also supported by the results in Figure \ref{mean}. When implementing trimming, we decided to only trim once at the very beginning. It is definitely worth considering how many times trimming should be run to optimize the algorithms, whether the amount of times it is run should depend on some heuristic, and if it should be run in between recursive calls.
 
-Based on their time complexities we expected that the linear-time algorithm would perform better or just as well as Lockstep in the number of steps. This was not the case. There was only a small difference in the number of steps performed on the different graphs by the two algorithms; more surpringly, the Lockstep algorithm performed slightly better when only looking at the number of steps. When comparing the time it took to run the algorithms, linear tended to perform better than Lockstep - once again this is supported by the results in Figure \ref{mean}.
+Based on their time complexities we expected that the linear-time algorithm would perform better or just as well as Lockstep in the number of steps. This was not the case. There was only a small difference in the number of steps performed on the different graphs by the two algorithms; more surpringly, the Lockstep algorithm performed slightly better when only looking at the number of steps. This suggests some hidden constants in the $\mathcal{O}$-notation of linear is inflating its number of steps, or that the lockstep algorithm rarely reaches its upperbound.
+
+When comparing the time it took to run the algorithms, linear tended to perform better than Lockstep - once again this is supported by the results in Figure \ref{mean}.
 
 We can observe that the winner in practical time in Figure \ref{mean} is the linear algorithm with trim. This makes sense as linear tended to perform better than lockstep on large graphs and trimming on average improves the practical runtime.
 
