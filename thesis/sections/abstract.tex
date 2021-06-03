@@ -2,7 +2,7 @@
 
 \begin{document}
 \begin{abstract}
-We present two frequently used algorithms for strongly connected component decomposition. which in the worst case perform $\mathcal{O}(n)$ and $\mathcal{O}(n\log n)$ image and preimage computations, where $n$ represents the number of nodes in the graph. We suggest improvements to the algorithm, to lower the number of computations performed. These two algorithms and their improved versions were then compared in terms of the number of computations performed and runtime to find the best algorithm.
+We present two popular symbolic algorithms for strongly connected component decomposition. Their worst case time complexities are respectively $\mathcal{O}(|V|)$ and $\mathcal{O}(|V|\log |V|)$ preimage and image computations (symbolic steps) on a graph $G=(V,E)$. These bounds are described and tightened in a theoretical analysis. Two suggestions to decrease the practical runtime of the algorithms are made: \textit{trimming} and \textit{edge restriction}. Through experiments, the two algorithms and their improved versions are compared in terms of symbolic steps performed and practical runtime. Experiments suggest that the linear algorithm performs best in practice, and that \textit{trimming} is always a good technique. Furthermore, \textit{edge restriction} does improve practical runtime in the average case, but should be used with more caution as it might worsen the runtime in some cases.
 \end{abstract}
 \end{document}
 %%% Local Variables:
