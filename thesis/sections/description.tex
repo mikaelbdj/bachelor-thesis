@@ -200,7 +200,7 @@ The skelForward algorithm is a helper method introduced by Gentilini et al., whi
   \end{algorithmic}
 \end{algorithm}
 \subsection{Complexity}
-Here, we analyze the complexity of the two algorithms. We state the results in Theorems \ref{lockstep} and \ref{linear}. For both of these proofs we charge each step to a node. We further strengthen the complexity of Linear and Lockstep in Theorem \label{magic}.
+Here, we analyze the complexity of the two algorithms. We state the results in Theorems \ref{lockstep} and \ref{linear}. For both of these proofs we charge each step to a node. We further strengthen the complexity of Linear and Lockstep in Theorem \ref{magic}.
 
 \begin{theorem}\label{lockstep} Lockstep($(V, E), V$) runs in $\mathcal{O}(|V|\log |V|)$ symbolic steps.
 \end{theorem}
@@ -241,7 +241,7 @@ Here, we analyze the complexity of the two algorithms. We state the results in T
 
 Next, in lines 7-8, nodes are assiged to our SCC. Since each node can be part of at most one SCC, we can also deduce that this part of the algorithm also performs $\mathcal{O}(|V|)$ symbolic steps globally.
 
-Lastly, we have the call to skelForward in line 5, which performs the remaining symbolic steps. Here, the number of symbolic steps is the number of elements popped from the stack in skelForward before the termintion of the second recursive call in the pseudocode, or before all node sets are popped from our implementation of the algorithm. Since each $v\in V$ is inserted into a spine-set at most two times within Linear($V, E, \pair{S}{N}$) \cite[p.~137-138]{linear}, we know that it will take at most $2|V|$ symbolic steps globally, and thereofore we also achieve the $\mathcal{O}(|V|)$ bound for this part.
+Lastly, we have the call to skelForward in line 5, which performs the remaining symbolic steps. Here, the number of symbolic steps is the number of elements popped from the stack in skelForward before the termintion of the second recursive call in the pseudocode, or before all node sets are popped from our implementation of the algorithm. Since each $v\in V$ is inserted into a spine-set at most two times within Linear($V, E, \pair{S}{N}$) \cite[p.~137-138]{linear}, we know that it will take at most $2|V|$ symbolic steps globally, and therefore we also achieve the $\mathcal{O}(|V|)$ bound for this part.
 
 Given that each of the different parts perform $\mathcal{O}(|V|)$ symbolic steps globally, we can conclude that the algorithm runs in $\mathcal{O}(|V|)$ symbolic steps.
 \end{proof}
