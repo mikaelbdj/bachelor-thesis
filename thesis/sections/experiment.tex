@@ -83,7 +83,6 @@ log basis x={10},
 \end{tikzpicture}
 \caption{Symbolic steps compared to number of nodes} \label{steps}
 \end{figure}
-\todo[inline]{fix blank space}
 \subsection{Nodes vs. Time}
 Since the first comparison didn't give us much new insight), we decided to also compare the number of nodes to the time it takes to find SCCs, as we think of it as a quite impotant measure in practice. This graph (Figure \ref{time}  showed a stronger positive correlation. We noticed that for both small and large grpahs, the linear-algorithm tends to take less time to run, however both algorithms perform slightly randomly the larger the graphs get. This may be due to how interconnected they are or the number of SCCs in them, however we did not investigate this further.
 
@@ -186,16 +185,18 @@ log basis x={10}]
 \caption{Steps compared to the strengthened bound}\label{dn}
 \end{figure}
 
-\subsection{something something worst-case performance}
-
+\subsection{Performance on a linear graph}
+While running the previous experiments, we noticed that one of the graphs was very linear, where we would expect that the linear and lockstep algorithms would perform differently then on the other graphs. We realized that this was because both algorithms started at the beginning of the graph, so the worst-case performance for Lockstep was never reached. Therefore, an experiment where we started the algorithms in the middle of the graph was run. The results of this can be seen in Figure \ref{barchart}. There is a significant difference in the performance of the lockstep algorithm, where if lockstep starts in the middle of the graph, it performs almost 3 times the amount of steps perfomed by lockstep if started at the beginning of the graph. The linear-time algorithm performs very similarly, where we noticed a difference of 4 steps between starting at the beggining and in the middle, which is negligeble when it performs over 125 thousand steps.
+\begin{figure}
+\centering
 \begin{tikzpicture}
- 
 \begin{axis} [ybar = .05cm,
     bar width = 12pt,
     enlarge x limits = {abs = .8},
     xtick={1,2},
     xticklabels={lockstep, linear},
     legend style={at={(0, 1)},anchor=north west,legend cell align=left},
+    ylabel = {Steps performed},
 ]
 
 \addplot coordinates {(1, 50434) (2, 126083)};
@@ -204,8 +205,9 @@ log basis x={10}]
 \legend {start at the beginning, start in the middle};
  
 \end{axis}
- 
 \end{tikzpicture}
+\caption{Comparison of lockstep and linear on a linear graph}\label{barchart}
+\end{figure}
 
 \end{document}
 %%% Local Variables:
