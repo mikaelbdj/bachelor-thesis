@@ -1,10 +1,10 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
 
-This section discusses the notions used in the two algorithms we will be focusing on. For the following definitons, let $G=(V,E)$ be a directed graph.
+This section discusses the notions used in the two algorithms we will be focusing on. In the following definitons, let $G=(V,E)$ be a directed graph.
 
 \subsection{Strongly Connected Components}
-A strongly connected component (SCC) is a maximal set of nodes $C\subseteq V$, such that $\forall v,w\in C$, there is a path from $v$ to $w$. In other words, a set of nodes in which every node is reachable from every other node. A trivial SCC is an SCC that only contains a single node.
+A strongly connected component (SCC) is a maximal set of nodes $C\subseteq V$, such that $\forall v,w\in C$, there is a path from $v$ to $w$. In other words, a set of nodes ..." => "In other words, every node in an SCC is reachable from every other node in the same SCC. A trivial SCC is an SCC that only contains a single node.
 \begin{figure}[H]
 \center
 \begin{tikzpicture}
@@ -22,13 +22,18 @@ A strongly connected component (SCC) is a maximal set of nodes $C\subseteq V$, s
     \path [->] (C) edge  (D);
 \end{scope}
 \end{tikzpicture}
-\caption{A small graph containing three SCCs (marked with different colors)}
+\caption{A small graph containing three SCCs (marked with different colors) - (0) and (3) are trivial}
 \end{figure}
 
-\subsection{Binary decision diagrams}
-In this thesis, our primary data structure is a Binary Decision Diagram (BDD). Binary Decision Diagrams represent boolean functions as directed graphs. Each non-terminal vertex $v$ asks about the value of some variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all maximal paths end in one of these. There is a special root node that has no incoming edges (this can also be a terminal node). Note that the graph is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
+\subsection{Binary Decision Diagrams}
+\todo{ Den første paragraf kunne forbedres ved at referere til de to reduktionsregler af Bryant fra 1986. Begge regler kan ses i lyset af at komprimere grafen og spare plads.}
+A Binary Decision Diagram represents a boolean function as a directed acyclic graph (DAGs). Each non-terminal vertex $v$ represents a choice based on the value of some input variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all maximal paths end in one of these. One node, potentially a terminal node, has no ingoing edges and is the root of the DAG. Note that the graph is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
+\todo[inline]{ "Given a boolean function f, we can construct a BDD representing it. To compute an output y given an assignment x, ..."
 
-Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a binary decision diagram representing it. To compute an output $y\in \{0,1\}$ given an assignment  $x\in\{0,1\}^n$, we start in the root and until we hit a terminal vertex, we iterate the following: for each vertex $v$ we encounter (including the root) with variable $x_i$, we branch to $lo(v)$ or $hi(v)$ depending on the value assigned to $x_i$. When illustrating BDDs, $hi(v)$ and $lo(v)$ are represented by respectively a full line and a dotted line. A small example of a BDD can be seen in Figure \ref{simplebdd}.
+  Den første sætning lægger op til funktion -> BDD, men i beskriver i den næste sætning hvordan man kan interpretere en BDD som en funktion (altså baglæns). Der mangler enten et "as described by Bryant [1986]" eller direkte at gentage argumentationen ved hjælp af reduktionsreglerne.
+
+  "A binary tree of depth $n$ represents $f : \{0,1\}^n \rightarrow \{0,1\}$ by  having each path describe the assignment to the input variables $x_1, x_2, \dots, x_n$ ; the two reduction rules of Bryant}
+Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a binary decision diagram that represents it. To compute an output $y\in \{0,1\}$ given an assignment  $x\in\{0,1\}^n$, we start in the root and until we hit a terminal vertex, we iterate the following: for each vertex $v$ we encounter (including the root) with variable $x_i$, we branch to $lo(v)$ or $hi(v)$ depending on the value assigned to $x_i$. When illustrating BDDs, $hi(v)$ and $lo(v)$ are represented by respectively a full line and a dotted line. A small example of a BDD can be seen in Figure \ref{simplebdd}.
 
 \begin{figure}[H]
 \center
@@ -54,14 +59,14 @@ Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a b
 \label{simplebdd}
 \end{figure}
 
-As BDDs represent boolean functions, they can also represent sets. This is due to the fact that we can always represent a set $S$ as the boolean function $f_S$ that denotes membership of $S$. Thus, a BDD $B_S$ representing the function $f_S$ can also represent the set $S$. In other words, we can think of a BDD with cardinality $n$ as representing the set of all assignments $x_n$ that satisfies it. Going forward with this, we can define set operations on BDDs $B_A$ and $B_B$:
+As BDDs represent boolean functions, they can also represent a set $S$ via the indicator function on a binary encoding of each element of the universe. Thus, a BDD $B_S$ representing the indicator function $f_S$ can also represent the set $S$. In other words, we can think of a BDD with cardinality $n$ as representing the set of all assignments $x_n$ that satisfies it. Going forward with this, we can define set operations on BDDs $B_A$ and $B_B$:
 \begin{itemize}
 \item $B_A\cup B_B$: This corresponds to computing the logical OR of $B_A$ and $B_B$.
 \item $B_A\cap B_B$: This corresponds to computing the logical AND of $B_A$ and $B_B$.
 \item $B_A\setminus B_B$: This corresponds to computing the logical AND of $B_A$ and NOT $B_B$.
 \end{itemize}
 
-Computing these logical operations is a mechanical process that is computationally cheap. For the BDDs to preserve their efficient nature, some variable ordering heuristics should be done after each operation. In this paper, we assume that the BDDs we work with do these reordering heuristics automatically. Furthermore, we assume that BDDs use hashing, so we can compute equality of two BDDs in constant time. Ordering heuristics and hashing is explained in more detail in \cite{bryant_1992}.
+Computing these logical operations is a mechanical process that is computationally cheap. For the BDDs to preserve their efficient nature, some variable ordering heuristics should be done after each operation. We will make use of multiple well established optimisations for the implementation of BDDs, such as unique nodes managed in a hash table and automatically applying reordering heuristics. Furthermore, we assume that BDDs use hashing, so we can compute equality of two BDDs in constant time. Ordering heuristics and hashing is explained in more detail in \cite{bryant_1992}.\todo{citations to  https://ieeexplore.ieee.org/document/114828 and https://dl.acm.org/doi/10.1145/123186.123222}
 
 \subsection{Symbolic Notation}
 Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G and $S\subseteq V$, we can derive the following operators: 
@@ -91,7 +96,7 @@ Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a 
 \label{imgpreimg}
 \end{figure}
 
-The image and preimage operations will be refered to as ``steps'', and the complexity of the algorithms will be measured in terms of these steps. From these operators, we can derive the notion of forward and backward sets, which will be key elements in the algorithms.
+The image and preimage operations will be refered to as ``steps'', and the complexity of the algorithms will be measured by the number of steps taken. From these operators, we can derive the notion of forward and backward sets, which will be key elements in the algorithms.
 
 A forward set, \FW{v}, is the set of nodes that can be reached from $v$. Similarily, a backward set, \BW{v}, is a set of all the nodes that can reach $v$. These can be expressed formally as the least fixpoint of respectively $\lambda S.\{v\}\cup \text{img}(S)$ and $\lambda S.\{v\}\cup \text{preimg}(S)$. Using mu-calculus \cite{clarke_peled_grumberg_1999} this can be expressed as 
 \begin{align}\label{fw}
@@ -142,7 +147,7 @@ A forward set, \FW{v}, is the set of nodes that can be reached from $v$. Similar
 \begin{align}
 SCC_G(v) = \FW{v} \cap \BW{v} \label{scc}
 \end{align} 
-where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustrated nicely by overlaying the forward set and backward set that we showed in Figure \ref{fwbw}.
+where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This is illustrated in Figure \ref{overlayedfwbw}, where the intersection is overlayed on top of the forward and backward set in Figure \ref{fwbw}.
 
 
 \begin{figure}[H]
@@ -164,12 +169,12 @@ where $SCC_G(v)$ is the SCC in $G$ containing the node $v$. This can be illustra
     \path [->] (C) edge  (D);
 \end{scope}
 \end{tikzpicture}
-\caption{Intersection of $\FW{v}$ and $\BW{v}$ gives us SCC containing node 1; indeed $SCC_G(1) = \{1,2\}$. } 
+\caption{Intersection of $\FW{v}$ and $\BW{v}$ gives us SCC containing node 1; indeed $SCC_G(1) = \{1,2\}$. } \label{overlayedfwbw}
 \end{figure}
 
 
 \subsection{Representing a graph symbolically}
-A BDD can be used to represent many things - in our paper we use it to represent a graph. The common way to represent a graph $G$ as a BDD is to assign each $v\in V$ to be a unique vector of boolean assignments $x\in\{0,1\}^n$. To name all nodes, we trivially need an $n \geq \ceil{\log_2{|V|}}$. Taking our graph from before we can name each node using two booleans:
+A BDD can be used to represent many things - for our purposes, we use it to represent a graph. The common way to represent a graph $G$ as a BDD is to assign each $v\in V$ to be a unique vector of boolean assignments $x\in\{0,1\}^n$. To name all nodes, we need an $n \geq \ceil{\log_2{|V|}}$ number of variables. Revisiting our graph from Figure \ref{imgpreimg}, we can name each node using two booleans:
 
 \begin{figure}[H]
 \center
@@ -192,11 +197,11 @@ A BDD can be used to represent many things - in our paper we use it to represent
 \label{graphforbdd}
 \end{figure}
 
-A BDD representing all the nodes is simply a BDD that satisfies each boolean assignment $x\in\{0,1\}^n$ that corresponds to a $v\in V$. Similarly, an edge can be represented by a boolean assignment $x\in\{0,1\}^{2n}$, which is the boolean assignment of two nodes concatenated. This can be viewed as a tuple of two nodes, and  using this term we can view the BDD as representing a relation over $V\times V$. 
+A BDD representing all the nodes is simply a BDD that satisfies each boolean assignment $x\in\{0,1\}^n$ that corresponds to a $v\in V$. An edge $(s,t) \in E$ can be represented by a boolean assignment $x\in\{0,1\}^{2n}$, where the first n variables are the bitvector of the source s and the rest identify the target t. This can be viewed as a tuple of two nodes, and  using this term we can view the BDD as representing a relation over $V\times V$. 
 Thus, a BDD $B_E$ representing edges $E$, is a relation $R_E$ where: $\forall a, b \in V, a\ R_E\ b$ iff. $(a,b)\in E$.
 
-As an example, here are two small BDDs representing the edges $(00,01)$ and $(01,10)$:
-
+As an example, Figure \ref{bddedges} shows two BDDs representing the edges $(00,01)$ and $(01,10)$:
+\todo[inline]{ Figur 7 kan godt bruge to subfigure}
 \begin{figure}[H]
 \center
 \begin{tikzpicture}
@@ -242,9 +247,9 @@ As an example, here are two small BDDs representing the edges $(00,01)$ and $(01
     \path [->] (D) edge  (E);
 \end{scope}
 \end{tikzpicture}
-\caption{Symbolic representations (via BDDs) of the relations $\{(00,01)\}$ (left) and $\{(01,10)\}$ (right)}
+\caption{Symbolic representations (via BDDs) of the relations $\{(00,01)\}$ (left) and $\{(01,10)\}$ (right)} \label{bddedges}
 \end{figure}
-As mentioned earlier, to compute the union of two sets/relations symbolically, we can mechanically compute the OR of two BDDs as illustrated:
+As mentioned above, to compute the union of two sets/relations symbolically, we can mechanically compute the OR of two BDDs as illustrated:
 
 \begin{figure}[H]
 \center
@@ -277,7 +282,7 @@ As mentioned earlier, to compute the union of two sets/relations symbolically, w
 \caption{Symbolic representation of the relation $\{(00,01),(01,10)\}$.}
 \end{figure}
 
-Using this process we can construct a BDD representing the set of all edges in our simple graph from Figure \ref{graphforbdd}, which can be seen in Figure \ref{edgebdd}.
+Using this process we can construct a BDD representing the set of all edges in our simple graph from Figure \ref{graphforbdd}, which can be seen in Figure \ref{edgebdd}. Since all nodes are part of an edge, this BDD can fully symbolically represent the original graph.
 
 \begin{figure}[H]
 \center
@@ -311,11 +316,11 @@ Using this process we can construct a BDD representing the set of all edges in o
     \path [->] (B) edge[bend right=40]  (H);
 \end{scope}
 \end{tikzpicture}
-\caption{Symbolic representation of the set $\{(00,01),(01,10),(10,01),(10,11)\}$. This corresponds to all edges of our graph in Figure \ref{graphforbdd}. Since all nodes are part of an edge, this BDD can fully symbolically represent the original graph.}
+\caption{Symbolic representation of the set $\{(00,01),(01,10),(10,01),(10,11)\}$. This corresponds to all edges of our graph in Figure \ref{graphforbdd}.}
 \label{edgebdd}
 \end{figure}
 
-This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we remove the first $n$ variables, and then rename the last $n$ variables to their counterparts in the first $n$ variables (subtract $n$ from every variable). We are left with a BDD representing a set of nodes $S_{img}\subseteq V$, which is the image of $S$. In terms of BDD operations, this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.
+This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we remove the first $n$ variables, and then rename the last $n$ variables to their counterparts in the first $n$ variables (subtract $n$ from every variable). We are left with a BDD representing a set of nodes $S_{img}\subseteq V$, which is the image of $S$. In terms of BDD operations, this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$ \todo{ Skal i ikke også her skrive noget om renaming af de sidste variable? At fjerne disse variable virker heller ikke helt trivielt for mig. Hvordan kan i være garanteret en enkelt rod i den nye DAG?}. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.
 
 As an example, let us compute the image of node $10$, as we did in the original graph in Figure \ref{imgpreimg} (blue). The BDD representing $\{10\}$ is simple:
 
@@ -336,7 +341,7 @@ As an example, let us compute the image of node $10$, as we did in the original 
     \path [->,dashed](A) edge[bend left=30]  (D);
 \end{scope}
 \end{tikzpicture}
-\caption{Symbollic representation of $\{10\}$}
+\caption{Symbolic representation of $\{10\}$}
 \end{figure}
 Now, compute the intersection of this and the BDD we constructed of all edges in Figure \ref{edgebdd}. Remove the first two variables and rename the variables accordingly, as described before. These three steps are illustrated in Figure  \ref{imgprocess}:
 
