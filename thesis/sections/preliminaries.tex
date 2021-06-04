@@ -26,13 +26,8 @@ A strongly connected component (SCC) is a maximal set of nodes $C\subseteq V$, s
 \end{figure}
 
 \subsection{Binary Decision Diagrams}
-\todo{ Den første paragraf kunne forbedres ved at referere til de to reduktionsregler af Bryant fra 1986. Begge regler kan ses i lyset af at komprimere grafen og spare plads.}
-A Binary Decision Diagram represents a boolean function as a directed acyclic graph (DAGs). Each non-terminal vertex $v$ represents a choice based on the value of some input variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all maximal paths end in one of these. One node, potentially a terminal node, has no ingoing edges and is the root of the DAG. Note that the graph is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
-\todo[inline]{ "Given a boolean function f, we can construct a BDD representing it. To compute an output y given an assignment x, ..."
+A Binary Decision Diagram (BDD) represents a boolean function as a directed acyclic graph. Each non-terminal vertex $v$ represents a choice based on the value of some input variable $x_i\in \{0,1\}$ and has edges to two children. The two edges $lo(v)$ and $hi(v)$ correspond to the cases where the variable of $x_i$ is assigned to 0 and 1 respectively. There are two special terminal nodes $0$ and $1$ - these have no children and all maximal paths end in one of these. One node, potentially a terminal node, has no ingoing edges and is the root of the DAG. Note that the graph is not a tree, since we can have multiple edges going to the same vertex; this exact property is what allows BDDs to be more efficient at storing boolean functions as opposed to storing the boolean functions explicitly.
 
-  Den første sætning lægger op til funktion -> BDD, men i beskriver i den næste sætning hvordan man kan interpretere en BDD som en funktion (altså baglæns). Der mangler enten et "as described by Bryant [1986]" eller direkte at gentage argumentationen ved hjælp af reduktionsreglerne.
-
-  "A binary tree of depth $n$ represents $f : \{0,1\}^n \rightarrow \{0,1\}$ by  having each path describe the assignment to the input variables $x_1, x_2, \dots, x_n$ ; the two reduction rules of Bryant}
 Given a boolean function $f: \{0,1\}^n \rightarrow \{0,1\}$ we can construct a binary decision diagram that represents it. To compute an output $y\in \{0,1\}$ given an assignment  $x\in\{0,1\}^n$, we start in the root and until we hit a terminal vertex, we iterate the following: for each vertex $v$ we encounter (including the root) with variable $x_i$, we branch to $lo(v)$ or $hi(v)$ depending on the value assigned to $x_i$. When illustrating BDDs, $hi(v)$ and $lo(v)$ are represented by respectively a full line and a dotted line. A small example of a BDD can be seen in Figure \ref{simplebdd}.
 
 \begin{figure}[H]
@@ -201,7 +196,6 @@ A BDD representing all the nodes is simply a BDD that satisfies each boolean ass
 Thus, a BDD $B_E$ representing edges $E$, is a relation $R_E$ where: $\forall a, b \in V, a\ R_E\ b$ iff. $(a,b)\in E$.
 
 As an example, Figure \ref{bddedges} shows two BDDs representing the edges $(00,01)$ and $(01,10)$:
-\todo[inline]{ Figur 7 kan godt bruge to subfigure}
 \begin{figure}[H]
 \center
 \begin{tikzpicture}
@@ -320,7 +314,7 @@ Using this process we can construct a BDD representing the set of all edges in o
 \label{edgebdd}
 \end{figure}
 
-This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we remove the first $n$ variables, and then rename the last $n$ variables to their counterparts in the first $n$ variables (subtract $n$ from every variable). We are left with a BDD representing a set of nodes $S_{img}\subseteq V$, which is the image of $S$. In terms of BDD operations, this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$ \todo{ Skal i ikke også her skrive noget om renaming af de sidste variable? At fjerne disse variable virker heller ikke helt trivielt for mig. Hvordan kan i være garanteret en enkelt rod i den nye DAG?}. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.
+This representation makes it easy to compute useful properties. For example, assume we have a set of nodes $S\subseteq V$ and a set of edges $E$ represented by BDDs $B_S$ and $B_E$. We can compute the image of $S$ by restricting the first $n$ variables of $B_E$ to all satisfying assignments $x\in\{0,1\}^{n}$ to $B_S$. Doing this effectively selects the edges in $E$ that start in $S$. To return the nodes we remove the first $n$ variables, and then rename the last $n$ variables to their counterparts in the first $n$ variables (subtract $n$ from every variable). We are left with a BDD representing a set of nodes $S_{img}\subseteq V$, which is the image of $S$. In terms of BDD operations, this process is done by computing the intersection $B_{E}' = B_S\cap B_E$, then removing the first $n$ variables of $B_E'$. Computation of pre-image is similar with the addition that we have to rename the variables of $B_S$ to correspond to the \textbf{last} $n$ variables of $B_E$.
 
 As an example, let us compute the image of node $10$, as we did in the original graph in Figure \ref{imgpreimg} (blue). The BDD representing $\{10\}$ is simple:
 

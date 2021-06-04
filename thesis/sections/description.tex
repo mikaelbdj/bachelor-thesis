@@ -56,7 +56,6 @@ Now we partition the rest of $P$ into two sets: $P\setminus Converged$ and $Conv
 
 \subsection{Linear-time algorithm}
 \subsubsection{Skeleton and spine-sets}
-\todo[inline]{make definitions}
 Gentilini et al. \cite{linear} introduce a notion of a skeleton and a spine-set, as well as a chordless path. A path is  between nodes $v_0$ and $v_p$ is chordles iff for all $0\leq i \leq j \leq p$, where $j-i>1$ and there is no edge from $v_i$ to $v_j$. In other words there can be no shortcuts - this path is the shortest in the subgraph of nodes $\{v_0, v_1, \dots, v_p\}$. 
 
 A spine-set is a symbolic way of ordering sets of nodes. A pair \pair{S}{v} is a spine-set of $G$ iff $G$ contains a chordless path consisting of the set of vertices $S$, ending in $v$. $v$ can also be called the spine-anchor of the spine-set.
