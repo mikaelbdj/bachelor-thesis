@@ -66,7 +66,7 @@ As BDDs represent boolean functions, they can also represent a set $S$ via the i
 \item $B_A\setminus B_B$: This corresponds to computing the logical AND of $B_A$ and NOT $B_B$.
 \end{itemize}
 
-Computing these logical operations is a mechanical process that is computationally cheap. For the BDDs to preserve their efficient nature, some variable ordering heuristics should be done after each operation. We will make use of multiple well established optimisations for the implementation of BDDs, such as unique nodes managed in a hash table \cite{hashing1, hashing2} for fast equality comparisons, automatically applying variable reordering heuristics \cite{reordering} and \textit{reductions} \cite{bryant_1992}. 
+Computing these logical operations is a mechanical process that is computationally cheap. For the BDDs to preserve their efficient nature, some variable ordering heuristics should be done after each operation. We will make use of multiple well established optimisations for the implementation of BDDs, such as unique nodes managed in a hash table \cite{hashing1, hashing2} for fast equality comparisons, dynamic variable reordering \cite{buddy} and \textit{reductions} \cite{bryant_1992}. 
 
 \subsection{Symbolic Notation}
 Symbolic algorithms manipulate sets of nodes by using symbolic operators. For a directed graph G and $S\subseteq V$, we can derive the following operators: 
