@@ -1,7 +1,8 @@
 \documentclass[../master/master.tex]{subfiles}
 \begin{document}
 
-The description of the implementation of the two algorithms, as well as the framework for them can be seen below. The code described can be found in our \href{https://github.com/mikaelbdj/bachelor-thesis}{GitHub repo}. When converting the psuedocode into Java code, we had to make some small changes. The algorithms decscribed in the two papers \cite{lockstep}\cite{linear} use recursion, however when testing during the process, we experienced that this meant stack overflow on large datasets. We have therefore chosen to use the iterative approach, which can be seen in the pseudocode below.
+We have implemented both algorithms described above together with a framework for
+symbolic graph manipulation. The source code is publically available at our GitHub repo\footnote{https://github.com/mikaelbdj/bachelor-thesis}. When converting the psuedocode into Java code, we had to small but important changes. Both the \textit{Lockstep} and \textit{Linear} algorithms use recursion, however when testing during the process, we experienced that this meant stack overflow on large datasets. We have therefore rephrased both algorithms into an iterative version, as shown in Algorithm 4.
 
 What this means for the algorithms is that first we push the algorithm's arguments to a stack. We then start a while loop while there is something on the stack. We pop these arguments and run the algorithm on them, appending the SCC we have found to our set of SCCs. We then split the graph into two subgraphs, using the appropriate splitting method. We push these two subgraphs to the stack and we run the loop again. At last, we return the SCCs we have found. This effectively simulates the recursive approach, but cuts away all unnecessary overhead incurred by a recursive implementation.
 
@@ -24,17 +25,17 @@ What this means for the algorithms is that first we push the algorithm's argumen
 \end{algorithm}
 
 \subsection{The JavaBDD library}
-An early decision was made to use the JavaBDD library when implementing the algorithms. \cite{whaley}
+An early decision was made to use the JavaBDD \cite{whaley} library when implementing the algorithms. 
 
 \subsection{The bddgraph framework}
-Before going into the implementation of the algorithms themselves, it is necessary to establish a code foundation that allows us to do the following:
+Before going into the implementation of the algorithms themselves, it is necessary to establish common operations of BDDs related to graph generation not directly provided by the JavaBDD library that allows us to do the following:
 \begin{itemize}
 \item Generate a BDD representing a graph, given some conventional graph representation (adjacency lists or edge lists).
 \item Given a BDD representing a set of nodes, easily compute the image and pre-image of a BDD representing a graph.
 \item Pick a BDD representing a node from a BDD representing a graph.
 \end{itemize}
 
-With these requirements in mind the code base that can be seen in Figure \ref{main_uml} has been developed. The \texttt{BddGraph} class acts as a wrapper for two \texttt{javabdd.BDD} (from now on BDD) objects: representing nodes and edges respectively. In short, the purpose of the class is to provide an 'api' for programming the symbollic graph algorithms - by providing the nice functions described above. The \texttt{BddGraph} class makes use of some internal classes that are useful abstractions for traditional edges (\texttt{Edge.java}) and for binary numbers (\texttt{Binary.java}).\\
+With these requirements in mind the code base that can be seen in Figure \ref{main_uml} has been developed. The \texttt{BddGraph} class acts as a wrapper for two \texttt{javabdd.BDD} (from now on BDD) objects: representing nodes and edges respectively. In short, the purpose of the class is to provide an 'API' for programming the symbolic graph algorithms - by providing the nice functions described above. The \texttt{BddGraph} class makes use of some internal classes that are useful abstractions for traditional edges (\texttt{Edge.java}) and for binary numbers (\texttt{Binary.java}).\\
 
 The symbolic algorithms for computing SCCs all implement the interface \texttt{GraphSCCAlgorithm}. The sole method in this interface is a method \texttt{run}, that takes a \texttt{BddGraph} object and returns a Set of BDDs. Each BDD represents a set of nodes, so this returned value is exactly the set of SCCs. This interface serves as an abstraction for the algorithm caller - they should not care about the implementation of the run method; just that it returns the SCCs of the graph they provide.
 
@@ -143,7 +144,7 @@ Other than this small change (shown below), everything is implemented according 
 Getting inspired by the linear algorithm, we have implemented a slightly modified version of lockstep, in which the edges are restricted before doing image computations. The algorithm already contains a restriction on vertices, but this is done after image computations by taking the intersection with $P$. This change does not change the number of symbolic steps, but we hope to show that it can have a significant impact on the size of the steps and thus the final practical runtime of the algorithm. This will be further expanded upon when we experiment. This version of Lockstep has its own class in Figure \ref{main_uml}: \texttt{LockstepER}.
 
 \subsubsection{Trimming}
-When describing the lockstep algorithm\cite{lockstep}, the authors mention that the algorithm can be slightly optimized by trimming the set $P$. Trimming refers to removing singleton SCCs, which is done in every call to lockstep. These are of course added to the set of SCCs before being removed.
+When describing the lockstep algorithm\cite{lockstep}, Bloem et al. propose that the algorithm can be slightly optimized by trimming the set $P$. Trimming refers to removing singleton SCCs, which is done in every call to lockstep. These are of course added to the set of SCCs before being removed.
 
 Trimming has been implemented on top of edge restriction in the class \texttt{LockstepERTrim}.
 
