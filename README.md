@@ -1,10 +1,6 @@
 Project Description
 -------------------
 
-![Build LaTeX document](https://github.com/mikaelbdj/bachelor-thesis/workflows/Build%20LaTeX%20document/badge.svg)
-
-https://mikaelbdj.github.io/bachelor-thesis/
-
 This project will investigate implementations of two different symbolic algorithms. These algorithms for Strongly-connected-components (SCC) decomposition have different theoretical upper-bounds on the amount of symbolic operations. Whether or not this will carry over to practical differences will be explored. Henceforth, a thorough theoretical analysis on these results will be conducted. Depending on the previous results, one might attempt to combine the two algorithms if it seems reasonable. Alternatively, other similar symbollic algorithms will be investigated, mainly focusing on solving other problems than SCC.
 
 For the task of implementing the two algorithms, the language Java has been selected. This was done mainly because several BDD libraries exist for this language, which enables us to easily compare the two algorithms not just on one BDD-implementation, but on several.
